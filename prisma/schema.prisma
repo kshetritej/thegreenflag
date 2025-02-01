@@ -13,3 +13,10 @@ datasource db {
   url      = env("postgresql://neondb_owner:npg_LMzx5K2gAXIT@ep-long-hall-a5zifvss-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require")
 }
 
+model User {
+  id    String  @id @default(uuid())
+  email String  @unique
+  name  String?
+  type  String?
+}
+

@@ -1,10 +1,9 @@
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { Flag, Search } from "lucide-react";
+import { Flag } from "lucide-react";
 
-export default function Navbar() {
+export default async function Navbar() {
 const navItems = [
     {
         name: "Discover",
@@ -20,14 +19,10 @@ const navItems = [
     }
 ]
   return (
-    <div className="bg-background p-4 flex justify-between">
+    <div className="container mx-auto bg-background p-4 flex justify-between">
         <div className="logo-and-search flex gap-2 items-center">
             <div className="logo font-bold text-lg">
                 <Flag/>
-            </div>
-            <div className="relative">
-            <Search className="absolute right-2 top-1 opacity-75"/>
-            <Input placeholder="Search" />
             </div>
         </div>
 
@@ -41,10 +36,10 @@ const navItems = [
         <div className="login-and-signup flex gap-2 items-center">
             <SignedOut>
             <Link href={"/sign-in"}>
-            <Button variant="outline">Login</Button>
+            <Button variant="secondary">Login</Button>
             </Link>
             <Link href={"/sign-up"}>
-            <Button>Sign Up</Button>
+            <Button size={'lg'}>Sign Up</Button>
             </Link>
             </SignedOut>
             <SignedIn>

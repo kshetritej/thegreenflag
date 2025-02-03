@@ -10,13 +10,31 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("postgresql://neondb_owner:npg_LMzx5K2gAXIT@ep-long-hall-a5zifvss-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require")
+  url = env("DATABASE_URL")
+}
+enum AuthProvider {
+  GOOGLE
+  GITHUB
+  FACEBOOK
+  TWITTER
+  LINKEDIN
+  EMAIL
 }
 
 model User {
-  id    String  @id @default(uuid())
-  email String  @unique
-  name  String?
-  type  String?
+  id        String   @id @default(uuid()) 
+  email     String   @unique
+  username  String   @unique
+  name      String?
+  image     String?
+  role      UserRole @default(USER) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  USER
+  BUSINESS_OWNER
+  ADMIN
 }
 

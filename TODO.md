@@ -1,0 +1,2 @@
+- [] Add user to the database and specify what type of the user is (business owner, user )
+- [] Ask for the type of the user and redirect to the appropriate page

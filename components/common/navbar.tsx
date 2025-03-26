@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu"
 import Link from "next/link"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export default function Navbar() {
   const navLinks = ["Explore", "Get Lucky", "Find Jobs"]
@@ -23,9 +24,22 @@ export default function Navbar() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <Avatar>
-        <AvatarFallback>T</AvatarFallback>
-      </Avatar>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar>
+            <AvatarFallback>T</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-[240px]">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Login</DropdownMenuItem>
+          <DropdownMenuItem>Signup</DropdownMenuItem>
+          <DropdownMenuItem><Link href={"/add-business"}>List a Business</Link></DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
     </nav>
   )
 }

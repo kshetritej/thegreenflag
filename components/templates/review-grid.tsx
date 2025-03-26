@@ -47,7 +47,7 @@ export default function ReviewGrid() {
       <SimpleFilterBar />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
         {reviews.map((review, index) => (
-          <Link href={"/review"}>
+          <Link key={index} href={"/review"}>
             <ReviewCard key={index} {...review} />
           </Link>
         ))}

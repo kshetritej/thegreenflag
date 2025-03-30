@@ -116,7 +116,9 @@ model Business{
   email String
   website String
   hours String
+  mainImage String
   images String[] 
+  googleMapsUrl String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -72,10 +72,6 @@ export const businessCategory = [
     label: "Workshop",
   },
   {
-    id: "PET_FRIENDLY",
-    label: "Pet Friendly",
-  },
-  {
     id: "BANK",
     label: "Bank",
   },

@@ -16,6 +16,7 @@ import { SingleImageDropzone } from "./edgestore/SingleImageDropzone"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { useEdgeStore } from "@/lib/edgestore"
+import { useRouter } from "next/navigation"
 
 type FormData = {
   name: string
@@ -31,6 +32,7 @@ type FormData = {
 
 
 export default function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const { edgestore } = useEdgeStore()
@@ -61,9 +63,13 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
     mutationFn: async (data: FormData) => {
       await axios.post("/api/signup", data)
     },
-    onSuccess: (data) => toast.success("Account created successfully"),
+    onSuccess: (data) => {
+      toast.success("Account created successfully, sign in to continue")
+      router.push("/login")
+    },
     onError: (error) => toast.error("Something went wrong"),
   }) 
+
 
   const onSubmit = async (data: FormData) => {
     if(!file) {
@@ -71,6 +77,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
       return
     }
     if(file) {
+      setIsLoading(true)
       if (file) {
             const res = await edgestore.publicFiles.upload({
               file,
@@ -81,6 +88,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
             registerUser.mutate({...data, profileImage: res.url})
           }
     }
+    setIsLoading(false)
   }
 
   return (
@@ -226,8 +234,8 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
             </div>
 
             <div className="space-y-4">
-              <Button type="submit" className="w-full" disabled={isSubmitting || isLoading}>
-                {isSubmitting || isLoading ? (
+              <Button type="submit" className="w-full" disabled={isSubmitting || isLoading || registerUser.isPending}>
+                {isSubmitting || isLoading || registerUser.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Creating Account...

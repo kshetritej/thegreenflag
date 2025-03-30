@@ -20,16 +20,33 @@ import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { businessCategory } from "@/src/constants/businessCategory"
 import { useEdgeStore } from "@/lib/edgestore"
-import { SingleImageDropzone } from "../edgestore/SingleImageDropzone"
+import { User } from "@prisma/client"
+import { FileState, MultiImageDropzone } from "../edgestore/MultiImageDropzone"
 
 
 type FormValues = z.infer<typeof AddBusinessFormSchema>
 
 
-export default function AddBusinessForm() {
-  const [file, setFile] = React.useState<File | null>(null)
+export default function AddBusinessForm({ user }: { user: User }) {
+  const [fileStates, setFileStates] = useState<FileState[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [step, setStep] = useState(1)
+
   const { edgestore } = useEdgeStore()
+  function updateFileProgress(key: string, progress: FileState['progress']) {
+    setFileStates((fileStates) => {
+      const newFileStates = structuredClone(fileStates);
+      const fileState = newFileStates.find(
+        (fileState) => fileState.key === key,
+      );
+      if (fileState) {
+        fileState.progress = progress;
+      }
+      return newFileStates;
+    });
+  }
+
+  console.log("user from form", user)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(AddBusinessFormSchema),
@@ -37,13 +54,13 @@ export default function AddBusinessForm() {
       name: "",
       category: "",
       subcategory: "",
-      address: "",
+      street: "",
       city: "",
       state: "",
       country: "",
       postalCode: "",
       description: "",
-      yearEstablished: "",
+      establishedYear: "",
       amenities: [],
       phone: "",
       email: "",
@@ -51,6 +68,7 @@ export default function AddBusinessForm() {
       hours: "",
       mainImage: "",
       additionalImages: [],
+      ownerId: user.id,
     },
   })
 
@@ -65,14 +83,55 @@ export default function AddBusinessForm() {
   })
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    addBusinessMutation.mutate(data)
+    if (imageUrls.length === 0) {
+      toast.error("Please upload at least one image")
+      return
+    }
+
+    addBusinessMutation.mutate({
+      ...data,
+      mainImage: imageUrls[0],
+      additionalImages: imageUrls.slice(1),
+    })
+  }
+  console.log("imageUrls", imageUrls)
+  console.log("fileStates", fileStates)
+
+  function uploadImages(addedFiles: FileState[]) {
+    return addedFiles.map(async (addedFileState) => {
+      try {
+        const res = await edgestore.publicFiles.upload({
+          file: addedFileState.file as File,
+          onProgressChange: async (progress) => {
+            updateFileProgress(addedFileState.key, progress);
+            if (progress === 100) {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              updateFileProgress(addedFileState.key, 'COMPLETE');
+            }
+          },
+        });
+        setImageUrls((prev) => [...prev, res.url]);
+      } catch (err) {
+        updateFileProgress(addedFileState.key, 'ERROR');
+        toast.error("Failed to upload image");
+      }
+    })
+  }
+
+  const handleImageUpload = async () => {
+    if (fileStates.length === 0) {
+      toast.error("Please select at least one image");
+      return;
+    }
+    await uploadImages(fileStates);
+    toast.success("Images uploaded successfully");
   }
 
   const nextStep = async () => {
     let canProceed = false
 
     if (step === 1) {
-      const basicInfoFields = ["name", "category", "address", "city", "country"]
+      const basicInfoFields = ["name", "category", "street", "city", "country"]
       const result = await form.trigger(basicInfoFields as any)
       canProceed = result
     } else if (step === 2) {
@@ -220,7 +279,7 @@ export default function AddBusinessForm() {
 
               <FormField
                 control={form.control}
-                name="address"
+                name="street"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Street Address*</FormLabel>
@@ -321,10 +380,10 @@ export default function AddBusinessForm() {
 
               <FormField
                 control={form.control}
-                name="yearEstablished"
+                name="establishedYear"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Year Established</FormLabel>
+                    <FormLabel>Established Year</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., 2015" {...field} />
                     </FormControl>
@@ -454,34 +513,29 @@ export default function AddBusinessForm() {
                 Business Images
               </h2>
               <p className="text-gray-600">
-                Upload high-quality images of your business. The main image will be featured prominently.
+                Upload high-quality images of your business. The first image will be featured prominently.
               </p>
-
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                <div className="flex flex-col items-center">
-                  <Upload className="h-10 w-10 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Upload Main Image</h3>
-                  <p className="text-sm text-gray-500 mb-4">Drag and drop or click to browse</p>
-                  <Button type="button" variant="outline">
-                    Select File
-                  </Button>
-                  <p className="text-xs text-gray-500 mt-4">Recommended size: 1200 x 800 pixels. Max file size: 5MB.</p>
-                </div>
+              <div>
+                <MultiImageDropzone
+                  value={fileStates}
+                  dropzoneOptions={{
+                    maxFiles: 6,
+                  }}
+                  onChange={(files) => {
+                    setFileStates(files);
+                  }}
+                  onFilesAdded={async (addedFiles) => {
+                    setFileStates([...fileStates, ...addedFiles]);
+                  }}
+                />
               </div>
-
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                <div className="flex flex-col items-center">
-                  <Upload className="h-10 w-10 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Upload Additional Images</h3>
-                  <p className="text-sm text-gray-500 mb-4">Drag and drop or click to browse (up to 5 images)</p>
-                  <Button type="button" variant="outline">
-                    Select Files
-                  </Button>
-                  <p className="text-xs text-gray-500 mt-4">
-                    Recommended size: 1200 x 800 pixels. Max file size: 5MB per image.
-                  </p>
-                </div>
-              </div>
+              <Button
+                type="button"
+                onClick={handleImageUpload}
+                disabled={fileStates.length === 0}
+              >
+                Upload Images
+              </Button>
 
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-800 text-sm">
                 <p>
@@ -506,7 +560,12 @@ export default function AddBusinessForm() {
                 <ChevronRight className="h-4 w-4" />
               </Button>
             ) : (
-                <Button type="submit" className="gap-2 ml-auto" disabled={addBusinessMutation.isPending}>
+                <Button
+                  type="button"
+                  onClick={form.handleSubmit(onSubmit)}
+                  className="gap-2 ml-auto"
+                  disabled={addBusinessMutation.isPending || imageUrls.length === 0}
+                >
                   {addBusinessMutation.isPending ? "Submitting..." : "Submit Business"}
               </Button>
             )}

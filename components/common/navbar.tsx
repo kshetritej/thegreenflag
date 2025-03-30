@@ -1,15 +1,17 @@
 "use client"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { LandPlot } from "lucide-react"
+import { LandPlot, LucideUser } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 
 export default function Navbar() {
   const session = useSession()
+
   const navLinks = ["Explore", "Get Lucky", "Find Jobs"]
+
   return (
     <nav className="flex w-full justify-between p-8 items-center border-b">
       <NavigationMenu className="flex justify-between w-full">
@@ -37,7 +39,14 @@ export default function Navbar() {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarFallback>T</AvatarFallback>
+            {session?.data?.user?.image &&
+              <AvatarImage src={session?.data?.user?.image} />
+            }
+            {!session?.data?.user?.image &&
+              <AvatarFallback>
+                <LucideUser className="size-4" />
+              </AvatarFallback>
+            }
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[240px]">

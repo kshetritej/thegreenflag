@@ -12,6 +12,10 @@ import { useForm } from "react-hook-form"
 import axios from "axios"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { UserPlus, Github, ArrowRight, Loader2 } from "lucide-react"
+import { SingleImageDropzone } from "./edgestore/SingleImageDropzone"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { useEdgeStore } from "@/lib/edgestore"
 
 type FormData = {
   name: string
@@ -22,10 +26,14 @@ type FormData = {
   bio: string
   isEnglishSpeaking: boolean
   password: string
+  profileImage: string
 }
+
 
 export default function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
   const [isLoading, setIsLoading] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
+  const { edgestore } = useEdgeStore()
 
   const {
     register,
@@ -43,21 +51,35 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
       bio: "",
       isEnglishSpeaking: false,
       password: "",
+      profileImage: "",
     },
   })
 
   const isEnglishSpeaking = watch("isEnglishSpeaking")
 
+  const registerUser = useMutation({
+    mutationFn: async (data: FormData) => {
+      await axios.post("/api/signup", data)
+    },
+    onSuccess: (data) => toast.success("Account created successfully"),
+    onError: (error) => toast.error("Something went wrong"),
+  }) 
+
   const onSubmit = async (data: FormData) => {
-    setIsLoading(true)
-    try {
-      await axios.post("http://localhost:3000/api/signup", data).then((res) => {
-        console.log(res.data)
-      })
-    } catch (error) {
-      console.error("Registration error:", error)
-    } finally {
-      setIsLoading(false)
+    if(!file) {
+      toast.error("Please upload a profile image")
+      return
+    }
+    if(file) {
+      if (file) {
+            const res = await edgestore.publicFiles.upload({
+              file,
+            });
+            // you can run some server action or api here
+            // to add the necessary data to your database
+            console.log(res);
+            registerUser.mutate({...data, profileImage: res.url})
+          }
     }
   }
 
@@ -79,6 +101,17 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
         <CardContent>
           <form className={cn("space-y-6", className)} onSubmit={handleSubmit(onSubmit)} {...props}>
             <div className="space-y-4">
+              <Label htmlFor="profile-image">Profile Image</Label>
+              <SingleImageDropzone
+                dropzoneOptions={{
+                  maxFiles: 1,
+                  maxSize: 1024 * 1024 * 5, // 5MB
+                }}
+                width={200}
+                height={200}
+                value={file}
+                onChange={(file) => setFile(file)}
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Name field */}
                 <div className="space-y-2">

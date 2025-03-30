@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -19,17 +19,17 @@ import { amenitiesOptions } from "@/src/constants/amenitiesOptions"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { businessCategory } from "@/src/constants/businessCategory"
-import { generateUploadDropzone, UploadButton, UploadDropzone } from "@uploadthing/react"
-import { CldImage } from "next-cloudinary"
-import { CldUploadWidget } from "next-cloudinary"
+import { useEdgeStore } from "@/lib/edgestore"
+import { SingleImageDropzone } from "../edgestore/SingleImageDropzone"
 
 
 type FormValues = z.infer<typeof AddBusinessFormSchema>
 
 
 export default function AddBusinessForm() {
+  const [file, setFile] = React.useState<File | null>(null)
   const [step, setStep] = useState(1)
-  const [image, setImage] = useState<File | null>(null)
+  const { edgestore } = useEdgeStore()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(AddBusinessFormSchema),
@@ -154,6 +154,7 @@ export default function AddBusinessForm() {
                 <Building className="h-5 w-5" />
                 Basic Information
               </h2>
+
 
               <FormField
                 control={form.control}

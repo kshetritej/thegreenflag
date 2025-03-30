@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { Mona_Sans } from "next/font/google"
 import Providers from "@/components/providers/ClientProvider"
+import { EdgeStoreProvider } from "@/lib/edgestore"
 
 const monaSans = Mona_Sans({
   variable: "--font-mona-sans",
@@ -22,7 +23,9 @@ export default async function RootLayout({
     <html lang="en">
       <body className={monaSans.className}>
         <Providers>
+          <EdgeStoreProvider>
         {children}
+          </EdgeStoreProvider>
         </Providers>
       </body>
     </html>

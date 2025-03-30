@@ -1,8 +1,11 @@
 import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useSession } from "next-auth/react"
+import { UploadButton } from "@uploadthing/react"
 
 export default function Header() {
+  const session = useSession()
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-12 bg-white">
       <div className="w-full max-w-4xl mx-auto text-center space-y-6">

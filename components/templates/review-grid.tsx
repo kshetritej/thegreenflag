@@ -5,7 +5,7 @@ import SimpleFilterBar from "../molecules/simple-filter-bar"
 export default function ReviewGrid() {
   const reviews = [
     {
-      image: "/mock.png",
+      image: "/res.jpg",
       title: "Himalayan Cafe",
       location: "Lalitpur, Nepal",
       rating: 4.96,
@@ -14,7 +14,7 @@ export default function ReviewGrid() {
       category: "Restaurant",
     },
     {
-      image: "/mock.png",
+      image: "/res.jpg",
       title: "Mountain View Hotel",
       location: "Pokhara, Nepal",
       rating: 4.85,
@@ -23,7 +23,7 @@ export default function ReviewGrid() {
       category: "Hotel",
     },
     {
-      image: "/mock.png",
+      image: "/res.jpg",
       title: "Artisan Craft Shop",
       location: "Bhaktapur, Nepal",
       rating: 4.7,
@@ -32,7 +32,7 @@ export default function ReviewGrid() {
       category: "Shopping",
     },
     {
-      image: "/mock.png",
+      image: "/res.jpg",
       title: "Everest Trekking Gear",
       location: "Kathmandu, Nepal",
       rating: 4.9,

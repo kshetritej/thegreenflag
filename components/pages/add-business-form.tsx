@@ -12,84 +12,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { Building, MapPin, Phone, Upload, ChevronRight, ChevronLeft, Check } from "lucide-react"
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import axios from "axios"
+import AddBusinessSuccessCard from "@/components/molecules/add-business-success-card"
+import { AddBusinessFormSchema } from "@/src/validations/business/add-business.validation"
+import { amenitiesOptions } from "@/src/constants/amenitiesOptions"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { businessCategory } from "@/src/constants/businessCategory"
+import { generateUploadDropzone, UploadButton, UploadDropzone } from "@uploadthing/react"
+import { CldImage } from "next-cloudinary"
+import { CldUploadWidget } from "next-cloudinary"
 
-// Define the form schema
-const formSchema = z.object({
-  // Basic Info
-  name: z.string().min(2, { message: "Business name must be at least 2 characters" }),
-  category: z.string().min(1, { message: "Please select a category" }),
-  subcategory: z.string().optional(),
-  address: z.string().min(5, { message: "Please enter a valid address" }),
-  city: z.string().min(2, { message: "City is required" }),
-  state: z.string().optional(),
-  country: z.string().min(2, { message: "Country is required" }),
-  postalCode: z.string().optional(),
 
-  // Description
-  description: z.string().min(50, { message: "Description must be at least 50 characters" }),
-  yearEstablished: z.string().optional(),
+type FormValues = z.infer<typeof AddBusinessFormSchema>
 
-  // Amenities
-  amenities: z.array(z.string()).optional(),
-
-  // Contact Info
-  phone: z.string().min(5, { message: "Phone number is required" }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  website: z.string().url({ message: "Please enter a valid URL" }).optional(),
-  hours: z.string().optional(),
-
-  // Owner Info
-  ownerName: z.string().min(2, { message: "Owner name is required" }),
-  ownerBio: z.string().optional(),
-  languages: z.array(z.string()).optional(),
-
-  // Images - in a real app, you'd handle file uploads differently
-  mainImage: z.string().optional(),
-  additionalImages: z.array(z.string()).optional(),
-})
-
-type FormValues = z.infer<typeof formSchema>
-
-// Define amenities options
-const amenitiesOptions = [
-  { id: "wifi", label: "Free Wi-Fi" },
-  { id: "creditCards", label: "Credit Cards Accepted" },
-  { id: "parking", label: "Parking Available" },
-  { id: "delivery", label: "Delivery" },
-  { id: "takeout", label: "Takeout" },
-  { id: "reservations", label: "Reservations" },
-  { id: "outdoor", label: "Outdoor Seating" },
-  { id: "wheelchair", label: "Wheelchair Accessible" },
-  { id: "familyFriendly", label: "Family Friendly" },
-  { id: "vegetarian", label: "Vegetarian Options" },
-  { id: "vegan", label: "Vegan Options" },
-  { id: "glutenFree", label: "Gluten-Free Options" },
-]
-
-// Define language options
-const languageOptions = [
-  { id: "english", label: "English" },
-  { id: "spanish", label: "Spanish" },
-  { id: "french", label: "French" },
-  { id: "german", label: "German" },
-  { id: "chinese", label: "Chinese" },
-  { id: "japanese", label: "Japanese" },
-  { id: "korean", label: "Korean" },
-  { id: "arabic", label: "Arabic" },
-  { id: "hindi", label: "Hindi" },
-  { id: "portuguese", label: "Portuguese" },
-  { id: "russian", label: "Russian" },
-  { id: "italian", label: "Italian" },
-]
 
 export default function AddBusinessForm() {
   const [step, setStep] = useState(1)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
+  const [image, setImage] = useState<File | null>(null)
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(AddBusinessFormSchema),
     defaultValues: {
       name: "",
       category: "",
@@ -106,25 +49,23 @@ export default function AddBusinessForm() {
       email: "",
       website: "",
       hours: "",
-      ownerName: "",
-      ownerBio: "",
-      languages: [],
       mainImage: "",
       additionalImages: [],
     },
   })
 
+  const addBusinessMutation = useMutation({
+    mutationFn: (data: FormValues) => axios.post("/api/business", data),
+    onSuccess: (res) => {
+      toast.success("Business added successfully")
+    },
+    onError: (err) => {
+      toast.error("Something went wrong")
+    }
+  })
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    setIsSubmitting(true)
-
-    // Simulate API call
-    console.log("Form data:", data)
-
-    // Simulate delay
-    await new Promise((resolve) => setTimeout(resolve, 200000))
-
-    setIsSubmitting(false)
-    setIsSuccess(true)
+    addBusinessMutation.mutate(data)
   }
 
   const nextStep = async () => {
@@ -145,10 +86,6 @@ export default function AddBusinessForm() {
       const contactFields = ["phone", "email"]
       const result = await form.trigger(contactFields as any)
       canProceed = result
-    } else if (step === 5) {
-      const ownerFields = ["ownerName"]
-      const result = await form.trigger(ownerFields as any)
-      canProceed = result
     }
 
     if (canProceed) {
@@ -162,24 +99,9 @@ export default function AddBusinessForm() {
     window.scrollTo(0, 0)
   }
 
-  if (isSuccess) {
+  if (addBusinessMutation.isSuccess) {
     return (
-      <div className="max-w-3xl mx-auto py-12 px-4">
-        <Card className="border-green-200 bg-green-50">
-          <CardHeader>
-            <div className="mx-auto rounded-full bg-green-100 p-3 w-12 h-12 flex items-center justify-center mb-4">
-              <Check className="h-6 w-6 text-green-600" />
-            </div>
-            <CardTitle className="text-center text-2xl">Business Added Successfully!</CardTitle>
-            <CardDescription className="text-center">
-              Your business has been submitted for review. We'll notify you once it's approved.
-            </CardDescription>
-          </CardHeader>
-          <CardFooter className="flex justify-center pt-6">
-            <Button onClick={() => (window.location.href = "/")}>Return to Home</Button>
-          </CardFooter>
-        </Card>
-      </div>
+      <AddBusinessSuccessCard />
     )
   }
 
@@ -190,7 +112,7 @@ export default function AddBusinessForm() {
 
       <div className="mb-8">
         <div className="flex justify-between items-center">
-          {[1, 2, 3, 4, 5, 6].map((stepNumber) => (
+          {[1, 2, 3, 4, 5].map((stepNumber) => (
             <div
               key={stepNumber}
               className={`flex flex-col items-center ${stepNumber <= step ? "text-primary" : "text-gray-400"}`}
@@ -211,8 +133,7 @@ export default function AddBusinessForm() {
                 {stepNumber === 2 && "Description"}
                 {stepNumber === 3 && "Amenities"}
                 {stepNumber === 4 && "Contact"}
-                {stepNumber === 5 && "Owner Info"}
-                {stepNumber === 6 && "Images"}
+                {stepNumber === 5 && "Images"}
               </span>
             </div>
           ))}
@@ -220,7 +141,7 @@ export default function AddBusinessForm() {
         <div className="w-full bg-gray-200 h-1 mt-4 rounded-full">
           <div
             className="bg-primary h-1 rounded-full transition-all duration-300"
-            style={{ width: `${(step / 6) * 100}%` }}
+            style={{ width: `${(step / 5) * 100}%` }}
           ></div>
         </div>
       </div>
@@ -262,14 +183,11 @@ export default function AddBusinessForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="restaurant">Restaurant</SelectItem>
-                          <SelectItem value="hotel">Hotel</SelectItem>
-                          <SelectItem value="retail">Retail Store</SelectItem>
-                          <SelectItem value="service">Service Business</SelectItem>
-                          <SelectItem value="entertainment">Entertainment</SelectItem>
-                          <SelectItem value="health">Health & Wellness</SelectItem>
-                          <SelectItem value="beauty">Beauty & Spa</SelectItem>
-                          <SelectItem value="auto">Automotive</SelectItem>
+                          {businessCategory.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {category.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -530,81 +448,6 @@ export default function AddBusinessForm() {
 
           {step === 5 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold">Owner Information</h2>
-
-              <FormField
-                control={form.control}
-                name="ownerName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Owner Name*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Raj Pradhan" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="ownerBio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Owner Bio</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Share a bit about yourself, your background, and your passion for this business..."
-                        className="min-h-[150px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="languages"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Languages Spoken</FormLabel>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {languageOptions.map((language) => (
-                        <FormField
-                          key={language.id}
-                          control={form.control}
-                          name="languages"
-                          render={({ field }) => {
-                            return (
-                              <FormItem key={language.id} className="flex flex-row items-start space-x-3 space-y-0">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(language.id)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([...(field.value || []), language.id])
-                                        : field.onChange(field.value?.filter((value) => value !== language.id))
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormLabel className="font-normal">{language.label}</FormLabel>
-                              </FormItem>
-                            )
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
-
-          {step === 6 && (
-            <div className="space-y-6">
               <h2 className="text-xl font-semibold flex items-center gap-2">
                 <Upload className="h-5 w-5" />
                 Business Images
@@ -656,14 +499,14 @@ export default function AddBusinessForm() {
               </Button>
             )}
 
-            {step < 6 ? (
+            {step < 5 ? (
               <Button type="button" onClick={nextStep} className="gap-2 ml-auto">
                 Next
                 <ChevronRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="submit" className="gap-2 ml-auto" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit Business"}
+                <Button type="submit" className="gap-2 ml-auto" disabled={addBusinessMutation.isPending}>
+                  {addBusinessMutation.isPending ? "Submitting..." : "Submit Business"}
               </Button>
             )}
           </div>

@@ -1,55 +1,238 @@
+"use client"
+
+import type React from "react"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
+import { useForm } from "react-hook-form"
+import axios from "axios"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { UserPlus, Github, ArrowRight, Loader2 } from "lucide-react"
 
-export function RegisterForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"form">) {
+type FormData = {
+  name: string
+  email: string
+  username: string
+  phone: string
+  address: string
+  bio: string
+  isEnglishSpeaking: boolean
+  password: string
+}
+
+export default function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue,
+    watch,
+  } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+      email: "",
+      username: "",
+      phone: "",
+      address: "",
+      bio: "",
+      isEnglishSpeaking: false,
+      password: "",
+    },
+  })
+
+  const isEnglishSpeaking = watch("isEnglishSpeaking")
+
+  const onSubmit = async (data: FormData) => {
+    setIsLoading(true)
+    try {
+      await axios.post("http://localhost:3000/api/signup", data).then((res) => {
+        console.log(res.data)
+      })
+    } catch (error) {
+      console.error("Registration error:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Create a new account</h1>
-        <p className="text-balance text-sm text-muted-foreground">
-          Enter your details below to create your account
-        </p>
-      </div>
-      <div className="grid gap-6">
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
-        </div>
-        <div className="grid gap-2">
-          <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
+    <div className="container flex items-center justify-center min-h-screen py-12">
+      <Card className="w-full max-w-2xl shadow-lg">
+        <CardHeader className="space-y-1">
+          <div className="flex items-center justify-center mb-2">
+            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <UserPlus className="h-6 w-6 text-primary" />
+            </div>
           </div>
-          <Input id="password" type="password" required />
-        </div>
-        <Button type="submit" className="w-full">
-          Register
-        </Button>
-        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-          <span className="relative z-10 bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-        <Button variant="outline" className="w-full">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path
-              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-              fill="currentColor"
-            />
-          </svg>
-          Login with GitHub
-        </Button>
-      </div>
-      <div className="text-center text-sm">
-        Already have a account?  {" "}
-        <a href="/login" className="underline underline-offset-4">
-          Sign In
-        </a>
-      </div>
-    </form>
+          <CardTitle className="text-2xl font-bold text-center">Create a new account</CardTitle>
+          <CardDescription className="text-center">
+            Enter your details below to create your account and get started
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <form className={cn("space-y-6", className)} onSubmit={handleSubmit(onSubmit)} {...props}>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Name field */}
+                <div className="space-y-2">
+                  <Label htmlFor="name">
+                    Full Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="John Doe"
+                    {...register("name", { required: "Full name is required" })}
+                    className={errors.name ? "border-red-500" : ""}
+                  />
+                  {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+                </div>
+
+                {/* Email field */}
+                <div className="space-y-2">
+                  <Label htmlFor="email">
+                    Email <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="john@example.com"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /\S+@\S+\.\S+/,
+                        message: "Please enter a valid email address",
+                      },
+                    })}
+                    className={errors.email ? "border-red-500" : ""}
+                  />
+                  {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Username field */}
+                <div className="space-y-2">
+                  <Label htmlFor="username">
+                    Username <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="username"
+                    placeholder="johndoe"
+                    {...register("username", { required: "Username is required" })}
+                    className={errors.username ? "border-red-500" : ""}
+                  />
+                  {errors.username && <p className="text-xs text-red-500">{errors.username.message}</p>}
+                </div>
+
+                {/* Password field */}
+                <div className="space-y-2">
+                  <Label htmlFor="password">
+                    Password <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 8,
+                        message: "Password must be at least 8 characters",
+                      },
+                    })}
+                    className={errors.password ? "border-red-500" : ""}
+                  />
+                  {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Phone field */}
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input id="phone" type="tel" placeholder="123-456-7890" {...register("phone")} />
+                </div>
+
+                {/* Address field */}
+                <div className="space-y-2">
+                  <Label htmlFor="address">Address</Label>
+                  <Input id="address" placeholder="123 Main St, City, Country" {...register("address")} />
+                </div>
+              </div>
+
+              {/* Bio field */}
+              <div className="space-y-2">
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea
+                  id="bio"
+                  placeholder="Tell us a little about yourself..."
+                  className="resize-none min-h-[100px]"
+                  {...register("bio")}
+                />
+              </div>
+
+              {/* English Speaking checkbox */}
+              <div className="flex items-center space-x-2 pt-2">
+                <Checkbox
+                  id="english-speaking"
+                  checked={isEnglishSpeaking}
+                  onCheckedChange={(checked) => {
+                    setValue("isEnglishSpeaking", checked as boolean)
+                  }}
+                />
+                <Label htmlFor="english-speaking" className="font-normal">
+                  I speak English
+                </Label>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <Button type="submit" className="w-full" disabled={isSubmitting || isLoading}>
+                {isSubmitting || isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating Account...
+                  </>
+                ) : (
+                  <>
+                    Register
+                  </>
+                )}
+              </Button>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                </div>
+              </div>
+
+              <Button variant="outline" className="w-full" type="button">
+                <Github className="mr-2 h-4 w-4" />
+                Login with GitHub
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+
+        <CardFooter className="flex justify-center border-t p-6">
+          <p className="text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <a href="/login" className="text-primary hover:underline font-medium">
+              Sign In
+            </a>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
   )
 }
+

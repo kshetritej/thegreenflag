@@ -31,7 +31,7 @@ export default function ReviewCard({ business, myBusiness }: { business: Busines
   return (
     <>
       {business &&
-        <Card className="p-1 overflow-hidden relative">
+        <Card className="p-1 overflow-hidden relative" onClick={() => router.push(`/business/${business.id}`)}>
       <div className="relative aspect-square">
             <Image src={business?.mainImage || "/placeholder.svg"} alt={business?.name} fill className="object-cover rounded-lg" />
         {business.reviews.length > 1 && (

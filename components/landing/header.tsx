@@ -1,11 +1,15 @@
+"use client"
+
 import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useSession } from "next-auth/react"
-import { UploadButton } from "@uploadthing/react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import SimpleFilterBar from "../molecules/simple-filter-bar"
 
 export default function Header() {
-  const session = useSession()
+  const [searchQuery, setSearchQuery] = useState("")
+  const router = useRouter()
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-12 bg-white">
       <div className="w-full max-w-4xl mx-auto text-center space-y-6">
@@ -22,26 +26,21 @@ export default function Header() {
         </p>
 
         <div className="mt-8 w-full max-w-2xl mx-auto">
-          <div className="relative flex items-center">
+          <div className="relative flex items-center flex-col">
             <input
               type="text"
               placeholder="What are you looking for?"
-              className="w-full px-4 py-3 rounded-l-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+              className=" w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  router.push(`/business/explore?search=${searchQuery}`)
+                }
+              }}
             />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="rounded-none border-y border-r border-gray-300 px-4 h-[50px]">
-                  Places <span className="ml-1">▼</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[160px]">
-                <DropdownMenuItem>Places</DropdownMenuItem>
-                <DropdownMenuItem>Services</DropdownMenuItem>
-                <DropdownMenuItem>Products</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button className="rounded-r-full h-[50px] px-5">
-              <Search className="h-5 w-5" />
+
+            <Button className="absolute right-0 rounded-full h-[50px]  w-[150px]" onClick={() => router.push(`/business/explore?search=${searchQuery}`)}>
+              <Search className="h-5 w-5" /> Search 
             </Button>
           </div>
         </div>
@@ -53,11 +52,14 @@ export default function Header() {
               key={tag}
               variant="outline"
               className="rounded-full text-sm px-4 py-1 h-auto border-gray-200 hover:bg-gray-50"
+              onClick={() => router.push(`/business/explore?search=${tag}`)}
             >
               {tag}
             </Button>
           ))}
         </div>
+
+      {/* <SimpleFilterBar isHomepage={true} /> */}
       </div>
     </div>
   )

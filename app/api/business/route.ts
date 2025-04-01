@@ -6,10 +6,24 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
 
   const categoriesParam = searchParams.get('category')
+  const searchQuery = searchParams.get('search')
 
   const businesses = await prisma.business.findMany({
     where: {
-      category: categoriesParam ? categoriesParam as Category : undefined,
+      AND: [
+        {
+          category: categoriesParam ? categoriesParam as Category : undefined,
+        },
+        {
+          name: {
+            contains: searchQuery ? searchQuery : undefined,
+            mode: "insensitive"
+          }
+        }
+      ]
+    },
+    orderBy: {
+      createdAt: "desc"
     },
     select: {
       id: true,

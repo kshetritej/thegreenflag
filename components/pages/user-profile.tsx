@@ -83,7 +83,7 @@ export default async function UserProfile() {
           </Card>
           <Card className="p-4 flex flex-col gap-2 items-center justify-center">
             <LucideStar className="size-6" />
-            <h3 className="text-xl font-bold">Reveiws</h3>
+            <h3 className="text-xl font-bold">Reviews</h3>
             <p>{businesses.reduce((acc, business) => acc + business.reviews.length, 0)}</p>
           </Card>
         </div>
@@ -91,7 +91,7 @@ export default async function UserProfile() {
 
       {/* list of businesses */}
       <CardFooter className="flex flex-col items-start gap-4">
-        <CardTitle>Businessses</CardTitle>
+        <CardTitle>Businesses</CardTitle>
         <CardContent className="flex  gap-4">
           {businesses.map((business) => (
             <ReviewCard myBusiness={true} key={business.id} business={business as any} />

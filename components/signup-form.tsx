@@ -273,4 +273,3 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
     </div>
   )
 }
-

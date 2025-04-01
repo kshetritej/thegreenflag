@@ -67,7 +67,7 @@ export default function Navbar() {
       </DropdownMenu>
       }
 
-      {session.status === "unauthenticated" &&
+      {!session || session.status === "unauthenticated"  &&
         <div className="flex gap-2">
           <Button variant={"secondary"}>
             <Link href={"/signup"}>Signup</Link>

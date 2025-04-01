@@ -1,7 +1,7 @@
 import prisma from "@/prisma/prismaClient"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import { Button } from "../ui/button"
 import Link from "next/link"
@@ -19,6 +19,7 @@ export default async function UserProfile() {
       owner: { email: session?.user?.email },
     },
     select:{
+      id: true,
       mainImage: true,
       name: true,
       category: true,
@@ -78,12 +79,12 @@ export default async function UserProfile() {
           <Card className="p-4 flex flex-col gap-2 items-center justify-center">
             <LucideBuilding2 className="size-6" />
             <h3 className="text-xl font-bold">Businesses</h3>
-            <p>0</p>
+            <p>{businesses.length}</p>
           </Card>
           <Card className="p-4 flex flex-col gap-2 items-center justify-center">
             <LucideStar className="size-6" />
             <h3 className="text-xl font-bold">Reveiws</h3>
-            <p>300</p>
+            <p>{businesses.reduce((acc, business) => acc + business.reviews.length, 0)}</p>
           </Card>
         </div>
       </CardContent>
@@ -93,7 +94,7 @@ export default async function UserProfile() {
         <CardTitle>Businessses</CardTitle>
         <CardContent className="flex  gap-4">
           {businesses.map((business) => (
-            <ReviewCard key={business.id} {...business} />
+            <ReviewCard myBusiness={true} key={business.id} business={business as any} />
           ))}
         </CardContent>
       </CardFooter>

@@ -82,9 +82,6 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
             const res = await edgestore.publicFiles.upload({
               file,
             });
-            // you can run some server action or api here
-            // to add the necessary data to your database
-            console.log(res);
             registerUser.mutate({...data, profileImage: res.url})
           }
     }

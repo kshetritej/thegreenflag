@@ -24,7 +24,7 @@ export default function ReviewGrid() {
         {
           businesses?.map((business: Business) => (
             <Link key={business.id} href={`/business/${business.id}`}>
-              <ReviewCard {...business} />
+              <ReviewCard business={business} />
             </Link>
           ))
         }

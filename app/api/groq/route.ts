@@ -48,10 +48,8 @@ export async function POST(req: NextRequest) {
 
 
   ------------------------------------------------------------
-  That is the format of the response, you should return the response in this format only, no other text or comments.
+  That is the format of the response, you should return the response in this format only, no other text or comments. REMEMBER TO RETURN THE RESPONSE IN JSON FORMAT. REMEMBER TO RETURN THE RESPONSE IN JSON FORMAT. REMEMBER TO RETURN THE RESPONSE IN JSON FORMAT.
   ------------------------------------------------------------
-  For now its in testing so you should return the demo response, I will tell you when there are data in that case you should return the actual response.
-  Plus don't stringify the response, just return the response in the actual json.
   `
   const response = await groq.chat.completions.create({
     messages: [

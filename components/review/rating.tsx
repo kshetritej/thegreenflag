@@ -1,5 +1,6 @@
 import { Label } from "../ui/label"
 import { cn } from "@/lib/utils"
+import { Star } from "lucide-react"
 import { useState } from "react"
 
 export default function Rating({ value, onChange }: { value: number, onChange: (value: number) => void }) {

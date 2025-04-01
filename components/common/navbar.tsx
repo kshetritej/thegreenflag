@@ -9,6 +9,7 @@ import { useSession, signOut } from "next-auth/react"
 
 export default function Navbar() {
   const session = useSession()
+  console.log("session", session)
 
   const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/business/find-jobs" }]
 
@@ -37,7 +38,8 @@ export default function Navbar() {
       </NavigationMenu>
 
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger className="flex gap-2 items-center">
+        {session.data?.user?.name}
           <Avatar>
             {session?.data?.user?.image &&
               <AvatarImage src={session?.data?.user?.image} />

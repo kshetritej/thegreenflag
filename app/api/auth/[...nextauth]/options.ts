@@ -36,6 +36,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.userId as string;
+        session.user.image = session.user.image || "https://github.com/shadcn.png";
       }
       return session;
     },

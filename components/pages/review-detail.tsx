@@ -25,6 +25,7 @@ import {
   MessageSquare,
   Check,
   X,
+  Cigarette,
 } from "lucide-react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
@@ -65,6 +66,28 @@ interface GroqResponse {
     negative: string[]
     neutral: string[]
   }
+}
+
+const amenityIconMap = {
+  wifi: { icon: Wifi, label: "Free WiFi" },
+  parking: { icon: Parking, label: "Parking Available" },
+  creditCard: { icon: CreditCard, label: "Credit Card Accepted" },
+  accessibility: { icon: Accessibility, label: "Wheelchair Accessible" },
+  coffee: { icon: Coffee, label: "Coffee Available" },
+  smokingArea: { icon: Cigarette, label: "Smoking Area" },
+  restaurant: { icon: Utensils, label: "Restaurant" },
+  phone: { icon: Phone, label: "Phone Service" },
+  website: { icon: Globe, label: "Website" },
+  email: { icon: Mail, label: "Email Contact" }
+} as const
+
+type AmenityKey = keyof typeof amenityIconMap
+
+const formatAmenityText = (amenity: string): string => {
+  return amenity
+    .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+    .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
+    .trim()
 }
 
 export default function ReviewDetail({ business }: { business: Business }) {
@@ -180,15 +203,20 @@ export default function ReviewDetail({ business }: { business: Business }) {
       {/* Amenities Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Amenities</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-center gap-3">
-            {business.amenities.map((amenity) => (
-              <div key={amenity} className="flex items-center gap-3">
-                {/* <AmenityIcon icon={amenity.icon} className="h-5 w-5 text-gray-600" /> */}
-                <span>{amenity}</span>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {business.amenities.map((amenity) => {
+            const amenityKey = amenity.toLowerCase().replace(/\s+/g, '') as AmenityKey
+            const IconComponent = amenityIconMap[amenityKey]?.icon || Info
+
+            return (
+              <div key={amenity} className="flex items-center gap-2 text-gray-700">
+                <IconComponent className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                <span className="text-sm">
+                  {amenityIconMap[amenityKey]?.label || formatAmenityText(amenity)}
+                </span>
               </div>
-            ))}
-          </div>
+            )
+          })}
         </div>
       </div>
 
@@ -377,6 +405,7 @@ export default function ReviewDetail({ business }: { business: Business }) {
 
       {/* Detailed Ratings */}
       <RatingComponent
+        reviewSummary={summary?.ai_summary || ""}
         overallRating={summary?.rating_analysis?.overall_rating || 0}
         serviceRating={summary?.rating_analysis?.service || 0}
         qualityRating={summary?.rating_analysis?.quality || 0}

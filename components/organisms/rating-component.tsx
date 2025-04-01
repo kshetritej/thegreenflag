@@ -9,6 +9,7 @@ interface RatingComponentProps {
   location: number
   value: number
   reviewCount: number
+  reviewSummary: string
 }
 
 export default function RatingComponent({
@@ -20,6 +21,7 @@ export default function RatingComponent({
   location = 4.9,
   value = 4.7,
   reviewCount = 246,
+  reviewSummary = "",
 }: RatingComponentProps) {
   const renderRatingBar = (rating: number) => {
     return (
@@ -61,7 +63,7 @@ export default function RatingComponent({
 
         <h3 className="text-xl font-semibold mb-2">Top rated</h3>
         <p className="text-gray-600 max-w-md">
-          This place is a customer favorite based on ratings, reviews, and reliability
+          {reviewSummary}
         </p>
       </div>
 

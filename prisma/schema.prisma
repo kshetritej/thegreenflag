@@ -119,6 +119,7 @@ model Business{
   mainImage String
   images String[] 
   googleMapsUrl String?
+  locationInfo String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

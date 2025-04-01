@@ -1,3 +1,5 @@
+"use client"
+
 import RatingComponent from "@/components/organisms/rating-component"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -24,18 +26,33 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Business } from "@prisma/client"
+import OwnerInfoCard from "../review/owner-info-card"
+import { useState, useEffect } from "react"
+import axios from "axios"
 
-export default function ReviewDetail() {
+export default function ReviewDetail({ business }: { business: Business }) {
+  const [summary, setSummary] = useState<string>("")
+  useEffect(() => {
+    const fetchSummary = async () => {
+      const summary = await axios.post(`/api/groq`, {
+        prompt: `Summarize this business based on this JSON data :${JSON.stringify(business)}`
+      })
+      setSummary(summary.data.choices[0]?.message?.content || "")
+    }
+    fetchSummary()
+  }, [])
+
+  console.log(summary)
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-2">Himalayan Cafe</h1>
+      <h1 className="text-3xl font-bold mb-2">{business.name}</h1>
       <div className="flex items-center gap-2 text-gray-600 mb-6">
-        <span>Lalitpur, Nepal</span>
+        <span>{business.street}, {business.city},{business.state}, {business.country}, {business.postalCode}</span>
         <span>•</span>
-        <span>Restaurant</span>
+        <span>{business.category}</span>
         <span>•</span>
-        <span>1.2 miles away</span>
+        <span>{business.street} miles away</span>
       </div>
 
       {/* Image Gallery Section */}
@@ -43,8 +60,8 @@ export default function ReviewDetail() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 rounded-lg overflow-hidden">
           <div className="col-span-2 relative aspect-[4/3]">
             <Image
-              src="/placeholder.svg?height=600&width=800"
-              alt="Himalayan Cafe main image"
+              src={business.mainImage}
+              alt={business.name}
               fill
               className="object-cover"
             />
@@ -52,16 +69,16 @@ export default function ReviewDetail() {
           <div className="hidden md:grid grid-rows-2 gap-2">
             <div className="relative">
               <Image
-                src="/placeholder.svg?height=300&width=400"
-                alt="Himalayan Cafe interior"
+                src={business.images[0]}
+                alt={business.name}
                 fill
                 className="object-cover"
               />
             </div>
             <div className="relative">
               <Image
-                src="/placeholder.svg?height=300&width=400"
-                alt="Himalayan Cafe food"
+                src={business.images[1]}
+                alt={business.name}
                 fill
                 className="object-cover"
               />
@@ -79,32 +96,22 @@ export default function ReviewDetail() {
 
       {/* Owner Description Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">About Himalayan Cafe</h2>
+        <h2 className="text-2xl font-semibold mb-4">About {business.name}</h2>
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-12 w-12">
-            <AvatarImage src="/placeholder.svg" alt="Owner" />
-            <AvatarFallback>RP</AvatarFallback>
+            <AvatarImage src={business.owner.profileImage} alt="Owner" />
+            <AvatarFallback>{business.owner.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">Owned by Raj Pradhan</div>
-            <div className="text-sm text-gray-500">Established 2015 • Verified business</div>
+            <div className="font-medium">Owned by {business.owner.name}</div>
+            <div className="text-sm text-gray-500">Established {business.establishedYear} • Verified business</div>
           </div>
+
         </div>
 
         <div className="text-gray-700 space-y-4">
           <p>
-            Welcome to Himalayan Cafe, where we bring the authentic flavors of Nepal to Lalitpur. Our restaurant offers
-            a cozy atmosphere with traditional Nepalese decor and a menu featuring time-honored recipes passed down
-            through generations.
-          </p>
-          <p>
-            We take pride in using fresh, locally-sourced ingredients to create our signature dishes, including our
-            famous momos (dumplings), thukpa (noodle soup), and a variety of curries and traditional Nepalese
-            specialties.
-          </p>
-          <p>
-            Our team is dedicated to providing exceptional service and an unforgettable dining experience. Whether
-            you're a local or a visitor, we invite you to join us for a taste of Nepal's rich culinary heritage.
+            {business.description}
           </p>
         </div>
       </div>
@@ -114,56 +121,14 @@ export default function ReviewDetail() {
         <h2 className="text-2xl font-semibold mb-4">Amenities</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center gap-3">
-            <Wifi className="h-5 w-5 text-gray-600" />
-            <span>Free Wi-Fi</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <CreditCard className="h-5 w-5 text-gray-600" />
-            <span>Credit Cards Accepted</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Parking className="h-5 w-5 text-gray-600" />
-            <span>Parking Available</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Utensils className="h-5 w-5 text-gray-600" />
-            <span>Vegetarian Options</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Coffee className="h-5 w-5 text-gray-600" />
-            <span>Outdoor Seating</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Accessibility className="h-5 w-5 text-gray-600" />
-            <span>Wheelchair Accessible</span>
+            {business.amenities.map((amenity) => (
+              <div key={amenity} className="flex items-center gap-3">
+                {/* <AmenityIcon icon={amenity.icon} className="h-5 w-5 text-gray-600" /> */}
+                <span>{amenity}</span>
+              </div>
+            ))}
           </div>
         </div>
-
-        <Accordion type="single" collapsible className="mt-4">
-          <AccordionItem value="more-amenities">
-            <AccordionTrigger>Show more amenities</AccordionTrigger>
-            <AccordionContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                <div className="flex items-center gap-3">
-                  <Clock className="h-5 w-5 text-gray-600" />
-                  <span>Open 7 days a week</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <MessageSquare className="h-5 w-5 text-gray-600" />
-                  <span>English & Nepali spoken</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Utensils className="h-5 w-5 text-gray-600" />
-                  <span>Gluten-free options</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Coffee className="h-5 w-5 text-gray-600" />
-                  <span>Traditional Nepali tea</span>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
       </div>
 
       {/* Top Rated Section with AI Summary */}
@@ -174,16 +139,20 @@ export default function ReviewDetail() {
 
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
               <Info className="h-4 w-4" />
-              <span>AI summary of 246 reviews</span>
+              {business.reviews.length} reviews
+              <span>•</span>
+              <span>AI summary of {business.reviews.length} reviews</span>
             </div>
 
             <p className="text-gray-700">
-              Reviewers consistently praise Himalayan Cafe for its authentic Nepalese cuisine, particularly highlighting
+              {business.reviews.length > 0 &&
+              `Reviewers consistently praise Himalayan Cafe for its authentic Nepalese cuisine, particularly highlighting
               the momos and thukpa as standout dishes. The staff receives high marks for friendliness and attentiveness,
               while the atmosphere is described as cozy and reminiscent of Nepal. Many guests appreciate the reasonable
               prices and generous portion sizes. The restaurant's cleanliness and attention to detail are also
               frequently mentioned as positives. Overall, customers describe it as a hidden gem that offers an
-              exceptional dining experience.
+              exceptional dining experience.`
+              }
             </p>
           </div>
 
@@ -359,50 +328,7 @@ export default function ReviewDetail() {
       </div>
 
       {/* Owner Details */}
-      <div className="mb-8 border rounded-lg p-6">
-        <h2 className="text-2xl font-semibold mb-4">About the Owner</h2>
-        <div className="flex flex-col md:flex-row gap-6">
-          <div className="md:w-1/4 flex flex-col items-center">
-            <Avatar className="h-24 w-24 mb-3">
-              <AvatarImage src="/placeholder.svg" alt="Owner" />
-              <AvatarFallback>RP</AvatarFallback>
-            </Avatar>
-            <h3 className="font-medium text-center">Raj Pradhan</h3>
-            <p className="text-sm text-gray-500 text-center">Owner since 2015</p>
-          </div>
-
-          <div className="md:w-3/4">
-            <p className="text-gray-700 mb-4">
-              Born and raised in Kathmandu, Raj moved to Lalitpur in 2010 with a dream of sharing authentic Nepalese
-              cuisine with locals and visitors alike. With over 20 years of culinary experience, including training
-              under renowned chefs in Nepal and India, Raj opened Himalayan Cafe in 2015.
-            </p>
-            <p className="text-gray-700 mb-4">
-              "My passion is to create a dining experience that transports guests to Nepal through flavors, aromas, and
-              atmosphere. Every dish we serve carries a story from my homeland."
-            </p>
-
-            <div className="mt-6 space-y-2">
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">Response rate: 98%</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">Response time: Within 1 hour</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">Languages: English, Nepali, Hindi</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">Contact: Message through platform</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <OwnerInfoCard owner={business.owner} establishedYear={business.establishedYear} />
     </div>
   )
 }

@@ -6,6 +6,7 @@ import Image from "next/image"
 import { Button } from "../ui/button"
 import Link from "next/link"
 import { LucideBuilding2, LucideMail, LucidePhone, LucideStar, LucideUser } from "lucide-react"
+import ReviewCard from "../molecules/display-card"
 
 export default async function UserProfile() {
   const session = await getServerSession()
@@ -78,15 +79,11 @@ export default async function UserProfile() {
       {/* list of businesses */}
       <CardFooter className="flex flex-col items-start gap-4">
         <CardTitle>Businessses</CardTitle>
-        <CardDescription>
-          <div className="flex flex-col gap-2">
-            <Card>
-              <CardHeader>
-                {JSON.stringify(businesses)}
-              </CardHeader>
-            </Card>
-          </div>
-        </CardDescription>
+        <CardContent className="flex  gap-4">
+          {businesses.map((business) => (
+            <ReviewCard key={business.id} {...business} />
+          ))}
+        </CardContent>
       </CardFooter>
     </Card>
   )

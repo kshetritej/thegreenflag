@@ -2,7 +2,6 @@
 import Navbar from "@/components/common/navbar"
 import Header from "@/components/landing/header"
 import ReviewGrid from "@/components/templates/review-grid"
-import { SessionProvider } from "next-auth/react"
 
 export default function Home() {
 

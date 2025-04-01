@@ -15,11 +15,11 @@ export default async function AddBusinessPage() {
     where: {email: session.user.email}
   })
 
-
-  console.log("user", user)
   return (
     <>
-      <AddBusinessForm user={user} />
+    {
+      user && <AddBusinessForm user={user} />
+    }
     </>
   )
 }

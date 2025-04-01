@@ -23,7 +23,7 @@ export default function ReviewGrid() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
         {
           businesses?.map((business: Business) => (
-            <Link key={business.id} href={"/review"}>
+            <Link key={business.id} href={`/business/${business.id}`}>
               <ReviewCard {...business} />
             </Link>
           ))

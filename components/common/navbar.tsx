@@ -10,7 +10,7 @@ import { useSession, signOut } from "next-auth/react"
 export default function Navbar() {
   const session = useSession()
 
-  const navLinks = ["Explore", "Get Lucky", "Find Jobs"]
+  const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/business/find-jobs" }]
 
   return (
     <nav className="flex w-full justify-between p-8 items-center border-b">
@@ -27,8 +27,8 @@ export default function Navbar() {
           <NavigationMenuItem className="flex gap-4">
             {navLinks.map((item) => {
               return (
-                <NavigationMenuLink key={item} className="font-medium">
-                  {item}
+                <NavigationMenuLink href={item.href} key={item.href} className="font-medium">
+                    {item.name}
                 </NavigationMenuLink>
               )
             })}

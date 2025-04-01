@@ -31,18 +31,55 @@ import OwnerInfoCard from "@/components/review/owner-info-card"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import AddNewReview from "@/components/review/add-new-review"
+import { cn } from "@/lib/utils"
+
+interface SentimentAnalysis {
+  percentage: string
+  reviews: string
+}
+
+interface GroqResponse {
+  ai_summary: string
+  rating_analysis: {
+    overall_rating: number
+    pros: string[]
+    cons: string[]
+    service: number
+    quality: number
+    ambience: number
+    location: number
+    value: number
+    recommendation: string
+  }
+  sentiment_analysis: {
+    positive: SentimentAnalysis
+    negative: SentimentAnalysis
+    neutral: SentimentAnalysis
+  }
+  most_mentioned_words: {
+    positive: string[]
+    negative: string[]
+    neutral: string[]
+  }
+}
 
 export default function ReviewDetail({ business }: { business: Business }) {
-  const [summary, setSummary] = useState<string>("")
+  const [summary, setSummary] = useState<GroqResponse | null>(null)
+
   useEffect(() => {
     const fetchSummary = async () => {
-      const summary = await axios.post(`/api/groq`, {
-        prompt: `${JSON.stringify(business)}`
-      })
-      setSummary(summary.data)
+      try {
+        const response = await axios.post(`/api/groq`, {
+          prompt: `${JSON.stringify(business)}`
+        })
+        const parsedData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data
+        setSummary(parsedData)
+      } catch (error) {
+        console.error('Error fetching summary:', error)
+      }
     }
     fetchSummary()
-  }, [])
+  }, [business])
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
@@ -54,7 +91,7 @@ export default function ReviewDetail({ business }: { business: Business }) {
         <span>•</span>
         <span>{business.street} miles away</span>
       </div>
-      <div>{summary}</div>
+      <div>{summary?.ai_summary}</div>
 
       {/* Image Gallery Section */}
       <div className="relative mb-8">
@@ -140,27 +177,51 @@ export default function ReviewDetail({ business }: { business: Business }) {
 
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
               <Info className="h-4 w-4" />
-              {business.reviews.length} reviews
-              <span>•</span>
-              <span>AI summary of {business.reviews.length} reviews</span>
+              <span>AI Generated Summary</span>
             </div>
 
-            <p className="text-gray-700">
-              {business.reviews.length > 0 &&
-                "hello"
-                // JSON.parse(summary).ai_summary
-              }
+            <p className="text-gray-700 mb-4">
+              {summary?.ai_summary}
             </p>
+
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-medium mb-2">Pros:</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  {summary?.rating_analysis.pros.map((pro, index) => (
+                    <li key={index} className="text-gray-600">{pro}</li>
+                  ))}
+                </ul>
+              </div>
+              {summary?.rating_analysis.cons[0] !== "none mentioned" && (
+                <div>
+                  <h3 className="font-medium mb-2">Cons:</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {summary?.rating_analysis.cons.map((con, index) => (
+                      <li key={index} className="text-gray-600">{con}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg min-w-[140px]">
-            <div className="text-3xl font-bold">4.84</div>
+            <div className="text-3xl font-bold">{summary?.rating_analysis.overall_rating.toFixed(1)}</div>
             <div className="flex mb-1">
               {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} className="h-4 w-4 fill-gray-800 text-gray-800" />
+                <Star
+                  key={star}
+                  className={cn(
+                    "h-4 w-4",
+                    star <= (summary?.rating_analysis.overall_rating || 0)
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "fill-gray-200 text-gray-200"
+                  )}
+                />
               ))}
             </div>
-            <div className="text-sm text-gray-600 font-medium">246 Reviews</div>
+            <div className="text-sm text-gray-600 font-medium">AI Rating</div>
           </div>
         </div>
       </div>
@@ -170,46 +231,76 @@ export default function ReviewDetail({ business }: { business: Business }) {
         <h2 className="text-2xl font-semibold mb-4">Review Sentiment Analysis</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
           <div className="border rounded-lg p-4">
-            <div className="text-green-500 font-bold text-xl mb-2">95%</div>
+            <div className="text-green-500 font-bold text-xl mb-2">
+              {summary?.sentiment_analysis.positive.percentage}%
+            </div>
             <div className="text-sm text-gray-600">Positive</div>
-            <div className="mt-2 text-xs text-gray-500">Based on 234 reviews</div>
+            <div className="mt-2 text-xs text-gray-500">
+              Based on {summary?.sentiment_analysis.positive.reviews} reviews
+            </div>
           </div>
           <div className="border rounded-lg p-4">
-            <div className="text-yellow-500 font-bold text-xl mb-2">3%</div>
+            <div className="text-yellow-500 font-bold text-xl mb-2">
+              {summary?.sentiment_analysis.neutral.percentage}%
+            </div>
             <div className="text-sm text-gray-600">Neutral</div>
-            <div className="mt-2 text-xs text-gray-500">Based on 7 reviews</div>
+            <div className="mt-2 text-xs text-gray-500">
+              Based on {summary?.sentiment_analysis.neutral.reviews} reviews
+            </div>
           </div>
           <div className="border rounded-lg p-4">
-            <div className="text-red-500 font-bold text-xl mb-2">2%</div>
+            <div className="text-red-500 font-bold text-xl mb-2">
+              {summary?.sentiment_analysis.negative.percentage}%
+            </div>
             <div className="text-sm text-gray-600">Negative</div>
-            <div className="mt-2 text-xs text-gray-500">Based on 5 reviews</div>
+            <div className="mt-2 text-xs text-gray-500">
+              Based on {summary?.sentiment_analysis.negative.reviews} reviews
+            </div>
           </div>
         </div>
 
         <div className="mt-6 border rounded-lg p-4">
-          <h3 className="font-medium mb-3">Most Mentioned Topics</h3>
-          <div className="flex flex-wrap gap-2">
-            <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Food quality (187)</Badge>
-            <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Service (156)</Badge>
-            <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Atmosphere (124)</Badge>
-            <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Value (98)</Badge>
-            <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Momos (87)</Badge>
-            <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">Wait time (12)</Badge>
-            <Badge className="bg-red-100 text-red-800 hover:bg-red-200">Parking (5)</Badge>
+          <h3 className="font-medium mb-3">Most Mentioned Words</h3>
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-2">
+              {summary?.most_mentioned_words.positive.map((word, index) => (
+                <Badge key={index} className="bg-green-100 text-green-800 hover:bg-green-200">
+                  {word}
+                </Badge>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {summary?.most_mentioned_words.neutral.map((word, index) => (
+                <Badge key={index} className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+                  {word}
+                </Badge>
+              ))}
+            </div>
+            {summary?.most_mentioned_words.negative[0] !== "none" && (
+              <div className="flex flex-wrap gap-2">
+                {summary?.most_mentioned_words.negative.map((word, index) => (
+                  <Badge key={index} className="bg-red-100 text-red-800 hover:bg-red-200">
+                    {word}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Detailed Ratings */}
       <RatingComponent
-        overallRating={4.84}
-        serviceRating={4.8}
-        qualityRating={4.9}
-        atmosphereRating={4.9}
-        responsiveness={4.9}
-        location={4.9}
-        value={4.7}
-        reviewCount={246}
+        overallRating={summary?.rating_analysis.overall_rating || 0}
+        serviceRating={summary?.rating_analysis.service || 0}
+        qualityRating={summary?.rating_analysis.quality || 0}
+        atmosphereRating={summary?.rating_analysis.ambience || 0}
+        responsiveness={summary?.rating_analysis.service || 0}
+        location={summary?.rating_analysis.location || 0}
+        value={summary?.rating_analysis.value || 0}
+        reviewCount={Number(summary?.sentiment_analysis.positive.reviews) +
+          Number(summary?.sentiment_analysis.neutral.reviews) +
+          Number(summary?.sentiment_analysis.negative.reviews)}
       />
 
       <Separator className="my-8" />

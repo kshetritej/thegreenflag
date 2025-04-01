@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import SimpleFilterBar from "../molecules/simple-filter-bar"
+import { Badge } from "../ui/badge"
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -20,7 +21,7 @@ export default function Header() {
         </h1>
 
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Explore reviews from real people about the best places, services, and products
+          Explore reviews from real people about the best places
           <br />
           ready for your next adventure
         </p>
@@ -45,17 +46,17 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
           <span className="text-sm text-gray-500 mr-2 mt-1">Trending searches:</span>
           {["restaurants", "hotels", "coffee shops", "electronics", "home services"].map((tag) => (
-            <Button
+            <Badge
               key={tag}
               variant="outline"
               className="rounded-full text-sm px-4 py-1 h-auto border-gray-200 hover:bg-gray-50"
               onClick={() => router.push(`/business/explore?search=${tag}`)}
             >
               {tag}
-            </Button>
+            </Badge>
           ))}
         </div>
 

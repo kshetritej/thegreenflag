@@ -6,6 +6,7 @@ import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { LandPlot, LucideUser } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
+import { Button } from "../ui/button"
 
 export default function Navbar() {
   const session = useSession()
@@ -14,7 +15,7 @@ export default function Navbar() {
   const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/business/find-jobs" }]
 
   return (
-    <nav className="flex w-full justify-between p-8 items-center border-b">
+    <nav className="flex w-full justify-between p-4  items-center border-b">
       <NavigationMenu className="flex justify-between w-full">
         <NavigationMenuItem className="list-none font-bold text-xl mr-8">
           <Link href={"/"} className="flex gap-1 items-center">
@@ -37,7 +38,8 @@ export default function Navbar() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <DropdownMenu>
+      {session.status === "authenticated" && 
+        <DropdownMenu>
         <DropdownMenuTrigger className="flex gap-2 items-center">
         {session.data?.user?.name}
           <Avatar>
@@ -57,21 +59,25 @@ export default function Navbar() {
           <Link href={"/profile"}>
             <DropdownMenuItem>Profile</DropdownMenuItem>
           </Link>
-          {session.status === "authenticated" ? (
-            <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
-          ) : (
-            <>
-              <Link href={"/signup"}>
-                <DropdownMenuItem>Signup</DropdownMenuItem>
-              </Link>
-              <Link href={"/login"}>
-                <DropdownMenuItem>Signin</DropdownMenuItem>
-              </Link>
-            </>
+            {session.status === "authenticated" && (
+              <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
           )}
           <DropdownMenuItem><Link href={"/business"}>List a Business</Link></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      }
+
+      {session.status === "unauthenticated" &&
+        <div className="flex gap-2">
+          <Button variant={"secondary"}>
+            <Link href={"/signup"}>Signup</Link>
+          </Button>
+          <Button>
+            <Link href={"/login"}>Login</Link>
+          </Button>
+        </div>
+      }
+
     </nav>
   )
 }

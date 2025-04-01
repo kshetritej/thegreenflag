@@ -68,7 +68,7 @@ export function LoginForm({
             Or continue with
           </span>
         </div>
-        <Button variant="outline" className="w-full">
+        <Button variant="secondary" className="w-full">
           Login with Google
         </Button>
       </div>

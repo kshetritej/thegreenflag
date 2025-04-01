@@ -27,23 +27,23 @@ import {
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Business } from "@prisma/client"
-import OwnerInfoCard from "../review/owner-info-card"
+import OwnerInfoCard from "@/components/review/owner-info-card"
 import { useState, useEffect } from "react"
 import axios from "axios"
+import AddNewReview from "@/components/review/add-new-review"
 
 export default function ReviewDetail({ business }: { business: Business }) {
   const [summary, setSummary] = useState<string>("")
   useEffect(() => {
     const fetchSummary = async () => {
       const summary = await axios.post(`/api/groq`, {
-        prompt: `Summarize this business based on this JSON data :${JSON.stringify(business)}`
+        prompt: `${JSON.stringify(business)}`
       })
-      setSummary(summary.data.choices[0]?.message?.content || "")
+      setSummary(summary.data)
     }
     fetchSummary()
   }, [])
 
-  console.log(summary)
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-2">{business.name}</h1>
@@ -54,6 +54,7 @@ export default function ReviewDetail({ business }: { business: Business }) {
         <span>•</span>
         <span>{business.street} miles away</span>
       </div>
+      <div>{summary}</div>
 
       {/* Image Gallery Section */}
       <div className="relative mb-8">
@@ -77,7 +78,7 @@ export default function ReviewDetail({ business }: { business: Business }) {
             </div>
             <div className="relative">
               <Image
-                src={business.images[1]}
+                src={business.images[1] ?? business.mainImage}
                 alt={business.name}
                 fill
                 className="object-cover"
@@ -146,12 +147,8 @@ export default function ReviewDetail({ business }: { business: Business }) {
 
             <p className="text-gray-700">
               {business.reviews.length > 0 &&
-              `Reviewers consistently praise Himalayan Cafe for its authentic Nepalese cuisine, particularly highlighting
-              the momos and thukpa as standout dishes. The staff receives high marks for friendliness and attentiveness,
-              while the atmosphere is described as cozy and reminiscent of Nepal. Many guests appreciate the reasonable
-              prices and generous portion sizes. The restaurant's cleanliness and attention to detail are also
-              frequently mentioned as positives. Overall, customers describe it as a hidden gem that offers an
-              exceptional dining experience.`
+                "hello"
+                // JSON.parse(summary).ai_summary
               }
             </p>
           </div>
@@ -216,6 +213,10 @@ export default function ReviewDetail({ business }: { business: Business }) {
       />
 
       <Separator className="my-8" />
+
+      <div className="mb-8">
+        <AddNewReview businessId={business.id} />
+      </div>
 
       {/* Individual Reviews */}
       <div className="space-y-8 mb-8">

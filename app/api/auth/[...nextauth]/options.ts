@@ -19,12 +19,29 @@ export const authOptions: NextAuthOptions = {
         })
         if (!user) throw new Error("Invalid Credentials. Please try again.")
         if (!credentials?.password || !user?.password) throw new Error("Username and password required. Please try again.")
-        const isPasswordValid = bcrypt.compare(credentials?.password, user.password)
+        const isPasswordValid = await bcrypt.compare(credentials?.password, user.password)
 
         if (!isPasswordValid) throw new Error("Invalid Credentials. Please try again.")
-        return user;
+        return { id: user.id, email: user.email, name: user.name }
       }
     })
   ],
+   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.userId as string;
+      }
+      return session;
+    },
+  },
+  pages: {
+    signIn: '/login', // Specify custom login page if you have one
+  },
   secret: process.env.NEXTAUTH_SECRET
 }

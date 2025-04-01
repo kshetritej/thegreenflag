@@ -16,7 +16,19 @@ export default async function UserProfile() {
 
   const businesses = await prisma.business.findMany({
     where: {
-      owner: { email: session?.user?.email }
+      owner: { email: session?.user?.email },
+    },
+    select:{
+      mainImage: true,
+      name: true,
+      category: true,
+      street: true,
+      city: true,
+      reviews:{
+        select:{
+          rating: true
+        }
+      }
     }
   })
 

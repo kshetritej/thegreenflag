@@ -9,7 +9,18 @@ export async function GET(req: NextRequest) {
 
   const businesses = await prisma.business.findMany({
     where: {
-      category: categoriesParam ? categoriesParam as Category : undefined
+      category: categoriesParam ? categoriesParam as Category : undefined,
+    },
+    select: {
+      id: true,
+      name: true,
+      mainImage: true,
+      category: true,
+      street: true,
+      city: true,
+      reviews: {
+        select: { rating: true }
+      },
     }
   });
   return NextResponse.json(businesses);

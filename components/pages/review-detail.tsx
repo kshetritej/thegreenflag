@@ -23,6 +23,8 @@ import {
   Globe,
   Mail,
   MessageSquare,
+  Check,
+  X,
 } from "lucide-react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
@@ -32,6 +34,8 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import AddNewReview from "@/components/review/add-new-review"
 import { cn } from "@/lib/utils"
+import { AiGeneratedBadge } from "../utils/aiGeneratedBadge"
+import ListReviews from "../review/list-reviews"
 
 interface SentimentAnalysis {
   percentage: string
@@ -65,10 +69,14 @@ interface GroqResponse {
 
 export default function ReviewDetail({ business }: { business: Business }) {
   const [summary, setSummary] = useState<GroqResponse | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchSummary = async () => {
       try {
+        setIsLoading(true)
+        setError(null)
         const response = await axios.post(`/api/groq`, {
           prompt: `${JSON.stringify(business)}`
         })
@@ -76,10 +84,26 @@ export default function ReviewDetail({ business }: { business: Business }) {
         setSummary(parsedData)
       } catch (error) {
         console.error('Error fetching summary:', error)
+        setError('Failed to load AI analysis')
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchSummary()
   }, [business])
+
+  const LoadingPlaceholder = () => (
+    <div className="animate-pulse space-y-2">
+      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+    </div>
+  )
+
+  const ErrorMessage = () => (
+    <div className="text-red-600 bg-red-50 p-4 rounded-lg border border-red-100">
+      <p>Unable to generate AI analysis at the moment. Please try again later.</p>
+    </div>
+  )
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
@@ -91,7 +115,6 @@ export default function ReviewDetail({ business }: { business: Business }) {
         <span>•</span>
         <span>{business.street} miles away</span>
       </div>
-      <div>{summary?.ai_summary}</div>
 
       {/* Image Gallery Section */}
       <div className="relative mb-8">
@@ -174,47 +197,30 @@ export default function ReviewDetail({ business }: { business: Business }) {
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1">
             <h2 className="text-xl font-semibold mb-3">Top Rated</h2>
+            <AiGeneratedBadge what="Summary" />
 
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-              <Info className="h-4 w-4" />
-              <span>AI Generated Summary</span>
-            </div>
-
-            <p className="text-gray-700 mb-4">
-              {summary?.ai_summary}
-            </p>
-
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-medium mb-2">Pros:</h3>
-                <ul className="list-disc list-inside space-y-1">
-                  {summary?.rating_analysis.pros.map((pro, index) => (
-                    <li key={index} className="text-gray-600">{pro}</li>
-                  ))}
-                </ul>
-              </div>
-              {summary?.rating_analysis.cons[0] !== "none mentioned" && (
-                <div>
-                  <h3 className="font-medium mb-2">Cons:</h3>
-                  <ul className="list-disc list-inside space-y-1">
-                    {summary?.rating_analysis.cons.map((con, index) => (
-                      <li key={index} className="text-gray-600">{con}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+            {isLoading ? (
+              <LoadingPlaceholder />
+            ) : error ? (
+              <ErrorMessage />
+            ) : (
+              <p className="text-gray-700 mb-4">
+                    {summary?.ai_summary || "No summary available"}
+                  </p>
+            )}
           </div>
 
           <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg min-w-[140px]">
-            <div className="text-3xl font-bold">{summary?.rating_analysis.overall_rating.toFixed(1)}</div>
+            <div className="text-3xl font-bold">
+              {summary?.rating_analysis?.overall_rating?.toFixed(1) || "N/A"}
+            </div>
             <div className="flex mb-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
                   className={cn(
                     "h-4 w-4",
-                    star <= (summary?.rating_analysis.overall_rating || 0)
+                    star <= (summary?.rating_analysis?.overall_rating || 0)
                       ? "fill-yellow-400 text-yellow-400"
                       : "fill-gray-200 text-gray-200"
                   )}
@@ -226,81 +232,161 @@ export default function ReviewDetail({ business }: { business: Business }) {
         </div>
       </div>
 
+      {/* Pros and Cons Section */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold mb-2">Highlights</h2>
+        <AiGeneratedBadge />
+        {isLoading ? (
+          <LoadingPlaceholder />
+        ) : error ? (
+          <ErrorMessage />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+              <h3 className="font-medium mb-2 text-green-800 flex items-center gap-2">
+                <Check className="h-4 w-4" />
+                What People Love
+              </h3>
+              <ul className="space-y-1">
+                {summary?.rating_analysis?.pros?.length ? (
+                  summary.rating_analysis.pros.map((pro, index) => (
+                    <li key={index} className="text-green-700 flex items-start gap-2">
+                      <span className="mt-1.5">•</span>
+                      <span>{pro}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-green-700">No highlights available yet</li>
+                )}
+              </ul>
+            </div>
+
+            <div className="bg-red-50 p-4 rounded-lg border border-red-100">
+              <h3 className="font-medium mb-2 text-red-800 flex items-center gap-2">
+                <X className="h-4 w-4" />
+                Areas for Improvement
+              </h3>
+              <ul className="space-y-1">
+                {!summary?.rating_analysis?.cons?.length ? (
+                  <li className="text-red-700 flex items-start gap-2">
+                    <span className="mt-1.5">•</span>
+                    <span>Not enough data to identify areas for improvement</span>
+                  </li>
+                ) : summary.rating_analysis.cons[0] === "none mentioned" ? (
+                  <li className="text-red-700 flex items-start gap-2">
+                    <span className="mt-1.5">•</span>
+                    <span>No areas for improvement identified</span>
+                  </li>
+                ) : (
+                  summary.rating_analysis.cons.map((con, index) => (
+                    <li key={index} className="text-red-700 flex items-start gap-2">
+                      <span className="mt-1.5">•</span>
+                      <span>{con}</span>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Sentiment Analysis Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Review Sentiment Analysis</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-          <div className="border rounded-lg p-4">
-            <div className="text-green-500 font-bold text-xl mb-2">
-              {summary?.sentiment_analysis.positive.percentage}%
-            </div>
-            <div className="text-sm text-gray-600">Positive</div>
-            <div className="mt-2 text-xs text-gray-500">
-              Based on {summary?.sentiment_analysis.positive.reviews} reviews
-            </div>
-          </div>
-          <div className="border rounded-lg p-4">
-            <div className="text-yellow-500 font-bold text-xl mb-2">
-              {summary?.sentiment_analysis.neutral.percentage}%
-            </div>
-            <div className="text-sm text-gray-600">Neutral</div>
-            <div className="mt-2 text-xs text-gray-500">
-              Based on {summary?.sentiment_analysis.neutral.reviews} reviews
-            </div>
-          </div>
-          <div className="border rounded-lg p-4">
-            <div className="text-red-500 font-bold text-xl mb-2">
-              {summary?.sentiment_analysis.negative.percentage}%
-            </div>
-            <div className="text-sm text-gray-600">Negative</div>
-            <div className="mt-2 text-xs text-gray-500">
-              Based on {summary?.sentiment_analysis.negative.reviews} reviews
-            </div>
-          </div>
-        </div>
+        <h2 className="text-2xl font-semibold mb-2">Review Sentiment Analysis</h2>
+        {isLoading ? (
+          <LoadingPlaceholder />
+        ) : error ? (
+          <ErrorMessage />
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div className="border rounded-lg p-4">
+                <div className="text-green-500 font-bold text-xl mb-2">
+                      {summary?.sentiment_analysis?.positive?.percentage ?? "0"}%
+                    </div>
+                    <div className="text-sm text-gray-600">Positive</div>
+                    <div className="mt-2 text-xs text-gray-500">
+                      Based on {summary?.sentiment_analysis?.positive?.reviews ?? "0"} reviews
+                    </div>
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <div className="text-yellow-500 font-bold text-xl mb-2">
+                      {summary?.sentiment_analysis?.neutral?.percentage ?? "0"}%
+                    </div>
+                    <div className="text-sm text-gray-600">Neutral</div>
+                    <div className="mt-2 text-xs text-gray-500">
+                      Based on {summary?.sentiment_analysis?.neutral?.reviews ?? "0"} reviews
+                    </div>
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <div className="text-red-500 font-bold text-xl mb-2">
+                      {summary?.sentiment_analysis?.negative?.percentage ?? "0"}%
+                    </div>
+                    <div className="text-sm text-gray-600">Negative</div>
+                    <div className="mt-2 text-xs text-gray-500">
+                      Based on {summary?.sentiment_analysis?.negative?.reviews ?? "0"} reviews
+                    </div>
+                  </div>
+                </div>
 
-        <div className="mt-6 border rounded-lg p-4">
-          <h3 className="font-medium mb-3">Most Mentioned Words</h3>
-          <div className="space-y-2">
-            <div className="flex flex-wrap gap-2">
-              {summary?.most_mentioned_words.positive.map((word, index) => (
-                <Badge key={index} className="bg-green-100 text-green-800 hover:bg-green-200">
-                  {word}
-                </Badge>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {summary?.most_mentioned_words.neutral.map((word, index) => (
-                <Badge key={index} className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
-                  {word}
-                </Badge>
-              ))}
-            </div>
-            {summary?.most_mentioned_words.negative[0] !== "none" && (
-              <div className="flex flex-wrap gap-2">
-                {summary?.most_mentioned_words.negative.map((word, index) => (
-                  <Badge key={index} className="bg-red-100 text-red-800 hover:bg-red-200">
-                    {word}
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+                <div className="mt-6 border rounded-lg p-4">
+                  <h3 className="font-medium mb-3">Most Mentioned Words</h3>
+                  <div className="space-y-2">
+                    {summary?.most_mentioned_words?.positive?.length ? (
+                      <div className="flex flex-wrap gap-2">
+                        {summary.most_mentioned_words.positive.map((word, index) => (
+                          <Badge key={index} className="bg-green-100 text-green-800 hover:bg-green-200">
+                            {word}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {summary?.most_mentioned_words?.neutral?.length ? (
+                      <div className="flex flex-wrap gap-2">
+                        {summary.most_mentioned_words.neutral.map((word, index) => (
+                          <Badge key={index} className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+                            {word}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {summary?.most_mentioned_words?.negative?.length &&
+                      summary.most_mentioned_words.negative[0] !== "none" ? (
+                      <div className="flex flex-wrap gap-2">
+                          {summary.most_mentioned_words.negative.map((word, index) => (
+                            <Badge key={index} className="bg-red-100 text-red-800 hover:bg-red-200">
+                              {word}
+                            </Badge>
+                          ))}
+                        </div>
+                    ) : null}
+
+                    {!summary?.most_mentioned_words?.positive?.length &&
+                      !summary?.most_mentioned_words?.neutral?.length &&
+                      !summary?.most_mentioned_words?.negative?.length && (
+                        <p className="text-gray-500">No frequently mentioned words found</p>
+                      )}
+                  </div>
+                </div>
+          </>
+        )}
       </div>
 
       {/* Detailed Ratings */}
       <RatingComponent
-        overallRating={summary?.rating_analysis.overall_rating || 0}
-        serviceRating={summary?.rating_analysis.service || 0}
-        qualityRating={summary?.rating_analysis.quality || 0}
-        atmosphereRating={summary?.rating_analysis.ambience || 0}
-        responsiveness={summary?.rating_analysis.service || 0}
-        location={summary?.rating_analysis.location || 0}
-        value={summary?.rating_analysis.value || 0}
-        reviewCount={Number(summary?.sentiment_analysis.positive.reviews) +
-          Number(summary?.sentiment_analysis.neutral.reviews) +
-          Number(summary?.sentiment_analysis.negative.reviews)}
+        overallRating={summary?.rating_analysis?.overall_rating || 0}
+        serviceRating={summary?.rating_analysis?.service || 0}
+        qualityRating={summary?.rating_analysis?.quality || 0}
+        atmosphereRating={summary?.rating_analysis?.ambience || 0}
+        responsiveness={summary?.rating_analysis?.service || 0}
+        location={summary?.rating_analysis?.location || 0}
+        value={summary?.rating_analysis?.value || 0}
+        reviewCount={Number(summary?.sentiment_analysis?.positive?.reviews || 0) +
+          Number(summary?.sentiment_analysis?.neutral?.reviews || 0) +
+          Number(summary?.sentiment_analysis?.negative?.reviews || 0)}
       />
 
       <Separator className="my-8" />
@@ -312,92 +398,7 @@ export default function ReviewDetail({ business }: { business: Business }) {
       {/* Individual Reviews */}
       <div className="space-y-8 mb-8">
         <h2 className="text-2xl font-semibold">Recent Reviews</h2>
-
-        <div className="space-y-6">
-          <div className="border rounded-lg p-6">
-            <div className="flex justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src="/placeholder.svg" alt="User" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-medium">John Doe</div>
-                  <div className="text-sm text-gray-500">March 2023</div>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="font-medium mr-1">4.9</span>
-                <Star className="w-4 h-4 fill-gray-800 text-gray-800" />
-              </div>
-            </div>
-
-            <p className="text-gray-700 mb-4">
-              Absolutely amazing experience! The food was authentic and delicious, and the staff was incredibly
-              friendly. The atmosphere transported me right back to Nepal. I especially loved their momos and thukpa.
-              Will definitely be coming back again soon!
-            </p>
-
-            <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm" className="gap-2">
-                <ThumbsUp className="w-4 h-4" />
-                Helpful (24)
-              </Button>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Flag className="w-4 h-4" />
-                Report
-              </Button>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Share2 className="w-4 h-4" />
-                Share
-              </Button>
-            </div>
-          </div>
-
-          <div className="border rounded-lg p-6">
-            <div className="flex justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src="/placeholder.svg" alt="User" />
-                  <AvatarFallback>JS</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-medium">Jane Smith</div>
-                  <div className="text-sm text-gray-500">February 2023</div>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="font-medium mr-1">4.7</span>
-                <Star className="w-4 h-4 fill-gray-800 text-gray-800" />
-              </div>
-            </div>
-
-            <p className="text-gray-700 mb-4">
-              Great place with authentic Nepalese cuisine. The service was excellent and the ambiance was perfect for a
-              casual dinner with friends. Prices are reasonable for the quality and portion sizes. The chai tea was
-              exceptional!
-            </p>
-
-            <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm" className="gap-2">
-                <ThumbsUp className="w-4 h-4" />
-                Helpful (18)
-              </Button>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Flag className="w-4 h-4" />
-                Report
-              </Button>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Share2 className="w-4 h-4" />
-                Share
-              </Button>
-            </div>
-          </div>
-
-          <Button variant="outline" className="w-full py-2">
-            Show all 246 reviews
-          </Button>
-        </div>
+        <ListReviews reviews={business.reviews} />
       </div>
 
       {/* Map Section */}

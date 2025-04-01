@@ -8,7 +8,11 @@ export default async function BusinessPage({ params }: { params: { id: string } 
       id: params.id,
     },
     include: {
-      reviews: true,
+      reviews: {
+        include: {
+          author: true
+        }
+      },
       owner: true,
     }
   })

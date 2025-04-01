@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
         content: instructions,
       },
     ],
-    model: "llama-3.3-70b-versatile",
+    model: "gemma2-9b-it",
   });
 
   const data = response.choices[0].message.content

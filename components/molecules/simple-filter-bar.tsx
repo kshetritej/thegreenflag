@@ -1,12 +1,11 @@
 "use client"
 
-import { ChevronDown, LucideSearch, Search } from "lucide-react"
+import {  Search } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Category } from "@prisma/client"
-import { Input } from "@/components/ui/input"
 import { Button } from "../ui/button"
 import { useDebounce } from "@/hooks/use-debounce"
 

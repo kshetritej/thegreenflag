@@ -97,6 +97,7 @@ model User {
   businesses Business[]
   profileImage  String?
   reviews Review[]
+  replies Reply[]
 }
 
 model Business{
@@ -143,4 +144,22 @@ model Review{
 
   business Business @relation(fields: [businessId], references: [id])
   businessId String
+
+  helpful Int @default(0)
+  reports Int @default(0)
+
+  Replies Reply[]
+}
+
+model Reply{
+  id String @id @default(uuid())
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id])
+  authorId String
+
+  review Review @relation(fields: [reviewId], references: [id])
+  reviewId String
 }

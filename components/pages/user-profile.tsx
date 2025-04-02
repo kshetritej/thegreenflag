@@ -63,12 +63,12 @@ export default async function UserProfile() {
             </div>
             <p>{user?.bio}</p>
 
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-4 mt-4">
               <Link href={`tel:${user?.phone}`}>
                 <Button><LucidePhone /> Call</Button>
               </Link>
               <Link href={`mailto:${user?.email}`}>
-                <Button><LucideMail />  Send Message</Button>
+                <Button className="w-full"><LucideMail />  Send Message</Button>
               </Link>
             </div>
           </div>

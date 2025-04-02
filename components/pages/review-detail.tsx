@@ -240,7 +240,7 @@ export default function ReviewDetail({ business }: { business: Business }) {
 
           <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg min-w-[140px]">
             <div className="text-3xl font-bold">
-              {summary?.rating_analysis?.overall_rating?.toFixed(1) || "N/A"}
+              {summary?.rating_analysis?.overall_rating || "N/A"}
             </div>
             <div className="flex mb-1">
               {[1, 2, 3, 4, 5].map((star) => (

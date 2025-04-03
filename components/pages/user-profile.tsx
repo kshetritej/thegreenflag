@@ -59,17 +59,15 @@ export default async function UserProfile() {
           <div>
             <h2 className="text-2xl font-bold">{user?.name}</h2>
             <div className="flex gap-2 items-center">
-              <p>@{user?.username}</p> <div className="w-1 h-1 bg-gray-400 rounded-full" /> <p>Joined {new Date(user?.createdAt).toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</p>
+              {user && <>
+                <p>@{user?.username}</p> <div className="w-1 h-1 bg-gray-400 rounded-full" /> <p>Joined {new Date(user.createdAt).toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</p>
+              </>}
             </div>
             <p>{user?.bio}</p>
 
             <div className="flex gap-4 mt-4">
-              <Link href={`tel:${user?.phone}`}>
-                <Button><LucidePhone /> Call</Button>
-              </Link>
-              <Link href={`mailto:${user?.email}`}>
-                <Button className="w-full"><LucideMail />  Send Message</Button>
-              </Link>
+              <LucidePhone /> {user?.phone}
+              <LucideMail />  {user?.email}
             </div>
           </div>
         </div>

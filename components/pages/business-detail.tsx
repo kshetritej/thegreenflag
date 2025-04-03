@@ -141,8 +141,8 @@ export default function BusinessDetail({ business }: { business: Business }) {
   return (
     <div className="p-4 max-w-4xl mx-auto py-8 px-4">
       <div className="flex gap-4 items-center">
-        <h1 className="flex items-center gap-2 text-3xl font-bold mb-2">{business.name}
-          {!business.verified && <LucideVerified fill="limegreen" className="text-white" />}
+        <h1 className="flex items-center text-3xl font-bold mb-2">
+          {business.name}{!business.verified && <LucideVerified fill="limegreen" className="text-white" />}
         </h1>
         <Badge className="w-fit  h-fit rounded-full">{business.category}</Badge>
       </div>

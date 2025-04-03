@@ -84,7 +84,7 @@ export default function SimpleFilterBar({ isHomepage = false }: { isHomepage: bo
               }}
             />
 
-            <Button className="absolute right-0 rounded-full h-[50px]  w-[150px]" onClick={handleSearch}>
+            <Button size={"default"} className="absolute right-0 top-0.4 h-[50px] rounded-full" onClick={handleSearch}>
               <Search className="h-5 w-5" /> Search 
             </Button>
           </div>

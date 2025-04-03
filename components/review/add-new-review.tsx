@@ -117,7 +117,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
         </div>
         <div>
           <p className="font-medium text-2xl pb-4">Write your review</p>
-          <Textarea  {...register("content")} placeholder="Write your review here..." cols={20} />
+          <textarea  {...register("content")} placeholder="Write your review here..." className="w-full rounded-md  border p-4" rows={12} />
           {errors.content && <FormErrorMessage msg={errors.content.message} />}
 
         </div>

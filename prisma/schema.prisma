@@ -102,6 +102,7 @@ model User {
 
 model Business{
   id String @id @default(uuid())
+  verified Boolean @default(false)
   name String
   description String
   category Category @default(OTHERS) 
@@ -121,6 +122,7 @@ model Business{
   images String[] 
   googleMapsUrl String?
   locationInfo String?
+  verifiedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

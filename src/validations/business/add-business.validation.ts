@@ -23,6 +23,7 @@ export const AddBusinessFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   website: z.string().url({ message: "Please enter a valid URL" }).optional(),
   hours: z.string().optional(),
+  googleMapsUrl: z.string(),
 
   // Owner Info
   ownerId: z.string().uuid(),

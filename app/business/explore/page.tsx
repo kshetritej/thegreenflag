@@ -1,6 +1,6 @@
 "use client"
 
-import ReviewCard from "@/components/molecules/display-card"
+import ReviewCard from "@/components/molecules/business-display-card"
 import SimpleFilterBar from "@/components/molecules/simple-filter-bar"
 import { Business } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
@@ -35,7 +35,7 @@ export default function Explore() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 p-2">
       <SimpleFilterBar isHomepage={false} />
 
       {isLoading ? (

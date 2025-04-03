@@ -5,27 +5,30 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import {
-  ThumbsUp,
-  Flag,
-  Share2,
-  Star,
+  Star, 
+  Lock,
   Heart,
   Info,
-  Clock,
-  MapPin,
-  Utensils,
   Wifi,
-  CreditCard,
-  ParkingMeterIcon as Parking,
-  Coffee,
   Accessibility,
-  Phone,
-  Globe,
-  Mail,
-  MessageSquare,
   Check,
   X,
   Cigarette,
+  LucideVerified,
+  ArrowUpDown,
+  Bell,
+  Clock,
+  Dog,
+  Flower2,
+  Luggage,
+  Package,
+  ParkingCircle,
+  Shield,
+  Shirt,
+  Snowflake,
+  Toilet,
+  TreePine,
+  Wallet,
 } from "lucide-react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
@@ -35,8 +38,10 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import AddNewReview from "@/components/review/add-new-review"
 import { cn } from "@/lib/utils"
-import { AiGeneratedBadge } from "../utils/aiGeneratedBadge"
-import ListReviews from "../review/list-reviews"
+import { AiGeneratedBadge } from "@/components/utils/aiGeneratedBadge"
+import ListReviews from "@/components/review/list-reviews"
+import { formatAmenityText } from "@/components/utils/formatAminity"
+import { useSession } from "next-auth/react"
 
 interface SentimentAnalysis {
   percentage: string
@@ -69,31 +74,36 @@ interface GroqResponse {
 }
 
 const amenityIconMap = {
-  wifi: { icon: Wifi, label: "Free WiFi" },
-  parking: { icon: Parking, label: "Parking Available" },
-  creditCard: { icon: CreditCard, label: "Credit Card Accepted" },
-  accessibility: { icon: Accessibility, label: "Wheelchair Accessible" },
-  coffee: { icon: Coffee, label: "Coffee Available" },
+  wifi: { icon: Wifi, label: "Free Wi-Fi" },
+  parking: { icon: ParkingCircle, label: "Parking Available" },
+  airConditioning: { icon: Snowflake, label: "Air Conditioning" },
+  frontDesk24Hours: { icon: Clock, label: "24-Hour Front Desk" },
+  petFriendly: { icon: Dog, label: "Pet Friendly" },
+  elevator: { icon: ArrowUpDown, label: "Elevator Access" },
+  disabledAccess: { icon: Accessibility, label: "Wheelchair Accessible" },
+  backyard: { icon: TreePine, label: "Backyard Area" },
   smokingArea: { icon: Cigarette, label: "Smoking Area" },
-  restaurant: { icon: Utensils, label: "Restaurant" },
-  phone: { icon: Phone, label: "Phone Service" },
-  website: { icon: Globe, label: "Website" },
-  email: { icon: Mail, label: "Email Contact" }
-} as const
+  laundry: { icon: Shirt, label: "Laundry Service" },
+  roomService: { icon: Bell, label: "Room Service" },
+  safe: { icon: Lock, label: "In-Room Safe" },
+  security: { icon: Shield, label: "Security Provided" },
+  atm: { icon: Wallet, label: "ATM Available" },
+  garden: { icon: Flower2, label: "Garden Area" },
+  luggageStorage: { icon: Luggage, label: "Luggage Storage" },
+  vendingMachine: { icon: Package, label: "Vending Machine" },
+  restrooms: { icon: Toilet, label: "Restrooms Available" }
+} as const;
+
 
 type AmenityKey = keyof typeof amenityIconMap
 
-const formatAmenityText = (amenity: string): string => {
-  return amenity
-    .replace(/([A-Z])/g, ' $1') // Add space before capital letters
-    .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
-    .trim()
-}
 
-export default function ReviewDetail({ business }: { business: Business }) {
+export default function BusinessDetail({ business }: { business: Business }) {
   const [summary, setSummary] = useState<GroqResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const session = useSession()
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -129,14 +139,16 @@ export default function ReviewDetail({ business }: { business: Business }) {
   )
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-2">{business.name}</h1>
-      <div className="flex items-center gap-2 text-gray-600 mb-6">
-        <span>{business.street}, {business.city},{business.state}, {business.country}, {business.postalCode}</span>
-        <span>•</span>
-        <span>{business.category}</span>
-        <span>•</span>
-        <span>{business.street} miles away</span>
+    <div className="p-4 max-w-4xl mx-auto py-8 px-4">
+      <div className="flex gap-4 items-center">
+        <h1 className="flex items-center gap-2 text-3xl font-bold mb-2">{business.name}
+          {!business.verified && <LucideVerified fill="limegreen" className="text-white" />}
+        </h1>
+        <Badge className="w-fit  h-fit rounded-full">{business.category}</Badge>
+      </div>
+      <div className="flex flex-col items-start sm:flex-row gap-2 text-gray-600 mb-6">
+        <span>{business.street}, {business.city},{business.state}, {business.country}</span>
+        <span> Miles away</span>
       </div>
 
       {/* Image Gallery Section */}
@@ -188,9 +200,9 @@ export default function ReviewDetail({ business }: { business: Business }) {
           </Avatar>
           <div>
             <div className="font-medium">Owned by {business.owner.name}</div>
-            <div className="text-sm text-gray-500">Established {business.establishedYear} • Verified business</div>
+            <div className="text-sm text-gray-500">Established {business.establishedYear} {!business.verified && <span> • Verified business </span>}</div>
+            <div className="text-sm text-gray-500">Added {new Date(business.createdAt).toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</div>
           </div>
-
         </div>
 
         <div className="text-gray-700 space-y-4">
@@ -233,8 +245,8 @@ export default function ReviewDetail({ business }: { business: Business }) {
               <ErrorMessage />
             ) : (
               <p className="text-gray-700 mb-4">
-                    {summary?.ai_summary || "No summary available"}
-                  </p>
+                {summary?.ai_summary || "No summary available"}
+              </p>
             )}
           </div>
 
@@ -331,74 +343,74 @@ export default function ReviewDetail({ business }: { business: Business }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div className="border rounded-lg p-4">
                 <div className="text-green-500 font-bold text-xl mb-2">
-                      {summary?.sentiment_analysis?.positive?.percentage ?? "0"}%
-                    </div>
-                    <div className="text-sm text-gray-600">Positive</div>
-                    <div className="mt-2 text-xs text-gray-500">
-                      Based on {summary?.sentiment_analysis?.positive?.reviews ?? "0"} reviews
-                    </div>
-                  </div>
-                  <div className="border rounded-lg p-4">
-                    <div className="text-yellow-500 font-bold text-xl mb-2">
-                      {summary?.sentiment_analysis?.neutral?.percentage ?? "0"}%
-                    </div>
-                    <div className="text-sm text-gray-600">Neutral</div>
-                    <div className="mt-2 text-xs text-gray-500">
-                      Based on {summary?.sentiment_analysis?.neutral?.reviews ?? "0"} reviews
-                    </div>
-                  </div>
-                  <div className="border rounded-lg p-4">
-                    <div className="text-red-500 font-bold text-xl mb-2">
-                      {summary?.sentiment_analysis?.negative?.percentage ?? "0"}%
-                    </div>
-                    <div className="text-sm text-gray-600">Negative</div>
-                    <div className="mt-2 text-xs text-gray-500">
-                      Based on {summary?.sentiment_analysis?.negative?.reviews ?? "0"} reviews
-                    </div>
-                  </div>
+                  {summary?.sentiment_analysis?.positive?.percentage ?? "0"}%
                 </div>
-
-                <div className="mt-6 border rounded-lg p-4">
-                  <h3 className="font-medium mb-3">Most Mentioned Words</h3>
-                  <div className="space-y-2">
-                    {summary?.most_mentioned_words?.positive?.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {summary.most_mentioned_words.positive.map((word, index) => (
-                          <Badge key={index} className="bg-green-100 text-green-800 hover:bg-green-200">
-                            {word}
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    {summary?.most_mentioned_words?.neutral?.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {summary.most_mentioned_words.neutral.map((word, index) => (
-                          <Badge key={index} className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
-                            {word}
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    {summary?.most_mentioned_words?.negative?.length &&
-                      summary.most_mentioned_words.negative[0] !== "none" ? (
-                      <div className="flex flex-wrap gap-2">
-                          {summary.most_mentioned_words.negative.map((word, index) => (
-                            <Badge key={index} className="bg-red-100 text-red-800 hover:bg-red-200">
-                              {word}
-                            </Badge>
-                          ))}
-                        </div>
-                    ) : null}
-
-                    {!summary?.most_mentioned_words?.positive?.length &&
-                      !summary?.most_mentioned_words?.neutral?.length &&
-                      !summary?.most_mentioned_words?.negative?.length && (
-                        <p className="text-gray-500">No frequently mentioned words found</p>
-                      )}
-                  </div>
+                <div className="text-sm text-gray-600">Positive</div>
+                <div className="mt-2 text-xs text-gray-500">
+                  Based on {summary?.sentiment_analysis?.positive?.reviews ?? "0"} reviews
                 </div>
+              </div>
+              <div className="border rounded-lg p-4">
+                <div className="text-yellow-500 font-bold text-xl mb-2">
+                  {summary?.sentiment_analysis?.neutral?.percentage ?? "0"}%
+                </div>
+                <div className="text-sm text-gray-600">Neutral</div>
+                <div className="mt-2 text-xs text-gray-500">
+                  Based on {summary?.sentiment_analysis?.neutral?.reviews ?? "0"} reviews
+                </div>
+              </div>
+              <div className="border rounded-lg p-4">
+                <div className="text-red-500 font-bold text-xl mb-2">
+                  {summary?.sentiment_analysis?.negative?.percentage ?? "0"}%
+                </div>
+                <div className="text-sm text-gray-600">Negative</div>
+                <div className="mt-2 text-xs text-gray-500">
+                  Based on {summary?.sentiment_analysis?.negative?.reviews ?? "0"} reviews
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 border rounded-lg p-4">
+              <h3 className="font-medium mb-3">Most Mentioned Words</h3>
+              <div className="space-y-2">
+                {summary?.most_mentioned_words?.positive?.length ? (
+                  <div className="flex flex-wrap gap-2">
+                    {summary.most_mentioned_words.positive.map((word, index) => (
+                      <Badge key={index} className="bg-green-100 text-green-800 hover:bg-green-200">
+                        {word}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : null}
+
+                {summary?.most_mentioned_words?.neutral?.length ? (
+                  <div className="flex flex-wrap gap-2">
+                    {summary.most_mentioned_words.neutral.map((word, index) => (
+                      <Badge key={index} className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+                        {word}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : null}
+
+                {summary?.most_mentioned_words?.negative?.length &&
+                  summary.most_mentioned_words.negative[0] !== "none" ? (
+                  <div className="flex flex-wrap gap-2">
+                    {summary.most_mentioned_words.negative.map((word, index) => (
+                      <Badge key={index} className="bg-red-100 text-red-800 hover:bg-red-200">
+                        {word}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : null}
+
+                {!summary?.most_mentioned_words?.positive?.length &&
+                  !summary?.most_mentioned_words?.neutral?.length &&
+                  !summary?.most_mentioned_words?.negative?.length && (
+                    <p className="text-gray-500">No frequently mentioned words found</p>
+                  )}
+              </div>
+            </div>
           </>
         )}
       </div>
@@ -421,27 +433,23 @@ export default function ReviewDetail({ business }: { business: Business }) {
       <Separator className="my-8" />
 
       <div className="mb-8">
-        <AddNewReview businessId={business.id} />
+        {session.status === "authenticated" &&
+          <AddNewReview businessId={business.id} />
+        }
       </div>
 
       {/* Individual Reviews */}
       <div className="space-y-8 mb-8">
         <h2 className="text-2xl font-semibold">Recent Reviews</h2>
+        {business.reviews.length === 0 && <p>No reviews yet!</p>}
         <ListReviews reviews={business.reviews} />
       </div>
 
       {/* Map Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Location</h2>
-        <div className="relative w-full h-[300px] rounded-lg overflow-hidden border">
-          <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-            <MapPin className="h-8 w-8 text-gray-400" />
-            <span className="sr-only">Map of Himalayan Cafe location</span>
-          </div>
-          <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-md">
-            <p className="font-medium">Lalitpur, Nepal</p>
-            <p className="text-sm text-gray-600">1.2 miles from city center</p>
-          </div>
+        <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
+          <div dangerouslySetInnerHTML={{ __html: business?.googleMapsUrl }} className="w-full" />
         </div>
         <p className="mt-3 text-gray-600 text-sm">
           Located in a quiet neighborhood in Lalitpur, just a short walk from Patan Durbar Square. The area is known for

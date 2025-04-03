@@ -67,6 +67,7 @@ export default function AddBusinessForm({ user }: { user: User }) {
       website: "",
       hours: "",
       mainImage: "",
+      googleMapsUrl: "",
       additionalImages: [],
       ownerId: user.id,
     },
@@ -483,6 +484,21 @@ export default function AddBusinessForm({ user }: { user: User }) {
                       <FormLabel>Website</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., https://himalayancafe.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+
+                <FormField
+                  control={form.control}
+                  name="googleMapsUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Google Maps Url (iframe)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., https://goo.gl/maps/1234567890/iframe" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

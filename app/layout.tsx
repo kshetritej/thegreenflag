@@ -3,7 +3,7 @@ import "./globals.css"
 import { Mona_Sans } from "next/font/google"
 import Providers from "@/components/providers/ClientProvider"
 import { EdgeStoreProvider } from "@/lib/edgestore"
-import { Toaster } from "sonner"
+import { Toaster } from "@/components/ui/sonner"
 
 const monaSans = Mona_Sans({
   variable: "--font-mona-sans",
@@ -26,7 +26,7 @@ export default async function RootLayout({
         <Providers>
           <EdgeStoreProvider>
         {children}
-            <Toaster />
+            <Toaster position="top-right" />
           </EdgeStoreProvider>
         </Providers>
       </body>

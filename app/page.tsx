@@ -1,7 +1,7 @@
 "use client"
 import Navbar from "@/components/common/navbar"
 import Header from "@/components/landing/header"
-import ReviewGrid from "@/components/templates/review-grid"
+import BusinessGrid from "@/components/templates/business-grid"
 
 export default function Home() {
 
@@ -9,7 +9,7 @@ export default function Home() {
     <div className="container mx-auto">
       <div>
         <Header />
-        <ReviewGrid />
+        <BusinessGrid/>
       </div>
     </div>
   )

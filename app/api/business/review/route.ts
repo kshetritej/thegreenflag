@@ -3,12 +3,13 @@ import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   const body = await req.json()
-  const { content, rating, authorId, businessId } = body
+  const { images, content, rating, authorId, businessId } = body
 
   const review = await prisma.review.create({
     data: {
       content,
       rating,
+      images,
       author: {
         connect: {
           id: authorId,

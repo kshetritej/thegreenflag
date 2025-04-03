@@ -6,6 +6,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import SimpleFilterBar from "../molecules/simple-filter-bar"
 import { Badge } from "../ui/badge"
+import { navLinks } from "../common/navbar"
+import Link from "next/link"
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -40,10 +42,21 @@ export default function Header() {
               }}
             />
 
-            <Button className="absolute right-0 rounded-full h-[50px]  w-[150px]" onClick={() => router.push(`/business/explore?search=${searchQuery}`)}>
+            <Button size={"default"} className="absolute right-0 rounded-full h-[50px]  w-[150px]" onClick={() => router.push(`/business/explore?search=${searchQuery}`)}>
               <Search className="h-5 w-5" /> Search 
             </Button>
           </div>
+        </div>
+        <div className="flex md:hidden gap-2 justify-center">
+          {navLinks.map((item) => {
+            return (
+              <Link href={item.href} key={item.href} className="font-medium">
+                <Button variant={'default'}>
+                  {item.name}
+                </Button>
+              </Link>
+            )
+          })}
         </div>
 
         <div className="mt-6 flex flex-wrap justify-center items-center gap-2">

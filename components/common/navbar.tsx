@@ -8,14 +8,13 @@ import { LandPlot, LucideUser } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { Button } from "../ui/button"
 
+export const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/business/find-jobs" }]
+
 export default function Navbar() {
   const session = useSession()
-  console.log("session", session)
-
-  const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/business/find-jobs" }]
 
   return (
-    <nav className="flex w-full justify-between p-4  items-center border-b">
+    <nav className="flex  container mx-auto justify-between p-4  items-center">
       <NavigationMenu className="flex justify-between w-full">
         <NavigationMenuItem className="list-none font-bold text-xl mr-8">
           <Link href={"/"} className="flex gap-1 items-center">
@@ -26,7 +25,7 @@ export default function Navbar() {
           </Link>
         </NavigationMenuItem>
         <NavigationMenuList>
-          <NavigationMenuItem className="flex gap-4">
+          <NavigationMenuItem className="hidden md:flex gap-4">
             {navLinks.map((item) => {
               return (
                 <NavigationMenuLink href={item.href} key={item.href} className="font-medium">
@@ -41,7 +40,9 @@ export default function Navbar() {
       {session.status === "authenticated" && 
         <DropdownMenu>
         <DropdownMenuTrigger className="flex gap-2 items-center">
+            <p className="hidden md:block">
         {session.data?.user?.name}
+            </p>
           <Avatar>
             {session?.data?.user?.image &&
               <AvatarImage src={session?.data?.user?.image} />

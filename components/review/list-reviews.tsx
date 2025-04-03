@@ -11,6 +11,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
+import Link from "next/link"
 
 export default function ListReviews({ reviews }: { reviews: Review[] }) {
   const session = useSession();
@@ -65,13 +67,22 @@ export default function ListReviews({ reviews }: { reviews: Review[] }) {
                 <Star className="w-4 h-4 fill-gray-800 text-gray-800" />
               </div>
             </div>
+            <div className="grid md:grid-col-3 lg:grid-cols-4 gap-4">
+              {review.images.map((image, index) => (
+                <Link href={image} key={index}>
+                  <Image width={100} height={100} key={index} src={image} alt={`Review Image ${index}`} className="w-full h-auto mb-4" />
+                </Link>
+              ))}
+            </div>
 
             <p className="text-gray-700 mb-4">
               {review.content}
             </p>
 
             <div className="flex items-center gap-4">
-              <Button variant={'ghost'} size="sm" className="gap-2">
+              <Button variant={'ghost'} size="sm" className="gap-2" 
+              onClick={() => toast.success("Thank you for your feedback!")}
+              >
                 <ThumbsUp className="w-4 h-4" />
                 Helpful 
               </Button>

@@ -1,4 +1,4 @@
-import ReviewDetail from "@/components/pages/review-detail"
+import BusinessDetail from "@/components/pages/business-detail"
 import prisma from "@/prisma/prismaClient"
 
 export default async function BusinessPage({ params }: { params: { id: string } }) {
@@ -21,7 +21,7 @@ export default async function BusinessPage({ params }: { params: { id: string } 
 
   return (
     <div>
-      <ReviewDetail business={business} />
+      <BusinessDetail business={business} />
     </div>
   )
 }

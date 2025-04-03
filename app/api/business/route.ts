@@ -32,8 +32,9 @@ export async function GET(req: NextRequest) {
       category: true,
       street: true,
       city: true,
+      owner: true,
       reviews: {
-        select: { rating: true }
+        select: { rating: true, author: true }
       },
     }
   });

@@ -1,5 +1,3 @@
-import ReviewCard from "../molecules/business-display-card"
-import SimpleFilterBar from "../molecules/simple-filter-bar"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { Business } from "@prisma/client"

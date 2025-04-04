@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { LucideBuilding2, LucideMail, LucidePhone, LucideRocket, LucideStar, LucideUser } from "lucide-react"
+import { LucideBuilding2, LucideMail, LucidePhone, LucideRocket, LucideStar, LucideTrello, LucideUser } from "lucide-react"
 import ReviewCard from "../molecules/business-display-card"
 
 export default async function UserProfile() {
@@ -41,8 +41,9 @@ export default async function UserProfile() {
 
   return (
     <Card className="border-none container mx-auto">
-      <CardHeader>
+      <CardHeader className="flex justify-between items-center">
         <CardTitle className="text-3xl font-bold">Profile</CardTitle>
+        <Button size={"default"}><LucideTrello/> Manage Businesses</Button>
       </CardHeader>
       <CardContent className="flex justify-between items-center gap-4">
         <div className="flex flex-col items-start gap-4 space-y-4">

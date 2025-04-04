@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function POST(req: NextRequest) {
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY, dangerouslyAllowBrowser: true });
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
   const { prompt } = await req.json()
 
   const instructions = `Summarize this business and do the analysis of the review, based on this JSON data :${prompt} and return the summary in a JSON format

@@ -4,7 +4,7 @@ import { LandPlot } from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="p-4 bg-foreground-accent border-t">
+    <footer className="p-4 bg-foreground-accent border-t bg-lime-100">
       <div className="container mx-auto py-12">
         <div className="flex flex-col md:flex-row justify-between items-start mb-8">
           <div className="flex items-center gap-2 mb-6 md:mb-0">

@@ -14,7 +14,7 @@ export default function Navbar() {
   const session = useSession()
 
   return (
-    <nav className="flex  container mx-auto justify-between p-4  items-center">
+    <nav className="flex mx-auto container justify-between p-4  items-center">
       <NavigationMenu className="flex justify-between w-full">
         <NavigationMenuItem className="list-none font-bold text-xl mr-8">
           <Link href={"/"} className="flex gap-1 items-center">

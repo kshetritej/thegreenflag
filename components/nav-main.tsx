@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
 export function NavMain({
   items,
@@ -34,9 +35,9 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
+          item.items ?
           <Collapsible
             key={item.title}
             asChild
@@ -66,6 +67,15 @@ export function NavMain({
               </CollapsibleContent>
             </SidebarMenuItem>
           </Collapsible>
+            :
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild size={'lg'}>
+                <Link href={item.url}>
+                  {item.icon && <item.icon className="text-green-500" />}
+                  <span className="">{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
         ))}
       </SidebarMenu>
     </SidebarGroup>

@@ -103,6 +103,7 @@ model User {
 model Business{
   id String @id @default(uuid())
   verified Boolean @default(false)
+  logo String?
   name String
   description String
   category Category @default(OTHERS) 

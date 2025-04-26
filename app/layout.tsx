@@ -1,12 +1,12 @@
 "use client"
 
-import type { Metadata } from "next"
 import "./globals.css"
 import { Mona_Sans } from "next/font/google"
 import { EdgeStoreProvider } from "@/lib/edgestore"
 import { Toaster } from "@/components/ui/sonner"
 import { SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const monaSans = Mona_Sans({
   variable: "--font-mona-sans",
@@ -28,6 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={monaSans.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
         <SessionProvider>
           <QueryClientProvider client={queryClient}>
           <EdgeStoreProvider>
@@ -36,6 +42,7 @@ export default function RootLayout({
             </EdgeStoreProvider>
           </QueryClientProvider>
         </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

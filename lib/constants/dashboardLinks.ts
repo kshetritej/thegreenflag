@@ -1,11 +1,10 @@
 import {
+  Building,
   CalendarClock,
-  GalleryVerticalEnd,
   HandCoins,
   LayoutDashboard,
   Rocket,
   Settings2,
-  Star,
 } from "lucide-react"
 
 export const dashboardLinks = {
@@ -16,14 +15,9 @@ export const dashboardLinks = {
       icon: LayoutDashboard
     },
     {
-      title: "Media Library",
-      url: "/dashboard/manage-media",
-      icon: GalleryVerticalEnd
-    },
-    {
-      title: "Reviews",
-      url: "/dashboard/reviews",
-      icon: Star
+      title: "Businesses",
+      url: "/dashboard/businesses",
+      icon: Building
     },
     {
       title: "Tips and Earnings",

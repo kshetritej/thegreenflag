@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prismaClient";
 import { Category } from "@prisma/client";
-import { getServerSession } from "next-auth";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -26,17 +25,12 @@ export async function GET(req: NextRequest) {
     orderBy: {
       createdAt: "desc"
     },
-    select: {
-      id: true,
-      name: true,
-      mainImage: true,
-      category: true,
-      street: true,
-      city: true,
-      owner: true,
+    include: {
       reviews: {
-        select: { rating: true, author: true }
-      },
+        include: {
+          author: true
+        }
+      }
     }
   });
   return NextResponse.json(businesses);

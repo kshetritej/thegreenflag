@@ -40,8 +40,7 @@ export default function RatingComponent({
     <div className="max-w-3xl mx-auto py-8 px-4">
       <div className="flex flex-col items-center text-center mb-8">
         <div className="flex items-center justify-center mb-2">
-          <div className="text-gray-500 rotate-90 mr-3">
-            {/* Simplified laurel wreath left */}
+          <div className="rotate-90 mr-3">
             <div className="flex flex-col gap-1">
               <div className="w-2 h-2 rounded-full bg-gray-400"></div>
               <div className="w-2 h-2 rounded-full bg-gray-400"></div>
@@ -51,8 +50,7 @@ export default function RatingComponent({
 
           <span className="text-6xl font-bold">{overallRating}</span>
 
-          <div className="text-gray-500 -rotate-90 ml-3">
-            {/* Simplified laurel wreath right */}
+          <div className="-rotate-90 ml-3">
             <div className="flex flex-col gap-1">
               <div className="w-2 h-2 rounded-full bg-gray-400"></div>
               <div className="w-2 h-2 rounded-full bg-gray-400"></div>
@@ -62,7 +60,7 @@ export default function RatingComponent({
         </div>
 
         <h3 className="text-xl font-semibold mb-2">Top rated</h3>
-        <p className="text-gray-600 max-w-md">
+        <p className="max-w-md">
           {reviewSummary}
         </p>
       </div>
@@ -71,43 +69,43 @@ export default function RatingComponent({
         <div className="flex flex-col gap-2">
           <div className="font-medium">Overall rating</div>
           {renderRatingBar(overallRating)}
-          <div className="text-sm text-gray-500">{reviewCount} reviews</div>
+          <div className="text-sm">{reviewCount} reviews</div>
         </div>
 
         <div className="flex flex-col items-center">
           <div className="font-medium">Service</div>
           <div className="text-xl font-semibold my-2">{serviceRating}</div>
-          <ThumbsUp className="w-6 h-6 text-gray-600" />
+          <ThumbsUp className="w-6 h-6" />
         </div>
 
         <div className="flex flex-col items-center">
           <div className="font-medium">Quality</div>
           <div className="text-xl font-semibold my-2">{qualityRating}</div>
-          <CheckCircle className="w-6 h-6 text-gray-600" />
+          <CheckCircle className="w-6 h-6" />
         </div>
 
         <div className="flex flex-col items-center">
           <div className="font-medium">Atmosphere</div>
           <div className="text-xl font-semibold my-2">{atmosphereRating}</div>
-          <Star className="w-6 h-6 text-gray-600" />
+          <Star className="w-6 h-6" />
         </div>
 
         <div className="flex flex-col items-center">
           <div className="font-medium">Responsiveness</div>
           <div className="text-xl font-semibold my-2">{responsiveness}</div>
-          <MessageSquare className="w-6 h-6 text-gray-600" />
+          <MessageSquare className="w-6 h-6" />
         </div>
 
         <div className="flex flex-col items-center">
           <div className="font-medium">Location</div>
           <div className="text-xl font-semibold my-2">{location}</div>
-          <MapPin className="w-6 h-6 text-gray-600" />
+          <MapPin className="w-6 h-6" />
         </div>
 
         <div className="flex flex-col items-center">
           <div className="font-medium">Value</div>
           <div className="text-xl font-semibold my-2">{value}</div>
-          <DollarSign className="w-6 h-6 text-gray-600" />
+          <DollarSign className="w-6 h-6" />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Share2, Flag, ThumbsUp, Trash } from "lucide-react"
+import { Flag, ThumbsUp, Trash, LucideReply } from "lucide-react"
 import { Star } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
@@ -13,8 +13,12 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
+import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogTrigger, DialogClose, DialogFooter } from "../ui/dialog"
+import { Textarea } from "../ui/textarea"
+import { FieldValues } from "react-hook-form"
+import { useForm } from "react-hook-form"
 
-export default function ListReviews({ reviews }: { reviews: Review[] }) {
+export default function ListReviews({ reviews, dashboard }: { reviews: Review[], dashboard?: boolean }) {
   const session = useSession();
   const userId = session.data?.user?.id
   const queryClient = useQueryClient()
@@ -29,7 +33,7 @@ export default function ListReviews({ reviews }: { reviews: Review[] }) {
     }),
     mutationKey: ["deleteReview"],
     onSuccess: () => {
-      toast.success("Review deleted successfully")
+      toast.success("Review removed successfully")
       queryClient.invalidateQueries({ queryKey: ["reviews"] })
       router.refresh()
     },
@@ -37,9 +41,28 @@ export default function ListReviews({ reviews }: { reviews: Review[] }) {
       toast.error("Failed to delete review")
     }
   })
+
+  const { mutate: replyReview } = useMutation({
+    mutationFn: async (data: { content: string, authorId: string, reviewId: string }) => await axios.post(`/api/business/review/reply`, data),
+    onSuccess: () => {
+      toast.success("Reply added successfully")
+      queryClient.invalidateQueries({ queryKey: ["reviews"] })
+      router.refresh()
+    },
+    onError: () => {
+      toast.error("Failed to add reply")
+    }
+  })
+
+  const { register, handleSubmit } = useForm<FieldValues>({
+    defaultValues: {
+      content: ""
+    }
+  })
+
   return (
     <div className="space-y-6">
-      {reviews.map((review) => (
+      {reviews?.map((review) => (
         <div key={review.id}>
           <div className="border rounded-lg p-6" key={review.id}>
             <div className="flex justify-between mb-4">
@@ -64,9 +87,13 @@ export default function ListReviews({ reviews }: { reviews: Review[] }) {
               </div>
               <div className="flex items-center">
                 <span className="font-medium mr-1">{review.rating}</span>
-                <Star className="w-4 h-4 fill-gray-800 text-gray-800" />
+                <Star className="w-4 h-4 fill-gray-800" />
               </div>
             </div>
+
+            <p className="mb-4">
+              {review.content}
+            </p>
             <div className="grid md:grid-col-3 lg:grid-cols-4 gap-4">
               {review.images.map((image, index) => (
                 <Link href={image} key={index}>
@@ -75,25 +102,44 @@ export default function ListReviews({ reviews }: { reviews: Review[] }) {
               ))}
             </div>
 
-            <p className="text-gray-700 mb-4">
-              {review.content}
-            </p>
-
             <div className="flex items-center gap-4">
-              <Button variant={'ghost'} size="sm" className="gap-2" 
+              <Button variant={'ghost'} className="gap-2" 
               onClick={() => toast.success("Thank you for your feedback!")}
               >
                 <ThumbsUp className="w-4 h-4" />
                 Helpful 
               </Button>
-              <Button variant="ghost" size="sm" className="gap-2">
+              <Button variant="ghost" className="gap-2">
                 <Flag className="w-4 h-4" />
                 Report
               </Button>
-              {userId === review.authorId && (
+              {dashboard &&
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="gap-2"><LucideReply />
+                      Reply
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Reply to {review.author?.name}</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit((data) => replyReview({ content: data.content, authorId: userId, reviewId: review.id }))} className="space-y-4">
+                      <Textarea {...register("content")} placeholder="Reply to the review" />
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button type="submit">Reply</Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              }
+              {(userId === review.authorId || dashboard) && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="sm" className="gap-2">
+                    <Button variant="ghost" className="gap-2">
                       <Trash className="w-4 h-4" />
                       Delete
                     </Button>

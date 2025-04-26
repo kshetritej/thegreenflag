@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Rating from "@/components/review/rating"
@@ -50,6 +49,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
         });
         setImageUrls((prev) => [...prev, res.url]);
       } catch (err) {
+        console.log("ERROR MESSAGE:", err)
         updateFileProgress(addedFileState.key, 'ERROR');
         toast.error("Failed to upload image");
       }

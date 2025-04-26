@@ -9,7 +9,7 @@ export default function OwnerInfoCard({owner, establishedYear}: {owner: User, es
         <div className="flex flex-col md:flex-row gap-6">
           <div className="md:w-1/4 flex flex-col items-center">
             <Avatar className="h-24 w-24 mb-3">
-              <AvatarImage src={owner?.profileImage ?? ""} alt="Owner" />
+              <AvatarImage src={owner?.profileImage ?? ""} alt="Owner" className="object-cover" />
               <AvatarFallback>{owner?.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <h3 className="font-medium text-center">{owner?.name}</h3>
@@ -17,26 +17,26 @@ export default function OwnerInfoCard({owner, establishedYear}: {owner: User, es
           </div>
 
           <div className="md:w-3/4">
-            <p className="text-gray-700 mb-4">
+            <p className=" mb-4">
               {owner?.bio}
             </p>
 
             <div className="mt-6 space-y-2">
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">{owner?.phone}</span>
+                <Phone className="h-4 w-4  " />
+                <span className="">{owner?.phone}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">Response time: Within 1 hour</span>
+                <Clock className="h-4 w-4  " />
+                <span className="">Response time: Within 1 hour</span>
               </div>
               <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">{owner?.languages}</span>
+                <Globe className="h-4 w-4  " />
+                <span className="">{owner?.languages}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-700">{owner?.email}</span>
+                <Mail className="h-4 w-4  " />
+                <span className="">{owner?.email}</span>
               </div>
             </div>
           </div>

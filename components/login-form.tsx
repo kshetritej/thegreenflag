@@ -33,6 +33,7 @@ export function LoginForm({
       router.push("/") // Redirect to home page after successful login
       router.refresh()
     } catch (error) {
+      console.log("error:", error)
       setError("Something went wrong")
     }
   }

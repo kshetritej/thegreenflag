@@ -1,23 +1,24 @@
 "use client";
 
 import { AppSidebar } from "@/components/app-sidebar";
-import Navbar from "@/components/common/navbar";
-import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Breadcrumb, BreadcrumbItem } from "@/components/ui/breadcrumb";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const location = usePathname()
   return (
     <div>
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <div className="flex p-4 bg-sidebar">
-            {window.location.pathname.split("/").map((p) => {
+          <div className="flex p-4 bg-sidebar items-center gap-2">
+            <SidebarTrigger />
+            {location.split("/").map((p, index) => {
               return (
-                <div className="flex gap-4">
+                <div className="flex gap-4" key={index}>
                   <Breadcrumb>
-                    <BreadcrumbItem className="list-none">{p.charAt(0).toUpperCase() + p.slice(1)} /</BreadcrumbItem>
+                    <BreadcrumbItem className="list-none">{p.charAt(0).toUpperCase() + p.slice(1)} </BreadcrumbItem>
                   </Breadcrumb>
                 </div>
               )

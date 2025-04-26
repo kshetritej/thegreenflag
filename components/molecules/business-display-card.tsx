@@ -1,10 +1,9 @@
 "use client"
 
-import { Heart, LucideStar, Pencil, Trash } from "lucide-react"
+import { LucideStar } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
@@ -25,17 +24,24 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
       toast.success(res.message)
       router.refresh()
     },
-    onError: (err) => toast.error("Something went wrong!")
+    onError: (err) => {
+      console.log("ERROR:", err)
+      toast.error("Something went wrong!")
+    }
   })
 
   return (
     <>
       {business &&
-        <Card className="p-2 border-none shadow-sm relative" onClick={() => { !myBusiness && router.push(`/business/${business.id}`) }}>
+        <Card className="p-2 border-none relative"
+          onClick={() => {
+            router.push(`/business/${business.id}`)
+          }}
+        >
           <div className="relative aspect-square">
-            <Image src={business?.mainImage || "/placeholder.svg"} alt={business?.name} fill className="object-cover rounded-lg" />
-            {business.reviews.length > 1 && (
-              <Badge variant="secondary" className="absolute top-3 left-3 bg-white text-black font-medium">
+            <Image src={business?.mainImage || "/placeholder.svg"} alt={business?.name} fill className="object-cover rounded-lg border" />
+            {business?.reviews?.length > 1 && (
+              <Badge variant="secondary" className="absolute top-3 left-3 font-medium">
                 Top Rated
               </Badge>
             )}
@@ -51,20 +57,20 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
               </div>
             </div>
 
-            <div className="text-gray-500 text-sm mt-1 flex flex-col gap-0.5">
+            <div className="text-sm mt-1 flex flex-col gap-0.5">
               <span>{business.street}, {business.city}</span>
             </div>
           </CardContent>
           {myBusiness &&
             <CardFooter className="flex gap-4 p-0">
-              <Button variant="secondary" size={'default'} className=" hover:cursor-pointer">
+              {/* <Button variant="secondary" size={'default'} className=" hover:cursor-pointer">
                 <Pencil className="h-4 w-4" /> Edit
-              </Button>
+              </Button> */}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive" size={'default'} className=" hover:cursor-pointer">
+                  {/* <Button variant="destructive" size={'default'} className=" hover:cursor-pointer">
                     <Trash className="h-4 w-4" /> Delete
-                  </Button>
+                  </Button> */}
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>

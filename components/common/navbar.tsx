@@ -4,10 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { LandPlot, LucideUser } from "lucide-react"
+import { LandPlot, LucideLogOut, LucideUser } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { Button } from "../ui/button"
-
+import { ModeToggle } from "../atoms/mode-toggle"
 export const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/business/find-jobs" }]
 
 export default function Navbar() {
@@ -38,34 +38,41 @@ export default function Navbar() {
       </NavigationMenu>
 
       {session.status === "authenticated" && 
+        <div className="flex gap-2 items-center">
         <DropdownMenu>
-        <DropdownMenuTrigger className="flex gap-2 items-center">
-            <p className="hidden md:block">
-        {session.data?.user?.name}
-            </p>
-          <Avatar>
-            {session?.data?.user?.image &&
-              <AvatarImage src={session?.data?.user?.image} />
-            }
-            {!session?.data?.user?.image &&
-              <AvatarFallback>
+            <DropdownMenuTrigger className="flex gap-2 items-center" asChild>
+              <Button variant={"outline"} size={'icon'}>
                 <LucideUser className="size-4" />
-              </AvatarFallback>
-            }
-          </Avatar>
+              </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[240px]">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                <p className="uppercase">
+                  {session.data?.user?.name}
+                </p>
+                <p>{session.data?.user?.email}</p>
+              </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <Link href={"/profile"}>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Button variant={"ghost"} className="w-full flex gap-2 items-center justify-between px-0">
+                    <p className="uppercase">Profile</p>
+                    <LucideUser className="size-4" />
+                  </Button>
+                </DropdownMenuItem>
           </Link>
             {session.status === "authenticated" && (
-              <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut()}>
+                  <Button variant={"ghost"} className="w-full flex gap-2 items-center justify-between px-0">
+                    <p className="uppercase">Logout</p>
+                    <LucideLogOut className="size-4" />
+                  </Button>
+                </DropdownMenuItem>
           )}
-          <DropdownMenuItem><Link href={"/business"}>List a Business</Link></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+          <ModeToggle />
+        </div>
       }
 
       {!session || session.status === "unauthenticated"  &&
@@ -76,6 +83,7 @@ export default function Navbar() {
           <Button>
             <Link href={"/login"}>Login</Link>
           </Button>
+          <ModeToggle />
         </div>
       }
 

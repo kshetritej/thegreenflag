@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const isEnglishSpeaking = body.isEnglishSpeaking ? ["English"] : []
 
   const { isEnglishSpeaking: removed, ...restOfBody } = body;
-
+  console.log('removed', removed)
   const newUser = await prisma.user.create({
     data: {
       ...restOfBody,

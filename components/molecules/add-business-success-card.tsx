@@ -13,7 +13,7 @@ export default function AddBusinessSuccessCard() {
             </div>
             <CardTitle className="text-center text-2xl">Business Added Successfully!</CardTitle>
             <CardDescription className="text-center">
-              Your business has been submitted for review. We'll notify you once it's approved.
+            Your business has been submitted for review. We&apos;ll notify you once it&apos;s approved.
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-center pt-6">

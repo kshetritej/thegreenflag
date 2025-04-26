@@ -152,7 +152,7 @@ model Review{
   helpful Int @default(0)
   reports Int @default(0)
 
-  Replies Reply[]
+  replies Reply[]
 }
 
 model Reply{

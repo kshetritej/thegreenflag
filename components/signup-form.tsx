@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useForm } from "react-hook-form"
 import axios from "axios"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { UserPlus, Github, ArrowRight, Loader2 } from "lucide-react"
+import { Github, Loader2 } from "lucide-react"
 import { SingleImageDropzone } from "./edgestore/SingleImageDropzone"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -63,11 +63,11 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
     mutationFn: async (data: FormData) => {
       await axios.post("/api/signup", data)
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Account created successfully, sign in to continue")
       router.push("/login")
     },
-    onError: (error) => toast.error("Something went wrong"),
+    onError: () => toast.error("Something went wrong"),
   }) 
 
 

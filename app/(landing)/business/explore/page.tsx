@@ -28,8 +28,8 @@ export default function Explore() {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <h2 className="text-xl font-semibold text-gray-900">Something went wrong</h2>
-        <p className="text-gray-600">Failed to load businesses. Please try again later.</p>
+        <h2 className="text-xl font-semibold ">Something went wrong</h2>
+        <p className="">Failed to load businesses. Please try again later.</p>
       </div>
     )
   }
@@ -43,9 +43,9 @@ export default function Explore() {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : businesses?.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-          <h2 className="text-xl font-semibold text-gray-900">No businesses found</h2>
-          <p className="text-gray-600 mt-2">
+          <div className="h-1/2 flex flex-col items-center justify-center min-h-[400px] text-center">
+          <h2 className="text-xl font-semibold ">No businesses found</h2>
+          <p className="mt-2">
             {search
               ? `No results found for "${search}"`
               : category
@@ -54,7 +54,7 @@ export default function Explore() {
           </p>
         </div>
       ) : (
-        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+            <div className="container h-screen mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
           {businesses?.map((business: Business) => (
             <div key={business.id}>
               <ReviewCard business={business} />

@@ -98,7 +98,7 @@ const amenityIconMap = {
 type AmenityKey = keyof typeof amenityIconMap
 
 
-export default function BusinessDetail({ business }: { business: Business }) {
+export default function BusinessDetail({ business }: { business?: Business }) {
   const [summary, setSummary] = useState<GroqResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -142,13 +142,13 @@ export default function BusinessDetail({ business }: { business: Business }) {
     <div className="p-4 max-w-4xl mx-auto py-8 px-4">
       <div className="flex gap-4 items-center">
         <h1 className="flex items-center text-3xl font-bold mb-2">
-          {business.name}{!business.verified && <LucideVerified fill="limegreen" className="text-white" />}
+          {business?.name}{!business?.verified && <LucideVerified fill="limegreen" className="text-white" />}
         </h1>
-        <Badge className="w-fit  h-fit rounded-full">{business.category}</Badge>
+        <Badge className="w-fit  h-fit rounded-full">{business?.category}</Badge>
       </div>
-      <div className="flex flex-col items-start sm:flex-row gap-2 text-gray-600 mb-6">
-        <span>{business.street}, {business.city},{business.state}, {business.country}</span>
-        <span> Miles away</span>
+      <div className="flex flex-col items-start sm:flex-row gap-2  mb-6">
+        <span>{business?.street}, {business?.city},{business?.state}, {business?.country}</span>
+        {/* <span> Miles away</span> */}
       </div>
 
       {/* Image Gallery Section */}
@@ -156,8 +156,8 @@ export default function BusinessDetail({ business }: { business: Business }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 rounded-lg overflow-hidden">
           <div className="col-span-2 relative aspect-[4/3]">
             <Image
-              src={business.mainImage}
-              alt={business.name}
+              src={business?.mainImage}
+              alt={business?.name}
               fill
               className="object-cover"
             />
@@ -165,16 +165,16 @@ export default function BusinessDetail({ business }: { business: Business }) {
           <div className="hidden md:grid grid-rows-2 gap-2">
             <div className="relative">
               <Image
-                src={business.images[0]}
-                alt={business.name}
+                src={business?.images[0]}
+                alt={business?.name}
                 fill
                 className="object-cover"
               />
             </div>
             <div className="relative">
               <Image
-                src={business.images[1] ?? business.mainImage}
-                alt={business.name}
+                src={business?.images[1] ?? business?.mainImage}
+                alt={business?.name}
                 fill
                 className="object-cover"
               />
@@ -183,7 +183,6 @@ export default function BusinessDetail({ business }: { business: Business }) {
           <Button
             variant="outline"
             size="icon"
-            className="absolute top-4 right-4 rounded-full bg-white hover:bg-white/90 text-black"
           >
             <Heart className="h-5 w-5" />
           </Button>
@@ -192,22 +191,22 @@ export default function BusinessDetail({ business }: { business: Business }) {
 
       {/* Owner Description Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">About {business.name}</h2>
+        <h2 className="text-2xl font-semibold mb-4">About {business?.name}</h2>
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={business.owner.profileImage} alt="Owner" />
-            <AvatarFallback>{business.owner.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={business?.owner?.profileImage} alt="Owner" />
+            <AvatarFallback>{business?.owner?.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">Owned by {business.owner.name}</div>
-            <div className="text-sm text-gray-500">Established {business.establishedYear} {!business.verified && <span> • Verified business </span>}</div>
-            <div className="text-sm text-gray-500">Added {new Date(business.createdAt).toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</div>
+            <div className="font-medium">Owned by {business?.owner?.name}</div>
+            {/* <div className="text-sm">Established {business?.establishedYear} {!business?.verified && <span> • Verified business </span>}</div> */}
+            <div className="text-sm ">Added {new Date(business?.createdAt).toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</div>
           </div>
         </div>
 
-        <div className="text-gray-700 space-y-4">
+        <div className="space-y-4">
           <p>
-            {business.description}
+            {business?.description}
           </p>
         </div>
       </div>
@@ -216,13 +215,13 @@ export default function BusinessDetail({ business }: { business: Business }) {
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Amenities</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {business.amenities.map((amenity) => {
+          {business?.amenities.map((amenity) => {
             const amenityKey = amenity.toLowerCase().replace(/\s+/g, '') as AmenityKey
             const IconComponent = amenityIconMap[amenityKey]?.icon || Info
 
             return (
-              <div key={amenity} className="flex items-center gap-2 text-gray-700">
-                <IconComponent className="h-5 w-5 text-gray-600 flex-shrink-0" />
+              <div key={amenity} className="flex items-center gap-2 ">
+                <IconComponent className="h-5 w-5 flex-shrink-0" />
                 <span className="text-sm">
                   {amenityIconMap[amenityKey]?.label || formatAmenityText(amenity)}
                 </span>
@@ -244,13 +243,13 @@ export default function BusinessDetail({ business }: { business: Business }) {
             ) : error ? (
               <ErrorMessage />
             ) : (
-              <p className="text-gray-700 mb-4">
+                  <p className="mb-4">
                 {summary?.ai_summary || "No summary available"}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg min-w-[140px]">
+          <div className="flex flex-col items-center justify-center p-4 border rounded-lg min-w-[140px]">
             <div className="text-3xl font-bold">
               {summary?.rating_analysis?.overall_rating || "N/A"}
             </div>
@@ -262,12 +261,12 @@ export default function BusinessDetail({ business }: { business: Business }) {
                     "h-4 w-4",
                     star <= (summary?.rating_analysis?.overall_rating || 0)
                       ? "fill-yellow-400 text-yellow-400"
-                      : "fill-gray-200 text-gray-200"
+                      : "fill-gray-200"
                   )}
                 />
               ))}
             </div>
-            <div className="text-sm text-gray-600 font-medium">AI Rating</div>
+            <div className="text-sm font-medium">AI Rating</div>
           </div>
         </div>
       </div>
@@ -345,8 +344,8 @@ export default function BusinessDetail({ business }: { business: Business }) {
                 <div className="text-green-500 font-bold text-xl mb-2">
                   {summary?.sentiment_analysis?.positive?.percentage ?? "0"}%
                 </div>
-                <div className="text-sm text-gray-600">Positive</div>
-                <div className="mt-2 text-xs text-gray-500">
+                    <div className="text-sm">Positive</div>
+                    <div className="mt-2 text-xs">
                   Based on {summary?.sentiment_analysis?.positive?.reviews ?? "0"} reviews
                 </div>
               </div>
@@ -354,8 +353,8 @@ export default function BusinessDetail({ business }: { business: Business }) {
                 <div className="text-yellow-500 font-bold text-xl mb-2">
                   {summary?.sentiment_analysis?.neutral?.percentage ?? "0"}%
                 </div>
-                <div className="text-sm text-gray-600">Neutral</div>
-                <div className="mt-2 text-xs text-gray-500">
+                    <div className="text-sm">Neutral</div>
+                    <div className="mt-2 text-xs">
                   Based on {summary?.sentiment_analysis?.neutral?.reviews ?? "0"} reviews
                 </div>
               </div>
@@ -363,8 +362,8 @@ export default function BusinessDetail({ business }: { business: Business }) {
                 <div className="text-red-500 font-bold text-xl mb-2">
                   {summary?.sentiment_analysis?.negative?.percentage ?? "0"}%
                 </div>
-                <div className="text-sm text-gray-600">Negative</div>
-                <div className="mt-2 text-xs text-gray-500">
+                    <div className="text-sm">Negative</div>
+                    <div className="mt-2 text-xs">
                   Based on {summary?.sentiment_analysis?.negative?.reviews ?? "0"} reviews
                 </div>
               </div>
@@ -407,7 +406,7 @@ export default function BusinessDetail({ business }: { business: Business }) {
                 {!summary?.most_mentioned_words?.positive?.length &&
                   !summary?.most_mentioned_words?.neutral?.length &&
                   !summary?.most_mentioned_words?.negative?.length && (
-                    <p className="text-gray-500">No frequently mentioned words found</p>
+                      <p>No frequently mentioned words found</p>
                   )}
               </div>
             </div>
@@ -434,15 +433,15 @@ export default function BusinessDetail({ business }: { business: Business }) {
 
       <div className="mb-8">
         {session.status === "authenticated" &&
-          <AddNewReview businessId={business.id} />
+          <AddNewReview businessId={business?.id} />
         }
       </div>
 
       {/* Individual Reviews */}
       <div className="space-y-8 mb-8">
         <h2 className="text-2xl font-semibold">Recent Reviews</h2>
-        {business.reviews.length === 0 && <p>No reviews yet!</p>}
-        <ListReviews reviews={business.reviews} />
+        {business?.reviews?.length === 0 && <p>No reviews yet!</p>}
+        <ListReviews reviews={business?.reviews} />
       </div>
 
       {/* Map Section */}
@@ -451,14 +450,14 @@ export default function BusinessDetail({ business }: { business: Business }) {
         <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
           <div dangerouslySetInnerHTML={{ __html: business?.googleMapsUrl }} className="w-full" />
         </div>
-        <p className="mt-3 text-gray-600 text-sm">
+        <p className="mt-3 text-sm">
           Located in a quiet neighborhood in Lalitpur, just a short walk from Patan Durbar Square. The area is known for
           its traditional architecture and cultural attractions.
         </p>
       </div>
 
       {/* Owner Details */}
-      <OwnerInfoCard owner={business.owner} establishedYear={business.establishedYear} />
+      <OwnerInfoCard owner={business?.owner} establishedYear={business?.establishedYear} />
     </div>
   )
 }

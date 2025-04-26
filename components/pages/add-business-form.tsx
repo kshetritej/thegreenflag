@@ -75,10 +75,10 @@ export default function AddBusinessForm({ user }: { user: User }) {
 
   const addBusinessMutation = useMutation({
     mutationFn: (data: FormValues) => axios.post("/api/business", data),
-    onSuccess: (res) => {
+    onSuccess: () => {
       toast.success("Business added successfully")
     },
-    onError: (err) => {
+    onError: () => {
       toast.error("Something went wrong")
     }
   })
@@ -113,6 +113,7 @@ export default function AddBusinessForm({ user }: { user: User }) {
         });
         setImageUrls((prev) => [...prev, res.url]);
       } catch (err) {
+        console.log("ERROR:",err)
         updateFileProgress(addedFileState.key, 'ERROR');
         toast.error("Failed to upload image");
       }

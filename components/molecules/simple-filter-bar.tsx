@@ -2,7 +2,6 @@
 
 import {  Search } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Category } from "@prisma/client"
@@ -41,7 +40,7 @@ export default function SimpleFilterBar({ isHomepage = false }: { isHomepage: bo
 
     const queryString = params.toString()
     router.push(`/business/explore${queryString ? `?${queryString}` : ""}`)
-  }, [debouncedSearch, activeCategory, isHomepage])
+  }, [debouncedSearch, activeCategory, isHomepage, searchParams, router])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -100,7 +99,7 @@ export default function SimpleFilterBar({ isHomepage = false }: { isHomepage: bo
               variant={activeCategory === category ? "default" : "outline"}
               className={`rounded-full cursor-pointer p-2 min-w-[60px] ${activeCategory === category
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : "bg-transparent text-gray-700 hover:text-gray-900"
+                : "bg-transparent"
               }`}
               onClick={() => handleCategoryClick(category)}
             >

@@ -4,7 +4,6 @@ import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import SimpleFilterBar from "../molecules/simple-filter-bar"
 import { Badge } from "../ui/badge"
 import { navLinks } from "../common/navbar"
 import Link from "next/link"
@@ -14,15 +13,15 @@ export default function Header() {
   const router = useRouter()
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-12 bg-white">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-12">
       <div className="w-full max-w-4xl mx-auto text-center space-y-6">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
-          Discover the Local's
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+          Discover the Local&apos;s
           <br />
           top experiences
         </h1>
 
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p className="text-lg  max-w-2xl mx-auto">
           Explore reviews from real people about the best places
           <br />
           ready for your next adventure
@@ -60,12 +59,12 @@ export default function Header() {
         </div>
 
         <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
-          <span className="text-sm text-gray-500 mr-2 mt-1">Trending searches:</span>
+          <span className="text-sm  mr-2 mt-1">Trending searches:</span>
           {["restaurants", "hotels", "coffee shops", "electronics", "home services"].map((tag) => (
             <Badge
               key={tag}
               variant="outline"
-              className="rounded-full text-sm px-4 py-1 h-auto border-gray-200 hover:bg-gray-50"
+              className="rounded-full text-sm px-4 py-1 h-auto"
               onClick={() => router.push(`/business/explore?search=${tag}`)}
             >
               {tag}

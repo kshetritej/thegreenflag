@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prismaClient"
 import bcrypt from "bcryptjs";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const body = await req.json()
   const user = await prisma.user.findUnique({ where: { email: body.email } })
   if (!user) throw new Error("Invalid credentials");

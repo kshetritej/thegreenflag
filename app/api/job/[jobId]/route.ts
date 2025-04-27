@@ -3,13 +3,11 @@ import prisma from "@/prisma/prismaClient";
 
 type Params = Promise<{ jobId: string }>
 
-export async function GET(_req: NextRequest, { params }: { params: { jobId: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: Params }) {
   try {
-    console.log("Job ID from params:", params.jobId); // Debug log
-
     const job = await prisma.job.findUnique({
       where: {
-        id: params.jobId
+        id: (await params).jobId
       },
       include: {
         business: {
@@ -35,13 +33,13 @@ export async function GET(_req: NextRequest, { params }: { params: { jobId: stri
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { jobId: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Params }) {
   try {
     const body = await req.json();
 
     const job = await prisma.job.update({
       where: {
-        id: params.jobId
+        id: (await params).jobId
       },
       data: body
     });
@@ -53,13 +51,12 @@ export async function PUT(req: NextRequest, { params }: { params: { jobId: strin
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { jobId: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Params }) {
   try {
-    console.log("Deleting job with ID:", params.jobId); // Debug log
 
     await prisma.job.delete({
       where: {
-        id: params.jobId
+        id: (await params).jobId
       }
     });
 

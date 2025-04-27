@@ -1,10 +1,11 @@
 import ListReviews from "@/components/review/list-reviews"
 import prisma from "@/prisma/prismaClient"
 
-export default async function BusinessReviewsPage({ params }: { params: { businessId: string } }) {
+type Params = Promise<{businessId: string}>
+export default async function BusinessReviewsPage({ params }: { params: Params }) {
   const reviews = await prisma.review.findMany({
     where: {
-      businessId: params.businessId
+      businessId: (await params).businessId
     },
     include: {
       author: true

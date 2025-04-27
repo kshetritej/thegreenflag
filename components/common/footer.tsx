@@ -71,7 +71,7 @@ export default function Footer() {
             <h3 className="font-medium text-sm">Opportunities</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
+                <Link href="/jobs" className="text-muted-foreground hover:text-foreground text-sm">
                   Find jobs
                 </Link>
               </li>
@@ -87,22 +87,22 @@ export default function Footer() {
             <h3 className="font-medium text-sm">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
+                <Link href="/terms-and-conditions" className="text-muted-foreground hover:text-foreground text-sm">
                   Terms and Conditions
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
+                <Link href="/cookie-policy" className="text-muted-foreground hover:text-foreground text-sm">
                   Cookie policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
+                <Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground text-sm">
                   Privacy policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
+                <Link href="/legal" className="text-muted-foreground hover:text-foreground text-sm">
                   Legal
                 </Link>
               </li>

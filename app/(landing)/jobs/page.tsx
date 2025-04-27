@@ -20,7 +20,7 @@ export default async function JobsPage() {
             <Link href="/dashboard/jobs">
               <Button>
                 <Briefcase className="mr-2 h-4 w-4" />
-                Manage Jobs
+                Manage my Jobs
               </Button>
             </Link>
           )

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prismaClient";
-import { Category } from "@prisma/client";
+import { Category, Job } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
 
-  const categoriesParam = searchParams.get('category')
-  const searchQuery = searchParams.get('search')
+  const categoriesParam = searchParams.get('category');
+  const searchQuery = searchParams.get('search');
 
   const businesses = await prisma.business.findMany({
     where: {
@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
       createdAt: "desc"
     },
     include: {
+      jobs: true,
       reviews: {
         include: {
           author: true
@@ -36,7 +37,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(businesses);
 }
 
-export async function POST(req: NextRequest){
+export async function POST(req: NextRequest) {
   const body = await req.json();
   const { establishedYear, mainImage, additionalImages, ...data } = body;
 

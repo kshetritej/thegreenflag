@@ -22,7 +22,6 @@ import {
   PenSquare,
   Eye
 } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
 
 interface Job {
   id: string
@@ -35,8 +34,8 @@ interface Job {
   phone: string
   businessId: string
   featured: boolean
-  createdAt: string
-  updatedAt: string
+  createdAt: string | Date
+  updatedAt: string | Date
   business: {
     name: string
     mainImage: string
@@ -51,7 +50,6 @@ interface JobListClientProps {
 }
 
 export default function JobListClient({ initialJobs, isOwner = false }: JobListClientProps) {
-  const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [featuredOnly, setFeaturedOnly] = useState(false)
   const [jobs, setJobs] = useState<Job[]>(initialJobs)
@@ -76,24 +74,10 @@ export default function JobListClient({ initialJobs, isOwner = false }: JobListC
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search jobs..."
-              className="pl-9"
+              className="pl-9 max-w-xl"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="featured"
-              checked={featuredOnly}
-              onCheckedChange={(checked) => setFeaturedOnly(checked === true)}
-            />
-            <label
-              htmlFor="featured"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Featured jobs only
-            </label>
           </div>
         </div>
       </div>
@@ -117,7 +101,7 @@ export default function JobListClient({ initialJobs, isOwner = false }: JobListC
   )
 }
 
-function JobCard({ job, isOwner }: { job: Job, isOwner: boolean }) {
+export function JobCard({ job, isOwner }: { job: Job, isOwner: boolean }) {
   const router = useRouter()
   
   return (

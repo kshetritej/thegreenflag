@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
 import prisma from "@/prisma/prismaClient";
 
+type Params = Promise<{businessId: string}>
 export async function DELETE(
-  { params }: { params: { businessId: string } }
+  { params }: { params: Params }
 ) {
   try {
-    const businessId = params.businessId;
+    const businessId = (await params).businessId;
 
-    // First, delete all reviews associated with the business
     await prisma.review.deleteMany({
       where: {
         businessId: businessId,
       },
     });
 
-    // Then, delete the business itself
     await prisma.business.delete({
       where: {
         id: businessId,
@@ -31,10 +30,21 @@ export async function DELETE(
   }
 } 
 
-export async function GET({ params }: { params: { businessId: string } }) {
+export async function GET({ params }: { params: Params }) {
   const business = await prisma.business.findUnique({
     where: {
-      id: params.businessId
+      id: (await params).businessId
+    },
+    include:{
+      reviews:{
+        include:{
+          replies:{
+            include:{
+              author:true
+            }
+          }
+        }
+      }
     }
   })
 

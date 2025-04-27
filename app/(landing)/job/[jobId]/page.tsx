@@ -4,13 +4,15 @@ import { notFound } from "next/navigation"
 import prisma from "@/prisma/prismaClient"
 import JobDetail from "@/components/job/job-detail"
 
-export default async function JobDetailPage({ params }: { params: { jobId: string } }) {
+type Params = Promise<{ jobId: string }>
+export default async function JobDetailPage({ params }: { params: Params }) {
   const session = await getServerSession()
-  
+  const id = (await params).jobId 
+
   // Get the job
   const job = await prisma.job.findUnique({
     where: {
-      id: params.jobId
+      id 
     },
     include: {
       business: {

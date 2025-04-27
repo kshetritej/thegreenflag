@@ -4,17 +4,17 @@ import { redirect, notFound } from "next/navigation"
 import prisma from "@/prisma/prismaClient"
 import AddJobForm from "@/components/job/add-job-form"
 
-export default async function NewJobForBusinessPage({ params }: { params: { businessId: string } }) {
+type Params = Promise<{businessId: string}>
+export default async function NewJobForBusinessPage({ params }: { params: Params }) {
   const session = await getServerSession()
   
   if (!session?.user?.email) {
     redirect("/api/auth/signin")
   }
   
-  // Verify that the user owns this business
   const business = await prisma.business.findFirst({
     where: {
-      id: params.businessId,
+      id: (await params).businessId,
       owner: {
         email: session.user.email
       }

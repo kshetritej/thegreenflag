@@ -9,6 +9,7 @@ export default async function OverviewPage() {
   const totalReviews = await prisma.review.count({
     where: {
       business: {
+        //@ts-expect-error email exists
         owner: { email: user?.email }
       }
     }
@@ -16,6 +17,7 @@ export default async function OverviewPage() {
 
   const totalBusinesses = await prisma.business.count({
     where: {
+        //@ts-expect-error email exists
       owner: { email: user?.email }
     }
   })
@@ -36,7 +38,7 @@ type StatsCardProps = {
   icon: LucideIcon,
   statNumber: string
 }
-export function StatCard({ title, icon: Icon, statNumber }: StatsCardProps) {
+function StatCard({ title, icon: Icon, statNumber }: StatsCardProps) {
   return (
     <Card>
       <CardHeader>

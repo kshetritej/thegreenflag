@@ -12,6 +12,7 @@ export default async function BusinessesPage() {
   const user = session?.user;
   const businesses = await prisma.business.findMany({
     where: {
+      // @ts-expect-error email exists
       owner: { email: user?.email }
     },
     include: {

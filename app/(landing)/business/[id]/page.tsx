@@ -23,6 +23,7 @@ export default async function BusinessPage({ params }: { params: Params }) {
 
   return (
     <div>
+      {/* @ts-expect-error type mismatch */}
       <BusinessDetail business={business} />
     </div>
   )

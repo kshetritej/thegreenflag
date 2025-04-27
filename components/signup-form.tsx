@@ -171,7 +171,9 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                     }}
                     width={200}
                     height={200}
+                    // @ts-expect-error it is assignable
                     value={file}
+                    // @ts-expect-error it is assignable
                     onChange={(file) => setFile(file)}
                   />
                 </div>

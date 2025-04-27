@@ -7,8 +7,16 @@ import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { useSearchParams } from "next/navigation"
 import { Loader2 } from "lucide-react"
+import { Suspense } from "react"
 
-export default function Explore() {
+export default function Expore(){
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-[400px]">Loading ...</div>}>
+      <ExploreComponent/>
+    </Suspense>
+  )
+}
+function ExploreComponent() {
   const searchParams = useSearchParams()
   const category = searchParams.get("category")
   const search = searchParams.get("search")

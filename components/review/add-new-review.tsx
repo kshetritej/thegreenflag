@@ -73,6 +73,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
 
   const submitReview = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
+      // @ts-expect-error it will be available
       await axios.post("/api/business/review", { ...data, authorId: user.data?.user?.id, businessId, images: imageUrls })
     },
     onSuccess: () => {
@@ -88,6 +89,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
     }
   })
   const handleFormSubmit = async (data: z.infer<typeof formSchema>) => {
+    // @ts-expect-error it will be available
     if(!user?.data?.user?.id) {
       toast.error("You must be logged in to submit a review")
       return

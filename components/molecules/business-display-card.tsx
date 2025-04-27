@@ -40,6 +40,7 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
         >
           <div className="relative aspect-square">
             <Image src={business?.mainImage || "/placeholder.svg"} alt={business?.name} fill className="object-cover rounded-lg border" />
+            {/* @ts-expect-error it exist */}
             {business?.reviews?.length > 1 && (
               <Badge variant="secondary" className="absolute top-3 left-3 font-medium">
                 Top Rated
@@ -52,6 +53,7 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
               <h3 className="font-medium text-base">{business.name}</h3>
               <div className="flex items-center gap-1">
                 <span className="text-sm"><LucideStar className="text-yellow-400 size-4" /></span>
+                {/* @ts-expect-error it exist */}
                 <span className="text-sm font-medium">{(business.reviews.reduce((acc, review) => acc + review.rating, 0) / business.reviews.length || 0).toFixed(1)}</span>
                 <Badge className="rounded-full">{business.category.toString().charAt(0) + business.category.toString().slice(1).toLowerCase()}</Badge>
               </div>

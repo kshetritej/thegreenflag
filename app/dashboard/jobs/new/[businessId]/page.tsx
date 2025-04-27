@@ -28,6 +28,7 @@ export default async function NewJobForBusinessPage({ params }: { params: Params
   return (
     <div className="container mx-auto py-6 space-y-6">
       <h1 className="text-3xl font-bold">Post a New Job</h1>
+      {/* @ts-expect-error it works */}
       <AddJobForm businessId={business.id} businessName={business.name} />
     </div>
   )

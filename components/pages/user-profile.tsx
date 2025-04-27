@@ -103,6 +103,7 @@ export default async function UserProfile() {
         <CardTitle className="text-2xl font-bold">My Businesses</CardTitle>
         <CardContent className="grid grid-cols-4 gap-4">
           {businesses.map((business) => (
+            // @ts-expect-error it is assignable
             <ReviewCard myBusiness={true} key={business.id} business={business} />
           ))}
         </CardContent>

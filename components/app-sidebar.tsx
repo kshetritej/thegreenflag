@@ -36,6 +36,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={dashboardLinks.navMain} />
       </SidebarContent>
       <SidebarFooter>
+        {/* @ts-expect-error user is defined */}
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />

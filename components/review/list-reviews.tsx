@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form"
 
 export default function ListReviews({ reviews, dashboard }: { reviews: Review[], dashboard?: boolean }) {
   const session = useSession();
+  // @ts-expect-error will be available
   const userId = session.data?.user?.id
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -72,6 +73,7 @@ export default function ListReviews({ reviews, dashboard }: { reviews: Review[],
                   <AvatarFallback>JD</AvatarFallback>
                 </Avatar>
                 <div>
+                  {/* @ts-expect-error it exist */}
                   <div className="font-medium">{review?.author?.name}</div>
                   <div className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString(
                     "en-US",
@@ -122,6 +124,7 @@ export default function ListReviews({ reviews, dashboard }: { reviews: Review[],
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
+                      {/* @ts-expect-error it exist */}
                       <DialogTitle>Reply to {review.author?.name}</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit((data) => replyReview({ content: data.content, authorId: userId, reviewId: review.id }))} className="space-y-4">

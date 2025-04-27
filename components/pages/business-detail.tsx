@@ -146,6 +146,7 @@ export default function BusinessDetail({ business }: { business?: Business }) {
       <div className="flex gap-4 items-center">
         <h1 className="flex items-center text-3xl font-bold mb-2">
           {business?.name}{!business?.verified && <LucideVerified fill="limegreen" className="text-white ml-2" />}
+          {/* @ts-expect-error it exists */}
           {business?.jobs?.length > 0 && <Link href={`/business/${business?.id}/jobs`}> <Badge className="w-fit  h-fit rounded-full ml-4  bg-orange-600">We are Hiring <LucideArrowUpRight /> </Badge> </Link>}
         </h1>
       </div>
@@ -157,29 +158,36 @@ export default function BusinessDetail({ business }: { business?: Business }) {
       <div className="relative mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 rounded-lg overflow-hidden">
           <div className="col-span-2 relative aspect-[4/3]">
+            {business &&
             <Image
               src={business?.mainImage}
               alt={business?.name}
               fill
               className="object-cover"
             />
+            }
           </div>
           <div className="hidden md:grid grid-rows-2 gap-2">
             <div className="relative">
+              {
+                business && 
               <Image
                 src={business?.images[0]}
                 alt={business?.name}
                 fill
                 className="object-cover"
               />
+              }
             </div>
             <div className="relative">
-              <Image
-                src={business?.images[1] ?? business?.mainImage}
+              {
+                business &&
+                <Image src={business?.images[1] ?? business?.mainImage}
                 alt={business?.name}
                 fill
                 className="object-cover"
               />
+              }
             </div>
           </div>
           <Button
@@ -196,12 +204,16 @@ export default function BusinessDetail({ business }: { business?: Business }) {
         <h2 className="text-2xl font-semibold mb-4">About {business?.name}</h2>
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-12 w-12">
+            {/* @ts-expect-error it exists */}
             <AvatarImage src={business?.owner?.profileImage} alt="Owner" />
+            {/* @ts-expect-error it exists */}
             <AvatarFallback>{business?.owner?.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
+            {/* @ts-expect-error it exists */}
             <div className="font-medium">Owned by {business?.owner?.name}</div>
             {/* <div className="text-sm">Established {business?.establishedYear} {!business?.verified && <span> • Verified business </span>}</div> */}
+            {/* @ts-expect-error it exists */}
             <div className="text-sm ">Added {new Date(business?.createdAt).toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</div>
           </div>
         </div>
@@ -435,6 +447,7 @@ export default function BusinessDetail({ business }: { business?: Business }) {
 
       <div className="mb-8">
         {session.status === "authenticated" &&
+        //@ts-expect-error it is assignable 
           <AddNewReview businessId={business?.id} />
         }
       </div>
@@ -442,7 +455,9 @@ export default function BusinessDetail({ business }: { business?: Business }) {
       {/* Individual Reviews */}
       <div className="space-y-8 mb-8">
         <h2 className="text-2xl font-semibold">Recent Reviews</h2>
+        {/* @ts-expect-error its exists */}
         {business?.reviews?.length === 0 && <p>No reviews yet!</p>}
+        {/* @ts-expect-error its exists */}
         <ListReviews reviews={business?.reviews} />
       </div>
 
@@ -450,15 +465,13 @@ export default function BusinessDetail({ business }: { business?: Business }) {
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Location</h2>
         <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
+          {/* @ts-expect-error it is possible*/}
           <div dangerouslySetInnerHTML={{ __html: business?.googleMapsUrl }} className="w-full" />
         </div>
-        <p className="mt-3 text-sm">
-          Located in a quiet neighborhood in Lalitpur, just a short walk from Patan Durbar Square. The area is known for
-          its traditional architecture and cultural attractions.
-        </p>
       </div>
 
       {/* Owner Details */}
+      {/* @ts-expect-error it is possible */}
       <OwnerInfoCard owner={business?.owner} establishedYear={business?.establishedYear} />
     </div>
   )

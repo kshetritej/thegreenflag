@@ -21,7 +21,7 @@ export default function Header() {
           top experiences
         </h1>
 
-        <p className="text-lg  max-w-2xl mx-auto">
+        <p className="text-lg  max-w-2xl mx-auto font-[var(--font-geist-mono)]">
           Explore reviews from real people about the best places
           <br />
           ready for your next adventure

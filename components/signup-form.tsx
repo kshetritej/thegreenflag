@@ -90,7 +90,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
 
   return (
     <div className="container max-w-md flex items-center justify-center min-h-screen mx-auto">
-      <Card className="w-full border-none">
+      <Card className="min-w-2xl w-full border-none">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Create a new account</CardTitle>
           <CardDescription className="text-center">
@@ -101,35 +101,21 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
         <CardContent>
           <form className={cn("space-y-6", className)} onSubmit={handleSubmit(onSubmit)} {...props}>
             <div className="space-y-4">
+              <div className="flex justify-between gap-4">
+                <div className="w-full flex flex-col gap-4">
+                  {/* Username field */}
               <div className="space-y-2">
-                <Label htmlFor="profile-image">Profile Image</Label>
-                <SingleImageDropzone
-                  className="rounded-full"
-                  dropzoneOptions={{
-                    maxFiles: 1,
-                    maxSize: 1024 * 1024 * 5, // 5MB
-                  }}
-                  width={200}
-                  height={200}
-                  value={file}
-                  onChange={(file) => setFile(file)}
-                />
-              </div>
-
-              {/* Name field */}
-              <div className="space-y-2">
-                <Label htmlFor="name">
-                  Full Name <span className="text-red-500">*</span>
+                    <Label htmlFor="username">
+                      Username <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  id="name"
-                  placeholder="John Doe"
-                  {...register("name", { required: "Full name is required" })}
-                  className={errors.name ? "border-red-500" : ""}
+                      id="username"
+                      placeholder="ironman"
+                      {...register("username", { required: "Username is required" })}
+                      className={errors.username ? "border-red-500" : ""}
                 />
-                {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
-              </div>
-
+                    {errors.username && <p className="text-xs text-red-500">{errors.username.message}</p>}
+                  </div>
               {/* Email field */}
               <div className="space-y-2">
                 <Label htmlFor="email">
@@ -138,7 +124,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
+                  placeholder="tony@starkindustries.com"
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
@@ -151,19 +137,6 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                 {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
               </div>
 
-              {/* Username field */}
-              <div className="space-y-2">
-                <Label htmlFor="username">
-                  Username <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="username"
-                  placeholder="johndoe"
-                  {...register("username", { required: "Username is required" })}
-                  className={errors.username ? "border-red-500" : ""}
-                />
-                {errors.username && <p className="text-xs text-red-500">{errors.username.message}</p>}
-              </div>
 
               {/* Password field */}
               <div className="space-y-2">
@@ -172,6 +145,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                 </Label>
                 <Input
                   id="password"
+                  placeholder="********"
                   type="password"
                   {...register("password", {
                     required: "Password is required",
@@ -185,6 +159,38 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                 {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
               </div>
 
+
+
+                </div>
+                <div>
+                  <Label htmlFor="profile-image" className="mb-2">Profile Image</Label>
+                  <SingleImageDropzone
+                    dropzoneOptions={{
+                      maxFiles: 1,
+                      maxSize: 1024 * 1024 * 5, // 5MB
+                    }}
+                    width={200}
+                    height={200}
+                    value={file}
+                    onChange={(file) => setFile(file)}
+                  />
+                </div>
+              </div>
+
+
+              {/* Name field */}
+              <div className="space-y-2">
+                <Label htmlFor="name">
+                  Full Name <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="Tony Stark"
+                  {...register("name", { required: "Full name is required" })}
+                  className={errors.name ? "border-red-500" : ""}
+                />
+                {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+              </div>
               {/* Phone field */}
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
@@ -195,7 +201,6 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                   {...register("phone")}
                 />
               </div>
-
               {/* Address field */}
               <div className="space-y-2">
                 <Label htmlFor="address">Address</Label>

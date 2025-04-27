@@ -1,18 +1,18 @@
 "use client"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { signIn } from "next-auth/react"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -26,21 +26,19 @@ export function LoginForm({
       })
 
       if (res?.error) {
-        setError("Invalid credentials")
-        return
+        return toast.error("Invalid credentials")
       }
 
       router.push("/") // Redirect to home page after successful login
       router.refresh()
     } catch (error) {
       console.log("error:", error)
-      setError("Something went wrong")
+      return toast.error("Something went wrong")
     }
   }
 
   return (
     <form onSubmit={onSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
-      {error && <div className="text-red-500 text-sm">{error}</div>}
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">

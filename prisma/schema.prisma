@@ -131,6 +131,8 @@ model Business{
   owner User @relation(fields: [ownerId], references: [id])
   ownerId String
 
+  jobs Job[]
+
   reviews Review[]
 }
 
@@ -166,4 +168,24 @@ model Reply{
 
   review Review @relation(fields: [reviewId], references: [id])
   reviewId String
+}
+
+model Job{
+  id String @id @default(uuid())
+  title String
+  description String
+
+  business Business @relation(fields: [businessId], references: [id])
+  businessId String
+
+  location String
+  jobType String
+  salaryRange String
+
+  email String
+  phone String
+
+  featured Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

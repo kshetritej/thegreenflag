@@ -8,7 +8,7 @@ import { LandPlot, LucideLogOut, LucideUser } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { Button } from "../ui/button"
 import { ModeToggle } from "../atoms/mode-toggle"
-export const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/business/find-jobs" }]
+export const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/jobs" }]
 
 export default function Navbar() {
   const session = useSession()
@@ -78,10 +78,10 @@ export default function Navbar() {
       {!session || session.status === "unauthenticated"  &&
         <div className="flex gap-2">
           <Button variant={"secondary"}>
-            <Link href={"/signup"}>Signup</Link>
+            <Link href={"/signup"} className="uppercase">Signup</Link>
           </Button>
           <Button>
-            <Link href={"/login"}>Login</Link>
+            <Link href={"/login"} className="uppercase">Login</Link>
           </Button>
           <ModeToggle />
         </div>

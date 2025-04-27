@@ -1,15 +1,20 @@
 "use client"
 
 import "./globals.css"
-import { Mona_Sans } from "next/font/google"
+import { Geist, Geist_Mono } from "next/font/google"
 import { EdgeStoreProvider } from "@/lib/edgestore"
 import { Toaster } from "@/components/ui/sonner"
 import { SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const monaSans = Mona_Sans({
-  variable: "--font-mona-sans",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+})
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 })
 
@@ -27,22 +32,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={monaSans.className}>
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans tracking-loose`}>
+        <SessionProvider>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >
-        <SessionProvider>
+          >
           <QueryClientProvider client={queryClient}>
           <EdgeStoreProvider>
               {children}
             <Toaster position="top-right" />
             </EdgeStoreProvider>
           </QueryClientProvider>
+          </ThemeProvider>
         </SessionProvider>
-        </ThemeProvider>
       </body>
     </html>
   )

@@ -7,14 +7,12 @@ import { formatDistanceToNow } from "date-fns"
 import Link from "next/link"
 import Image from "next/image"
 
-// UI Components
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Briefcase, MapPin, DollarSign, Calendar, Search, Building2 } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
 
 interface Job {
   id: string
@@ -45,14 +43,12 @@ interface JobListProps {
 
 export default function JobList({ businessId, showFilters = true, limit }: JobListProps) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [featuredOnly, setFeaturedOnly] = useState(false)
   
   const { data: jobs, isLoading, error } = useQuery({
-    queryKey: ["jobs", businessId, featuredOnly],
+    queryKey: ["jobs", businessId],
     queryFn: async () => {
       const params = new URLSearchParams()
       if (businessId) params.append("businessId", businessId)
-      if (featuredOnly) params.append("featured", "true")
       
       const response = await axios.get(`/api/job?${params.toString()}`)
       return response.data as Job[]
@@ -93,24 +89,10 @@ export default function JobList({ businessId, showFilters = true, limit }: JobLi
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search jobs..."
-                className="pl-9"
+              className="pl-9 w-full py-3 rounded-full"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="featured"
-                checked={featuredOnly}
-                onCheckedChange={(checked) => setFeaturedOnly(checked === true)}
-              />
-              <label
-                htmlFor="featured"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Featured jobs only
-              </label>
             </div>
           </div>
         </div>

@@ -10,7 +10,7 @@ export function ModeToggle() {
   const { setTheme, theme } = useTheme()
 
   return (
-    <Button variant={"secondary"} size={"icon"} className="rounded-sm"
+    <Button variant={"secondary"} size={"icon"} className="rounded-sm shadow-none"
     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       <Sun className="h-[1.2rem] w-[1.2rem]  dark:block hidden" />

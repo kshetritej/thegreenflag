@@ -1,6 +1,5 @@
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -8,13 +7,14 @@ import { LandPlot, LucideLogOut, LucideUser } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { Button } from "../ui/button"
 import { ModeToggle } from "../atoms/mode-toggle"
+
 export const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/jobs" }]
 
 export default function Navbar() {
   const session = useSession()
 
   return (
-    <nav className="flex mx-auto container justify-between p-4  items-center">
+    <nav className="flex mx-auto container justify-between py-4 items-center">
       <NavigationMenu className="flex justify-between w-full">
         <NavigationMenuItem className="list-none font-bold text-xl mr-8">
           <Link href={"/"} className="flex gap-1 items-center">
@@ -41,7 +41,7 @@ export default function Navbar() {
         <div className="flex gap-2 items-center">
         <DropdownMenu>
             <DropdownMenuTrigger className="flex gap-2 items-center" asChild>
-              <Button variant={"outline"} size={'icon'}>
+              <Button variant={"outline"} size={'icon'} className="shadow-none">
                 <LucideUser className="size-4" />
               </Button>
         </DropdownMenuTrigger>
@@ -77,10 +77,10 @@ export default function Navbar() {
 
       {!session || session.status === "unauthenticated"  &&
         <div className="flex gap-2">
-          <Button variant={"secondary"}>
+          <Button variant={"secondary"} className="shadow-none">
             <Link href={"/signup"} className="uppercase">Signup</Link>
           </Button>
-          <Button>
+          <Button className="shadow-none">
             <Link href={"/login"} className="uppercase">Login</Link>
           </Button>
           <ModeToggle />

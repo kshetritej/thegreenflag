@@ -1,4 +1,5 @@
 import {
+  Briefcase,
   Building,
   CalendarClock,
   HandCoins,
@@ -18,6 +19,11 @@ export const dashboardLinks = {
       title: "Businesses",
       url: "/dashboard/businesses",
       icon: Building
+    },
+    {
+      title: "Jobs",
+      url: "/dashboard/jobs",
+      icon: Briefcase,
     },
     {
       title: "Tips and Earnings",

@@ -93,6 +93,7 @@ model User {
   profileImage  String?
   reviews Review[]
   replies Reply[]
+  verified Boolean @default(false)
 }
 
 model Business{

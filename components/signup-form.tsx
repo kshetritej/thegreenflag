@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { ReCaptchaProvider } from "next-recaptcha-v3";
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -30,7 +31,6 @@ type FormData = {
   profileImage: string
 }
 
-
 export default function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -59,12 +59,26 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
 
   const isEnglishSpeaking = watch("isEnglishSpeaking")
 
-  const registerUser = useMutation({
-    mutationFn: async (data: FormData) => {
-      await axios.post("/api/signup", data)
+  const sendEmailVerification = useMutation({
+    mutationFn: async (data: { email: string, token: string }) => {
+      await axios.post("/api/send", data)
     },
     onSuccess: () => {
-      toast.success("Account created successfully, sign in to continue")
+      toast.success("Account created successfully! A verification email has been sent to your email.")
+    },
+    onError: () => {
+      toast.error("Failed to send email")
+    }
+  }) 
+
+  const registerUser = useMutation({
+    mutationFn: async (data: FormData) => {
+      const res = await axios.post("/api/signup", data)
+      return res.data
+    },
+    onSuccess: (res) => {
+      console.log("res with token:", res)
+      sendEmailVerification.mutate({ email: res.data.email, token: res.token }),
       router.push("/login")
     },
     onError: (err: any) => {
@@ -93,6 +107,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
 
   return (
     <div className="container max-w-md flex items-center justify-center min-h-screen mx-auto">
+      <ReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
       <Card className="min-w-2xl w-full border-none">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Create a new account</CardTitle>
@@ -288,6 +303,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
           </p>
         </CardFooter>
       </Card>
+      </ReCaptchaProvider>
     </div>
   )
 }

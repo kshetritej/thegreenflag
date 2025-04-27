@@ -67,7 +67,10 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
       toast.success("Account created successfully, sign in to continue")
       router.push("/login")
     },
-    onError: () => toast.error("Something went wrong"),
+    onError: (err: any) => {
+      const errorMessage = err?.response?.data?.message || "Something went wrong";
+      toast.error(errorMessage);
+    }
   }) 
 
 

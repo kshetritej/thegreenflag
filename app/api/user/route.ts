@@ -11,8 +11,6 @@ export async function GET(req: NextRequest) {
   const skip = (page - 1) * limit;
   const take = limit;
 
-  console.log("searchparams", searchParams)
-
   const [users, totalUsers] = await prisma.$transaction([
     prisma.user.findMany({
       where: {name: {contains: name, mode: "insensitive"}},

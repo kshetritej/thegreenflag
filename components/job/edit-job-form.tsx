@@ -39,9 +39,7 @@ export default function EditJobForm({ jobId }: EditJobFormProps) {
   const { data: job, isLoading, isError } = useQuery({
     queryKey: ["job", jobId],
     queryFn: async () => {
-      console.log("Fetching job with ID:", jobId) // Debug log
       const response = await axios.get(`/api/job/${jobId}`)
-      console.log("Job data response:", response.data) // Debug log
       return response.data
     },
     enabled: !!jobId,
@@ -64,7 +62,6 @@ export default function EditJobForm({ jobId }: EditJobFormProps) {
 
   useEffect(() => {
     if (job) {
-      console.log("Setting form values with job data:", job) // Debug log
       form.reset({
         title: job.title,
         description: job.description,
@@ -76,7 +73,6 @@ export default function EditJobForm({ jobId }: EditJobFormProps) {
         businessId: job.businessId,
         featured: job.featured
       })
-      console.log("Form values after reset:", form.getValues()) // Debug log
     }
   }, [job, form])
 

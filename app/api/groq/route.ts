@@ -65,6 +65,5 @@ export async function POST(req: NextRequest) {
   });
 
   const data = response.choices[0].message.content
-  console.log(data)
   return NextResponse.json(data)
 }

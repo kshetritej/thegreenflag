@@ -49,9 +49,9 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
         });
         setImageUrls((prev) => [...prev, res.url]);
       } catch (err) {
-        console.log("ERROR MESSAGE:", err)
         updateFileProgress(addedFileState.key, 'ERROR');
-        toast.error("Failed to upload image");
+        // @ts-expect-error err needs to be used either way so
+        toast.error(err?.message || "Failed to upload image");
       }
     })
   }

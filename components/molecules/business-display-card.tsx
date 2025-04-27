@@ -25,8 +25,7 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
       router.refresh()
     },
     onError: (err) => {
-      console.log("ERROR:", err)
-      toast.error("Something went wrong!")
+      toast.error(err.message || "Something went wrong!")
     }
   })
 

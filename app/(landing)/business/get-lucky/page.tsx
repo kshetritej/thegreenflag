@@ -13,7 +13,6 @@ export default async function GetLuckyPage() {
     }
   })
   const randomBusiness = businesses[Math.floor(Math.random() * businesses.length)]
-  console.log(randomBusiness)
 
   return (
       <BusinessDetail business={randomBusiness} />

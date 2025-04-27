@@ -46,7 +46,6 @@ export default function AddBusinessForm({ user }: { user: User }) {
     });
   }
 
-  console.log("user from form", user)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(AddBusinessFormSchema),
@@ -95,8 +94,6 @@ export default function AddBusinessForm({ user }: { user: User }) {
       additionalImages: imageUrls.slice(1),
     })
   }
-  console.log("imageUrls", imageUrls)
-  console.log("fileStates", fileStates)
 
   function uploadImages(addedFiles: FileState[]) {
     return addedFiles.map(async (addedFileState) => {
@@ -113,9 +110,9 @@ export default function AddBusinessForm({ user }: { user: User }) {
         });
         setImageUrls((prev) => [...prev, res.url]);
       } catch (err) {
-        console.log("ERROR:",err)
         updateFileProgress(addedFileState.key, 'ERROR');
-        toast.error("Failed to upload image");
+        // @ts-expect-error err needs to be used either way so
+        toast.error(err?.message || "Failed to upload image");
       }
     })
   }

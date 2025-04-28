@@ -8,9 +8,11 @@ export default async function BusinessReviewsPage({ params }: { params: Params }
       businessId: (await params).businessId
     },
     include: {
+      replies: true,
       author: true
     }
   })
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Business Reviews</h1>

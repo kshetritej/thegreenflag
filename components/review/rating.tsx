@@ -43,7 +43,7 @@ export default function Rating({ value, onChange }: { value: number, onChange: (
               />
               <div
                 className={cn(
-                  "size-10 border-2 border-emerald-500 rounded-2xl transition-colors hover:bg-emerald-500",
+                  "size-10 border-2 border-emerald-500 rounded-full transition-colors hover:bg-emerald-500",
                   index < rating ? "bg-emerald-500" : "bg-none"
                 )}
               />
@@ -51,7 +51,7 @@ export default function Rating({ value, onChange }: { value: number, onChange: (
           ))}
         </div>
         {hoveredRating && (
-          <span className="text-sm text-gray-600">
+          <span className="text-sm">
             {ratingText[hoveredRating as keyof typeof ratingText]}
           </span>
         )}

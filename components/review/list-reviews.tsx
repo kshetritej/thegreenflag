@@ -60,7 +60,6 @@ export default function ListReviews({ reviews, dashboard }: { reviews: Review[],
       content: ""
     }
   })
-
   return (
     <div className="space-y-6">
       {reviews?.map((review) => (
@@ -151,7 +150,7 @@ export default function ListReviews({ reviews, dashboard }: { reviews: Review[],
                     <AlertDialogHeader>
                       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your revies
+                        This action cannot be undone. This will permanently delete your reviews
                         from this business and from our servers.
                       </AlertDialogDescription>
                     </AlertDialogHeader>

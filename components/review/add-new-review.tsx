@@ -111,7 +111,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
           setFileStates([...fileStates, ...addedFiles]);
         }}
       />
-      <Button className="w-fit mt-4 mb-4" onClick={() => uploadImages(fileStates)}>Upload Images </Button>
+      <Button className="w-fit mt-4 mb-4" disabled={fileStates.length === 0} onClick={() => uploadImages(fileStates)}>Upload Images </Button>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-2 space-y-2">
         <div>
           <Rating value={rating} onChange={(value) => setValue("rating", value)} />
@@ -124,7 +124,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
 
         </div>
 
-        <Button className="w-full" disabled={submitReview.isPending} type="submit">{submitReview.isPending ? "Submitting...": "Submit"}</Button>
+        <Button className="w-full" disabled={submitReview.isPending || rating == 0} type="submit">{submitReview.isPending ? "Submitting...": "Submit"}</Button>
       </form>
     </div>
   )

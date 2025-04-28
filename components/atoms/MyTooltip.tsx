@@ -12,7 +12,7 @@ export default function MyToolTip({ content, children, isNotButton = false }: To
     <Tooltip>
       <TooltipTrigger>
         {!isNotButton &&
-          <Button variant={'outline'} size={'icon'}>
+          <Button variant={'outline'} size={'icon'} className="hover:cursor-pointer">
             {children}
           </Button>
         }

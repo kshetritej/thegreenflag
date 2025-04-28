@@ -31,6 +31,11 @@ import {
   Wallet,
   LucideArrowUpRight,
   Router,
+  LucideBanknote,
+  LucideSparkle,
+  LucideSparkles,
+  LucideShare2,
+  LucideCalendarSearch,
 } from "lucide-react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
@@ -46,6 +51,9 @@ import { formatAmenityText } from "@/components/utils/formatAminity"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import Link from "next/link"
+import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
+import { TooltipContent } from "@radix-ui/react-tooltip"
+import MyToolTip from "../atoms/MyTooltip"
 
 interface SentimentAnalysis {
   percentage: string
@@ -143,12 +151,32 @@ export default function BusinessDetail({ business }: { business?: Business }) {
 
   return (
     <div className="p-4 max-w-4xl mx-auto py-8 px-4">
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center justify-between">
         <h1 className="flex items-center text-3xl font-bold mb-2">
           {business?.name}{!business?.verified && <LucideVerified fill="limegreen" className="text-white ml-2" />}
           {/* @ts-expect-error it exists */}
-          {business?.jobs?.length > 0 && <Link href={`/business/${business?.id}/jobs`}> <Badge className="w-fit  h-fit rounded-full ml-4  bg-orange-600">We are Hiring <LucideArrowUpRight /> </Badge> </Link>}
+          {business?.jobs?.length > 0 &&
+            <MyToolTip content={"View Job Openings"} isNotButton>
+              <Link href={`/business/${business?.id}/jobs`}> <Badge className="w-fit  h-fit rounded-full ml-4  bg-orange-600">We are Hiring <LucideArrowUpRight /> </Badge> </Link>
+            </MyToolTip>
+          }
         </h1>
+        <div className="flex justify-center gap-2">
+          <MyToolTip content={"Leave a tip"}>
+            <LucideBanknote />
+          </MyToolTip>
+          <MyToolTip content={"Save this Business"}>
+            <Heart className="h-5 w-5" />
+          </MyToolTip>
+          <MyToolTip content={"Share this Business"}>
+            <LucideShare2 />
+          </MyToolTip>
+
+          <MyToolTip content={"Show Events by this Business"}>
+            <LucideCalendarSearch />
+          </MyToolTip>
+
+        </div>
       </div>
       <div className="flex flex-col items-start gap-2  mb-6">
         <p>{business?.street}, {business?.city}, {business?.state}, {business?.country}</p>
@@ -190,12 +218,6 @@ export default function BusinessDetail({ business }: { business?: Business }) {
               }
             </div>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-          >
-            <Heart className="h-5 w-5" />
-          </Button>
         </div>
       </div>
 

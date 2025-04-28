@@ -94,6 +94,8 @@ model User {
   reviews Review[]
   replies Reply[]
   verified Boolean @default(false)
+
+  tips Tip[]
 }
 
 model Business{
@@ -130,6 +132,8 @@ model Business{
   jobs Job[]
 
   reviews Review[]
+
+  tips Tip[]
 }
 
 model Review{
@@ -182,6 +186,21 @@ model Job{
   phone String
 
   featured Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tip{
+  id String @id @default(uuid())
+  amount  Decimal
+  remarks String?
+
+  business Business @relation(fields: [businessId], references: [id])
+  businessId String
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

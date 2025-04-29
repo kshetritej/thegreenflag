@@ -1,6 +1,6 @@
 "use client"
 
-import { Flag, ThumbsUp, Trash, LucideReply } from "lucide-react"
+import { Flag, ThumbsUp, Trash, LucideReply, LucideCornerDownRight } from "lucide-react"
 import { Star } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
@@ -103,12 +103,21 @@ export default function ListReviews({ reviews, dashboard }: { reviews: Review[],
               ))}
             </div>
 
-            <div className="flex items-center gap-4">
-              <Button variant={'ghost'} className="gap-2" 
-              onClick={() => toast.success("Thank you for your feedback!")}
+            {/*@ts-expect-error replies exist on review*/}
+            {review?.replies?.length > 0 &&
+              <div className="bg-secondary p-2 rounded-md">
+                <p className="font-bold flex items-center gap-2"><LucideCornerDownRight /> Owner Response</p>
+                {/*@ts-expect-error replies exist on review*/}
+                {review?.replies?.map((reply: any, index: number) => <p className="ml-8" key={index}>{reply.content}</p>)}
+              </div>
+            }
+
+            <div className="flex items-center gap-4 mt-4">
+              <Button variant={'ghost'} className="gap-2"
+                onClick={() => toast.success("Thank you for your feedback!")}
               >
                 <ThumbsUp className="w-4 h-4" />
-                Helpful 
+                Helpful
               </Button>
               <Button variant="ghost" className="gap-2">
                 <Flag className="w-4 h-4" />

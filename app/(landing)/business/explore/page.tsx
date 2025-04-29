@@ -9,10 +9,10 @@ import { useSearchParams } from "next/navigation"
 import { Loader2 } from "lucide-react"
 import { Suspense } from "react"
 
-export default function Expore(){
+export default function Expore() {
   return (
     <Suspense fallback={<div className="flex justify-center items-center min-h-[400px]">Loading ...</div>}>
-      <ExploreComponent/>
+      <ExploreComponent />
     </Suspense>
   )
 }
@@ -51,7 +51,7 @@ function ExploreComponent() {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : businesses?.length === 0 ? (
-          <div className="h-1/2 flex flex-col items-center justify-center min-h-[400px] text-center">
+        <div className="h-1/2 flex flex-col items-center justify-center min-h-[400px] text-center">
           <h2 className="text-xl font-semibold ">No businesses found</h2>
           <p className="mt-2">
             {search
@@ -62,7 +62,7 @@ function ExploreComponent() {
           </p>
         </div>
       ) : (
-            <div className="container h-screen mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+        <div className="container min-h-screen mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
           {businesses?.map((business: Business) => (
             <div key={business.id}>
               <ReviewCard business={business} />

@@ -1,7 +1,7 @@
 import BusinessDetail from "@/components/pages/business-detail"
 import prisma from "@/prisma/prismaClient"
 
-type Params = Promise<{id: string}>
+type Params = Promise<{ id: string }>
 export default async function BusinessPage({ params }: { params: Params }) {
   const businessId = (await params).id
   const b = await prisma.business.findUnique({
@@ -12,6 +12,7 @@ export default async function BusinessPage({ params }: { params: Params }) {
       jobs: true,
       reviews: {
         include: {
+          replies: true,
           author: true
         }
       },

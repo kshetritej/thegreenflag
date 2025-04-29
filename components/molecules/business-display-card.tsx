@@ -32,7 +32,7 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
   return (
     <>
       {business &&
-        <Card className="p-2 border-none relative"
+        <Card className="p-2 border-none relative h-[500px]"
           onClick={() => {
             router.push(`/business/${business.id}`)
           }}

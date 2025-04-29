@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prismaClient";
 
-type Params = Promise<{businessId: string}>
+type Params = Promise<{ businessId: string }>
 export async function DELETE(_req: NextRequest, { params }: { params: Params }) {
   try {
     const businessId = (await params).businessId;
@@ -26,19 +26,19 @@ export async function DELETE(_req: NextRequest, { params }: { params: Params }) 
       { status: 500 }
     );
   }
-} 
+}
 
 export async function GET(_req: NextRequest, { params }: { params: Params }) {
   const business = await prisma.business.findUnique({
     where: {
       id: (await params).businessId
     },
-    include:{
-      reviews:{
-        include:{
-          replies:{
-            include:{
-              author:true
+    include: {
+      reviews: {
+        include: {
+          replies: {
+            include: {
+              author: true
             }
           }
         }

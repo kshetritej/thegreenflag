@@ -10,15 +10,15 @@ type ToolTipProps = {
 export default function MyToolTip({ content, children, isNotButton = false }: ToolTipProps) {
   return (
     <Tooltip>
-      <TooltipTrigger>
+      <TooltipTrigger asChild>
         {!isNotButton &&
           <Button variant={'outline'} size={'icon'} className="hover:cursor-pointer">
             {children}
           </Button>
         }
-        {isNotButton && children}
       </TooltipTrigger>
       <TooltipContent>{content}</TooltipContent>
     </Tooltip>
   )
 }
+//{isNotButton && <> children</>}

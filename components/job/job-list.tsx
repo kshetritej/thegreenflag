@@ -11,7 +11,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { LucideSparkles, Briefcase, MapPin, DollarSign, Calendar, Search, Building2 } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Briefcase, MapPin, DollarSign, Calendar, Search, Building2 } from "lucide-react"
 
 interface Job {
   id: string
@@ -54,7 +55,7 @@ export default function JobList({ businessId, showFilters = true, limit }: JobLi
     }
   })
 
-  const filteredJobs = jobs?.filter(job =>
+  const filteredJobs = jobs?.filter(job => 
     job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     job.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     job.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,7 +104,7 @@ export default function JobList({ businessId, showFilters = true, limit }: JobLi
           <h3 className="mt-4 text-lg font-medium">No jobs found</h3>
           <p className="mt-2 text-muted-foreground">
             {businessId
-              ? "This business hasn't posted any jobs yet."
+              ? "This business hasn't posted any jobs yet." 
               : "No jobs match your search criteria."}
           </p>
         </div>
@@ -122,8 +123,8 @@ function JobCard({ job }: { job: Job }) {
   return (
     <Card className={`overflow-hidden ${job.featured ? 'border-primary/50 bg-primary/5' : ''}`}>
       {job.featured && (
-        <div className="p-2">
-          <Badge className="p-2 mr-4"><LucideSparkles />Featured</Badge>
+        <div className="bg-primary text-primary-foreground text-xs font-medium py-1 px-3 text-center">
+          Featured Job
         </div>
       )}
 
@@ -143,7 +144,7 @@ function JobCard({ job }: { job: Job }) {
                 src={job.business.mainImage}
                 alt={job.business.name}
                 width={48}
-                height={48}
+                height={48} 
                 className="object-cover h-full w-full"
               />
             </div>

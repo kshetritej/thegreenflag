@@ -24,11 +24,13 @@ export default async function BusinessesPage() {
     <div>
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">My Businesses</h1>
+        <Link href={"/business"}>
         <Button> Add New Business</Button>
+        </Link>
       </div>
-      <div className="grid gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mt-4">
         {businesses.map(business => (
-          <Card key={business.id} className="max-w-2xl">
+          <Card key={business.id} className="max-w-md">
             <CardHeader className="flex items-center gap-4">
               <Image src={business?.logo || business?.mainImage} alt={business.name} width={100} height={100} className="rounded-full size-24" />
               <div className="flex flex-col gap-2">

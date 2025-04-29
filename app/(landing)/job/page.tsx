@@ -1,6 +1,5 @@
 import React from "react"
 import JobList from "@/components/job/job-list"
-import prisma from "@/prisma/prismaClient"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Briefcase } from "lucide-react"

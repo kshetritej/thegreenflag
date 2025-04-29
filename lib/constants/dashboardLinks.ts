@@ -31,11 +31,6 @@ export const dashboardLinks = {
       icon: HandCoins
     },
     {
-      title: "Space",
-      url: "/dashboard/space",
-      icon: Rocket
-    },
-    {
       title: "Event Manager",
       url: "/dashboard/events",
       icon: CalendarClock

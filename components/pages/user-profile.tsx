@@ -75,11 +75,6 @@ export default async function UserProfile() {
         {/* Counts */}
         <div className="flex gap-2">
           <Card className="p-4 flex flex-col gap-2 items-center justify-center">
-            <LucideRocket className="size-6" />
-            <h3 className="text-xl font-bold">My Space</h3>
-            <p>{businesses.length}</p>
-          </Card>
-          <Card className="p-4 flex flex-col gap-2 items-center justify-center">
             <LucideBuilding2 className="size-6" />
             <h3 className="text-xl font-bold">Businesses</h3>
             <p>{businesses.length}</p>

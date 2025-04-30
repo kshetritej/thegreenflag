@@ -8,7 +8,7 @@ import { useSession, signOut } from "next-auth/react"
 import { Button } from "../ui/button"
 import { ModeToggle } from "../atoms/mode-toggle"
 
-export const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Get Lucky", href: "/business/get-lucky" }, { name: "Find Jobs", href: "/jobs" }]
+export const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Find Jobs", href: "/job" }]
 
 export default function Navbar() {
   const session = useSession()

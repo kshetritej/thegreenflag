@@ -1,7 +1,6 @@
 import prisma from "@/prisma/prismaClient";
 import { NextRequest, NextResponse } from "next/server";
 import jwt, { Secret } from "jsonwebtoken";
-import { headers } from "next/headers";
 
 type Params = Promise<{ token: string }>
 
@@ -32,7 +31,22 @@ export async function GET(_req: NextRequest, { params }: { params: Params }) {
     }
   })
 
-  return new NextResponse(`
+  if (process.env.NODE_ENV !== "development") {
+    return new NextResponse(`
+    <div>
+    <h1>Your email has been verified successfully!</h1>
+    <button>
+      <a href="http://thegreenflagplatform.kshetritej.com.np/">Go to homepage.</a>
+    </button>
+    </div>
+    `, {
+    status: 200,
+      headers: {
+        "Content-Type": "text/html",
+      },
+    });
+  } else {
+    return new NextResponse(`
     <div>
     <h1>Your email has been verified successfully!</h1>
     <button>
@@ -41,8 +55,9 @@ export async function GET(_req: NextRequest, { params }: { params: Params }) {
     </div>
     `, {
     status: 200,
-    headers: {
-      "Content-Type": "text/html",
-    },
-  });
+      headers: {
+        "Content-Type": "text/html",
+      },
+    }); 
+  }
 }

@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy":"pnpx prisma generate && pnpm prisma migrate deploy && pnpm build"
   },
   "dependencies": {
     "@edgestore/react": "^0.3.3",

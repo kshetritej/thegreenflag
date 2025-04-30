@@ -22,6 +22,12 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
     const newTime = e.target.value;
     setTime(newTime);
     const [hours, minutes] = newTime.split(":").map(Number);
+
+    // Validate hours and minutes
+    if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      return; // Don't update the date if the time is invalid
+    }
+
     const newDate = new Date(date);
     newDate.setHours(hours);
     newDate.setMinutes(minutes);

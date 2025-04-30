@@ -21,9 +21,29 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const businessId = searchParams.get("businessId");
+    const userId = searchParams.get("userId");
 
+    // If userId is provided, fetch all events for that user
+    if (userId) {
+      if (userId !== user.id) {
+        return new NextResponse("Unauthorized", { status: 401 });
+      }
+
+      const events = await prisma.event.findMany({
+        where: {
+          userId: user.id,
+        },
+        orderBy: {
+          startDate: "asc",
+        },
+      });
+
+      return NextResponse.json(events);
+    }
+
+    // If businessId is provided, fetch events for that business
     if (!businessId) {
-      return new NextResponse("Business ID is required", { status: 400 });
+      return new NextResponse("Business ID is required when userId is not provided", { status: 400 });
     }
 
     // Verify that the business belongs to the user

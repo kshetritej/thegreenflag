@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import prisma from "@/prisma/prismaClient";
@@ -10,9 +10,11 @@ interface SessionUser {
   image?: string | null;
 }
 
+
+type Params = Promise<{ id: string }>
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Params }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -24,7 +26,7 @@ export async function GET(
 
     const event = await prisma.event.findUnique({
       where: {
-        id: params.id,
+        id: (await params).id,
         userId: user.id,
       },
       include: {
@@ -45,8 +47,8 @@ export async function GET(
 }
 
 export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Params }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -63,7 +65,6 @@ export async function PATCH(
       return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    // Verify that the business belongs to the user
     const business = await prisma.business.findFirst({
       where: {
         id: businessId,
@@ -75,10 +76,9 @@ export async function PATCH(
       return new NextResponse("Business not found or unauthorized", { status: 404 });
     }
 
-    // Verify that the event exists and belongs to the user
     const existingEvent = await prisma.event.findUnique({
       where: {
-        id: params.id,
+        id: (await params).id,
         userId: user.id,
       },
     });
@@ -89,7 +89,7 @@ export async function PATCH(
 
     const event = await prisma.event.update({
       where: {
-        id: params.id,
+        id: (await params).id,
         userId: user.id,
       },
       data: {
@@ -109,8 +109,8 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Params }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -120,10 +120,9 @@ export async function DELETE(
 
     const user = session.user as SessionUser;
 
-    // Verify that the event exists and belongs to the user
     const event = await prisma.event.findUnique({
       where: {
-        id: params.id,
+        id: (await params).id,
         userId: user.id,
       },
     });
@@ -134,7 +133,7 @@ export async function DELETE(
 
     await prisma.event.delete({
       where: {
-        id: params.id,
+        id: (await params).id,
         userId: user.id,
       },
     });

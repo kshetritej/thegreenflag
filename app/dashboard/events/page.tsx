@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -39,22 +38,23 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  if (!session?.user) {
-    redirect("/auth/signin");
-  }
-
-  const user = session.user as SessionUser;
+  const user = session?.user as SessionUser;
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`/api/events?businessId=${user.id}`);
+        const response = await fetch(`/api/events?userId=${user.id}`);
         if (!response.ok) {
+          if (response.status === 401) {
+            router.push("/login");
+            return;
+          }
           throw new Error("Failed to fetch events");
         }
         const data = await response.json();
         setEvents(data);
       } catch (error) {
+        console.error("Error fetching events:", error);
         toast.error("Failed to load events");
       } finally {
         setIsLoading(false);
@@ -62,7 +62,7 @@ export default function EventsPage() {
     };
 
     fetchEvents();
-  }, [user.id]);
+  }, [user.id, router]);
 
   const handleDelete = async (eventId: string) => {
     try {

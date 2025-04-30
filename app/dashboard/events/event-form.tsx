@@ -97,6 +97,10 @@ export function EventForm({ initialData }: EventFormProps) {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          router.push("/login");
+          return;
+        }
         throw new Error("Something went wrong");
       }
 

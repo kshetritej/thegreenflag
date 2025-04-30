@@ -9,7 +9,7 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
 }) => (
   process.env.NODE_ENV !== "development" ?
     <div>
-      <h1>Click to verify your email: <a href={`http://thegreenflagplatform.kshetritej.com.np/api/verify/${token}`}>Verify email.</a></h1>
+      <h1>Click to verify your email: <a href={`http://greenflag.kshetritej.com.np/api/verify/${token}`}>Verify email.</a></h1>
     </div>
     :
   <div>

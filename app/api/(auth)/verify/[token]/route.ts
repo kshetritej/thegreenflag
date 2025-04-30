@@ -36,7 +36,7 @@ export async function GET(_req: NextRequest, { params }: { params: Params }) {
     <div>
     <h1>Your email has been verified successfully!</h1>
     <button>
-      <a href="http://thegreenflagplatform.kshetritej.com.np/">Go to homepage.</a>
+      <a href="http://greenflag.kshetritej.com.np/">Go to homepage.</a>
     </button>
     </div>
     `, {

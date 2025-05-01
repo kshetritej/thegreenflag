@@ -32,9 +32,10 @@ import BusinessOverviewCard from "@/components/molecules/business-overview-card"
 import { GroqResponse } from "@/interfaces/groqResponse"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { Button } from "../ui/button"
+import { Button } from "@/components/ui/button"
 import BusinessImages from "@/components/molecules/business-images"
 import { AiErrorMessage as ErrorMessage } from "@/components/atoms/ai-error-message"
+import { useRouter } from "next/navigation"
 
 type AmenityKey = keyof typeof amenityIconMap
 
@@ -43,9 +44,10 @@ export default function BusinessDetail({ business }: { business?: Business }) {
   const [summary, setSummary] = useState<GroqResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [userSavedBusiness, setUserSavedBusiness] = useState<string[]>([])
   const session = useSession()
   const queryClient = useQueryClient()
-  const [userSavedBusiness, setUserSavedBusiness] = useState<string[]>([])
+  const router = useRouter()
 
   const { data } = useQuery({
     queryKey: ["userSavedBusiness"],
@@ -128,7 +130,8 @@ export default function BusinessDetail({ business }: { business?: Business }) {
     <div className="p-4 max-w-4xl mx-auto py-8 px-4">
       <div className="flex gap-4 items-center justify-between">
         <h1 className="flex items-center text-3xl font-bold mb-2">
-          {business?.name}{!business?.verified && <LucideVerified fill="limegreen" className="text-white ml-2" />}
+          {business?.name}
+          {!business?.verified && <LucideVerified fill="limegreen" className="text-white ml-2" />}
           {/* @ts-expect-error it exists */}
           {business?.jobs?.length > 0 &&
             <MyToolTip content={"View Job Openings"} isNotButton>
@@ -154,11 +157,20 @@ export default function BusinessDetail({ business }: { business?: Business }) {
             </Button>
           </MyToolTip>
           <MyToolTip content={"Share this Business"}>
-            <LucideShare2 />
+            <Button size={'icon'} variant={'outline'} onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/business/${business?.id}`)
+              toast.success("Link copied to clipboard")
+            }}>
+              <LucideShare2 />
+            </Button>
           </MyToolTip>
 
           <MyToolTip content={"Show Events by this Business"}>
-            <LucideCalendarSearch />
+            <Button size={'icon'} variant={'outline'} onClick={() => {
+              router.push(`/business/${business?.id}/events`)
+            }}>
+              <LucideCalendarSearch />
+            </Button>
           </MyToolTip>
 
         </div>

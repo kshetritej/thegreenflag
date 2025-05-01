@@ -68,8 +68,10 @@ export default function ListReviews({ reviews, dashboard }: { reviews: Review[],
             <div className="flex justify-between mb-4">
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src="/placeholder.svg" alt="User" />
-                  <AvatarFallback>JD</AvatarFallback>
+                  {/* @ts-expect-error it exist */}
+                  <AvatarImage src={review?.author?.profileImage } alt="User" className="object-cover" />
+                  {/* @ts-expect-error it exist */}
+                  <AvatarFallback>{review?.author?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>
                   {/* @ts-expect-error it exist */}
@@ -98,7 +100,7 @@ export default function ListReviews({ reviews, dashboard }: { reviews: Review[],
             <div className="grid md:grid-col-3 lg:grid-cols-4 gap-4">
               {review.images.map((image, index) => (
                 <Link href={image} key={index}>
-                  <Image width={100} height={100} key={index} src={image} alt={`Review Image ${index}`} className="w-full h-auto mb-4" />
+                  <Image width={100} height={100} key={index} src={image} alt={`Review Image ${index}`} className="w-full h-auto mb-4 rounded-md" />
                 </Link>
               ))}
             </div>

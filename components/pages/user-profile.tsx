@@ -4,10 +4,11 @@ import { redirect } from "next/navigation"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { LucideBuilding2, LucideMail, LucidePhone, LucideRocket, LucideStar, LucideTrello, LucideUser } from "lucide-react"
+import { LucideBuilding2, LucideStar, LucideTrello, LucideUser, Store, Heart } from "lucide-react"
 import ReviewCard from "../molecules/business-display-card"
-import Link from "next/link"
 
+import Link from "next/link"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 export default async function UserProfile() {
   const session = await getServerSession()
   if (!session?.user?.email) {
@@ -95,13 +96,23 @@ export default async function UserProfile() {
 
       {/* list of businesses */}
       <CardFooter className="flex flex-col items-start gap-4">
-        <CardTitle className="text-2xl font-bold">My Businesses</CardTitle>
+        <Tabs defaultValue="my-businesses" className="w-full">
+          <TabsList className="flex gap-4">
+            <TabsTrigger value="my-businesses"><Store />  My Businesses</TabsTrigger>
+            <TabsTrigger value="saved-businesses"><Heart /> Saved Businesses</TabsTrigger>
+          </TabsList>
+          <TabsContent value="my-businesses">
         <CardContent className="grid grid-cols-4 gap-4">
           {businesses.map((business) => (
             // @ts-expect-error it is assignable
             <ReviewCard myBusiness={true} key={business.id} business={business} />
           ))}
         </CardContent>
+          </TabsContent>
+          <TabsContent value="saved-businesses">
+            saved
+          </TabsContent>
+        </Tabs>
       </CardFooter>
 
     </Card>

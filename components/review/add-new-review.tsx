@@ -124,7 +124,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
 
         </div>
 
-        <Button className="w-full" disabled={submitReview.isPending || rating == 0} type="submit">{submitReview.isPending ? "Submitting...": "Submit"}</Button>
+        <Button className="w-full" disabled={submitReview.isPending} type="submit">{submitReview.isPending ? "Submitting...": "Submit"}</Button>
       </form>
     </div>
   )

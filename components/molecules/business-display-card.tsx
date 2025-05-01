@@ -32,29 +32,29 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
   return (
     <>
       {business &&
-        <Card className="p-2 border-none relative h-[500px]"
+        <Card className="border-none relative "
           onClick={() => {
             router.push(`/business/${business.id}`)
           }}
         >
-          <div className="relative aspect-square">
-            <Image src={business?.mainImage || "/placeholder.svg"} alt={business?.name} fill className="object-cover rounded-lg border" />
+          <div className="relative aspect-square p-0">
+            <Image src={business?.mainImage} alt={business?.name} fill className="object-cover rounded-lg border" />
+            <Badge className="rounded-full absolute top-3 right-3">{business.category.toString().charAt(0) + business.category.toString().slice(1).toLowerCase()}</Badge>
             {/* @ts-expect-error it exist */}
             {business?.reviews?.length > 1 && (
-              <Badge variant="secondary" className="absolute top-3 left-3 font-medium">
-                Top Rated
+              <Badge className="absolute top-3 px-4 py-2 left-3 font-medium rounded-full border-none bg-green-400 text-white">
+                <LucideStar className="fill-white" /> Top Rated
               </Badge>
             )}
           </div>
 
-          <CardContent className="p-3 pt-4">
+          <CardContent>
             <div className="flex justify-between items-start">
               <h3 className="font-medium text-base">{business.name}</h3>
               <div className="flex items-center gap-1">
-                <span className="text-sm"><LucideStar className="text-yellow-400 size-4" /></span>
+                <span className="text-sm"><LucideStar className="text-yellow-400 fill-yellow-400 size-4" /></span>
                 {/* @ts-expect-error it exist */}
                 <span className="text-sm font-medium">{(business.reviews.reduce((acc, review) => acc + review.rating, 0) / business.reviews.length || 0).toFixed(1)}</span>
-                <Badge className="rounded-full">{business.category.toString().charAt(0) + business.category.toString().slice(1).toLowerCase()}</Badge>
               </div>
             </div>
 

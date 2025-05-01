@@ -7,15 +7,18 @@ import { Label } from "@/components/ui/label"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useState } from "react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setLoading(true)
     const formData = new FormData(e.currentTarget)
 
     try {
@@ -26,12 +29,14 @@ export function LoginForm({
       })
 
       if (res?.error) {
+        setLoading(false)
         return toast.error("Invalid credentials")
       }
-
-      router.push("/") // Redirect to home page after successful login
+      toast.success("Login successful")
+      router.push("/profile") 
       router.refresh()
     } catch (error) {
+      setLoading(false)
       return toast.error("Something went wrong")
     }
   }
@@ -58,8 +63,8 @@ export function LoginForm({
           </div>
           <Input name="password" id="password" type="password" required />
         </div>
-        <Button type="submit" className="w-full">
-          Login
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
         </Button>
         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
           <span className="relative z-10 bg-background px-2 text-muted-foreground">

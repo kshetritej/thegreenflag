@@ -54,7 +54,7 @@ import Link from "next/link"
 import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import { TooltipContent } from "@radix-ui/react-tooltip"
 import MyToolTip from "../atoms/MyTooltip"
-
+import BusinessOverviewCard from "@/components/molecules/business-overview-card"
 interface SentimentAnalysis {
   percentage: string
   reviews: string
@@ -221,30 +221,9 @@ export default function BusinessDetail({ business }: { business?: Business }) {
         </div>
       </div>
 
-      {/* Owner Description Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">About {business?.name}</h2>
-        <div className="flex items-center gap-3 mb-4">
-          <Avatar className="h-12 w-12">
-            {/* @ts-expect-error it exists */}
-            <AvatarImage src={business?.owner?.profileImage} alt="Owner" />
-            {/* @ts-expect-error it exists */}
-            <AvatarFallback>{business?.owner?.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div>
-            {/* @ts-expect-error it exists */}
-            <div className="font-medium">Owned by {business?.owner?.name}</div>
-            {/* <div className="text-sm">Established {business?.establishedYear} {!business?.verified && <span> • Verified business </span>}</div> */}
-            {/* @ts-expect-error it exists */}
-            <div className="text-sm ">Added {new Date(business?.createdAt).toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</div>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <p>
-            {business?.description}
-          </p>
-        </div>
+        {/* overview card */}
+        {business && <BusinessOverviewCard business={business} />}
       </div>
 
       {/* Amenities Section */}

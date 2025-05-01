@@ -7,7 +7,7 @@ export default async function AddBusinessPage() {
   const session = await getServerSession()
 
   if(!session?.user?.email) {
-    redirect("/api/auth/signin")
+    redirect("/login")
   }
 
   const user = await prisma.user.findUnique({

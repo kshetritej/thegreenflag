@@ -435,9 +435,9 @@ export default function BusinessDetail({ business }: { business?: Business }) {
       {/* Map Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Location</h2>
-        <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
+        <div className="relative h-[300px] rounded-lg w-fit overflow-hidden">
           {/* @ts-expect-error it is possible*/}
-          <div dangerouslySetInnerHTML={{ __html: business?.googleMapsUrl }} className="w-full" />
+          <div dangerouslySetInnerHTML={{ __html: business?.googleMapsUrl }} />
         </div>
       </div>
 

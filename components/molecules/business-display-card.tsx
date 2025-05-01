@@ -32,13 +32,13 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
   return (
     <>
       {business &&
-        <Card className="border-none relative "
+        <Card className="border-none relative hover:cursor-pointer p-0"
           onClick={() => {
             router.push(`/business/${business.id}`)
           }}
         >
-          <div className="relative aspect-square p-0">
-            <Image src={business?.mainImage} alt={business?.name} fill className="object-cover rounded-lg border" />
+          <div className="relative aspect-square">
+            <Image src={business?.mainImage} alt={business?.name} fill className="object-cover rounded-t-lg border" />
             <Badge className="rounded-full absolute top-3 right-3">{business.category.toString().charAt(0) + business.category.toString().slice(1).toLowerCase()}</Badge>
             {/* @ts-expect-error it exist */}
             {business?.reviews?.length > 1 && (
@@ -48,9 +48,9 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
             )}
           </div>
 
-          <CardContent>
-            <div className="flex justify-between items-start">
-              <h3 className="font-medium text-base">{business.name}</h3>
+          <CardFooter className="p-4 flex flex-col gap-2 justify-start items-start">
+            <div>
+              <h3 className="font-medium text-base">{business.name.length > 40 ? business.name.toString().substring(0, 35) + "..." : business.name}</h3>
               <div className="flex items-center gap-1">
                 <span className="text-sm"><LucideStar className="text-yellow-400 fill-yellow-400 size-4" /></span>
                 {/* @ts-expect-error it exist */}
@@ -61,34 +61,7 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
             <div className="text-sm mt-1 flex flex-col gap-0.5">
               <span>{business.street}, {business.city}</span>
             </div>
-          </CardContent>
-          {myBusiness &&
-            <CardFooter className="flex gap-4 p-0">
-              {/* <Button variant="secondary" size={'default'} className=" hover:cursor-pointer">
-                <Pencil className="h-4 w-4" /> Edit
-              </Button> */}
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  {/* <Button variant="destructive" size={'default'} className=" hover:cursor-pointer">
-                    <Trash className="h-4 w-4" /> Delete
-                  </Button> */}
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete your account
-                      and remove your data from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter> <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => deleteBusiness.mutate()}>Continue</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-
-            </CardFooter>
-          }
+          </CardFooter>
         </Card>
       }
     </>

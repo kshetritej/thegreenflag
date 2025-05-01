@@ -143,7 +143,7 @@ const MultiImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div>
-        <div className="grid grid-cols-[repeat(1,1fr)] gap-2 sm:grid-cols-[repeat(2,1fr)] lg:grid-cols-[repeat(3,1fr)] xl:grid-cols-[repeat(4,1fr)]">
+        <div className="font-mono grid grid-cols-[repeat(1,1fr)] gap-2 sm:grid-cols-[repeat(2,1fr)] lg:grid-cols-[repeat(3,1fr)] xl:grid-cols-[repeat(4,1fr)]">
           {/* Images */}
           {value?.map(({ file, progress }, index) => (
             <div key={index} className={variants.image + ' aspect-square'}>

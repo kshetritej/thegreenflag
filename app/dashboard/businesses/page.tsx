@@ -6,9 +6,13 @@ import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import prisma from "@/prisma/prismaClient";
+import { redirect } from "next/navigation";
 
 export default async function BusinessesPage() {
   const session = await getServerSession();
+  if(!session) {
+    redirect("/")
+  }
   const user = session?.user;
   const businesses = await prisma.business.findMany({
     where: {

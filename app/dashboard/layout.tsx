@@ -3,10 +3,15 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { Breadcrumb, BreadcrumbItem } from "@/components/ui/breadcrumb";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
-
+import { redirect, usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const location = usePathname()
+  const session = useSession()
+  if(!session) {
+    redirect("/")
+  }
+
   return (
     <div>
       <SidebarProvider>

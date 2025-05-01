@@ -62,7 +62,7 @@ export default function EventsPage() {
     };
 
     fetchEvents();
-  }, [user.id, router]);
+  }, [user?.id, router]);
 
   const handleDelete = async (eventId: string) => {
     try {
@@ -82,11 +82,11 @@ export default function EventsPage() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="container mx-auto h-screen flex items-center justify-center">Loading...</div>;
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Events</h1>
         <Button onClick={() => router.push("/dashboard/events/new")}>
@@ -94,7 +94,7 @@ export default function EventsPage() {
         </Button>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border p-4">
         <Table>
           <TableHeader>
             <TableRow>
@@ -111,8 +111,10 @@ export default function EventsPage() {
                 <TableCell colSpan={5} className="text-center py-4">
                   <Card className="p-4 h-40 flex items-center justify-center max-w-md mx-auto">
                     <p className="flex flex-col items-center gap-2">
-                      <LucideCalendar className="size-4" />
-                      No events to show. Click "Add New Event" to create your first event.
+                      <div className="flex items-center gap-2 bg-gray-100 p-2 rounded-md">
+                        <LucideCalendar className="size-6" />
+                      </div>
+                      No events to show. <br /> Click "Add New Event" to create your first event.
                     </p>
                   </Card>
                 </TableCell>

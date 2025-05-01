@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import Link from "next/link"
+import NoEvent from "@/components/molecules/no-events"
 
 export default function BusinessEventsPage() {
   const router = useRouter()
@@ -19,20 +20,6 @@ export default function BusinessEventsPage() {
       return response.json()
     }
   })
-
-  if (events?.length === 0) {
-    return (
-      <div className="container mx-auto min-h-[80vh] flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardContent className="flex flex-col items-center justify-center p-6 text-center">
-            <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
-            <h2 className="text-2xl font-semibold mb-2">No Events Found</h2>
-            <p className="text-muted-foreground">This business hasn't created any events yet.</p>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
 
   return (
     <div className="container mx-auto min-h-[80vh] py-8">
@@ -49,6 +36,8 @@ export default function BusinessEventsPage() {
           </Link>
         </BreadcrumbItem>
       </Breadcrumb>
+
+      {events?.length == 0 && <NoEvent/>}
       {/* <h1 className="text-3xl font-bold mb-8">Upcoming Events</h1> */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {events?.map((event: any) => (

@@ -15,6 +15,12 @@ export default async function UserProfile() {
     redirect("/login")
   }
 
+  const user = await prisma.user.findUnique({
+    where: {
+      email: session?.user?.email
+    }
+  })
+
   const businesses = await prisma.business.findMany({
     where: {
       owner: { email: session?.user?.email },
@@ -34,11 +40,31 @@ export default async function UserProfile() {
     }
   })
 
-  const user = await prisma.user.findUnique({
+  const savedBusinesses = await prisma.favorite.findMany({
     where: {
-      email: session?.user?.email
+      // @ts-expect-error it is assignable
+      userId: session?.user?.id
+    },
+    include: {
+      business: {
+        select: {
+          id: true,
+          mainImage: true,
+          name: true,
+          category: true,
+          street: true,
+          city: true,
+          reviews: {
+            select: {
+              rating: true
+            }
+          }
+        }
+      },
     }
   })
+
+  const formattedSavedBusinesses = savedBusinesses.map((business) => business.business)
 
   return (
     <Card className="border-none container mx-auto h-screen p-8 my-8">
@@ -103,14 +129,17 @@ export default async function UserProfile() {
           </TabsList>
           <TabsContent value="my-businesses">
         <CardContent className="grid grid-cols-4 gap-4">
-          {businesses.map((business) => (
-            // @ts-expect-error it is assignable
+          {businesses.map((business:any) => (
             <ReviewCard myBusiness={true} key={business.id} business={business} />
           ))}
         </CardContent>
           </TabsContent>
           <TabsContent value="saved-businesses">
-            saved
+            <CardContent className="grid grid-cols-4 gap-4">
+              {formattedSavedBusinesses.map((business:any) => (
+                <ReviewCard key={business.id} business={business} />
+              ))}
+            </CardContent>
           </TabsContent>
         </Tabs>
       </CardFooter>

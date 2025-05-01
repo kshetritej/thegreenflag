@@ -1,39 +1,20 @@
 "use client"
-
+import { amenityIconMap } from "@/components/utils/amenityIconMap"
 import RatingComponent from "@/components/organisms/rating-component"
 import { Separator } from "@/components/ui/separator"
 import {
   Star, 
-  Lock,
   Heart,
   Info,
-  Wifi,
-  Accessibility,
   Check,
   X,
-  Cigarette,
   LucideVerified,
-  ArrowUpDown,
-  Bell,
-  Clock,
-  Dog,
-  Flower2,
-  Luggage,
-  Package,
-  ParkingCircle,
-  Shield,
-  Shirt,
-  Snowflake,
-  Toilet,
-  TreePine,
-  Wallet,
   LucideArrowUpRight,
   LucideBanknote,
   LucideShare2,
   LucideCalendarSearch,
   LucideStar,
 } from "lucide-react"
-import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Business } from "@prisma/client"
 import OwnerInfoCard from "@/components/review/owner-info-card"
@@ -49,28 +30,11 @@ import Link from "next/link"
 import MyToolTip from "@/components/atoms/MyTooltip"
 import BusinessOverviewCard from "@/components/molecules/business-overview-card"
 import { GroqResponse } from "@/interfaces/groqResponse"
-
-const amenityIconMap = {
-  wifi: { icon: Wifi, label: "Free Wi-Fi" },
-  parking: { icon: ParkingCircle, label: "Parking Available" },
-  airConditioning: { icon: Snowflake, label: "Air Conditioning" },
-  frontDesk24Hours: { icon: Clock, label: "24-Hour Front Desk" },
-  petFriendly: { icon: Dog, label: "Pet Friendly" },
-  elevator: { icon: ArrowUpDown, label: "Elevator Access" },
-  disabledAccess: { icon: Accessibility, label: "Wheelchair Accessible" },
-  backyard: { icon: TreePine, label: "Backyard Area" },
-  smokingArea: { icon: Cigarette, label: "Smoking Area" },
-  laundry: { icon: Shirt, label: "Laundry Service" },
-  roomService: { icon: Bell, label: "Room Service" },
-  safe: { icon: Lock, label: "In-Room Safe" },
-  security: { icon: Shield, label: "Security Provided" },
-  atm: { icon: Wallet, label: "ATM Available" },
-  garden: { icon: Flower2, label: "Garden Area" },
-  luggageStorage: { icon: Luggage, label: "Luggage Storage" },
-  vendingMachine: { icon: Package, label: "Vending Machine" },
-  restrooms: { icon: Toilet, label: "Restrooms Available" }
-} as const;
-
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { Button } from "../ui/button"
+import BusinessImages from "@/components/molecules/business-images"
+import { AiErrorMessage as ErrorMessage } from "@/components/atoms/ai-error-message"
 
 type AmenityKey = keyof typeof amenityIconMap
 
@@ -80,6 +44,57 @@ export default function BusinessDetail({ business }: { business?: Business }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const session = useSession()
+  const queryClient = useQueryClient()
+  const [userSavedBusiness, setUserSavedBusiness] = useState<string[]>([])
+
+  const { data } = useQuery({
+    queryKey: ["userSavedBusiness"],
+    queryFn: async () => {
+      const response = await axios.get(`/api/save`)
+      return response.data
+    },
+    enabled: session.status === "authenticated"
+  })
+
+  const saveBusiness = useMutation({
+    mutationFn: async (data: { businessId: string, userId: string }) => {
+      const response = await axios.post(`/api/save`, data)
+      return response.data
+    },
+    onSuccess: () => {
+      toast.success("Business saved")
+      queryClient.invalidateQueries({ queryKey: ["userSavedBusiness"] })
+    },
+    onError: () => {
+      toast.error("Failed to save business")
+    }
+  })
+
+  const removeFromFavorites = useMutation({
+    mutationFn: async (data: { businessId: string, userId: string }) => {
+      const response = await axios.delete(`/api/save`, {
+        data: {
+          businessId: data.businessId,
+          userId: data.userId
+        }
+      })
+      return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userSavedBusiness"] })
+      toast.success("Business removed from favorites")
+    },
+    onError: () => {
+      toast.error("Failed to remove business from favorites")
+    }
+  })
+
+  useEffect(() => {
+    if (data) {
+      const userSavedBusiness = data?.map((business: any) => business.businessId)
+      setUserSavedBusiness(userSavedBusiness)
+    }
+  }, [data])
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -108,11 +123,6 @@ export default function BusinessDetail({ business }: { business?: Business }) {
     </div>
   )
 
-  const ErrorMessage = () => (
-    <div className="text-red-600 bg-red-50 p-4 rounded-lg border border-red-100">
-      <p>Unable to generate AI analysis at the moment. Please try again later.</p>
-    </div>
-  )
 
   return (
     <div className="p-4 max-w-4xl mx-auto py-8 px-4">
@@ -130,8 +140,18 @@ export default function BusinessDetail({ business }: { business?: Business }) {
           <MyToolTip content={"Leave a tip"}>
             <LucideBanknote />
           </MyToolTip>
-          <MyToolTip content={"Save this Business"}>
-            <Heart className="h-5 w-5" />
+          <MyToolTip content={session.status === "unauthenticated" ? "Login to save this Business" : "Save this Business"}>
+            <Button size={'icon'} disabled={session.status === "unauthenticated"} variant={'outline'} onClick={() => {
+              if (userSavedBusiness?.includes(business?.id ?? "")) {
+                // @ts-expect-error it exists
+                removeFromFavorites.mutate({ businessId: business?.id ?? "", userId: session.data?.user?.id })
+              } else {
+                // @ts-expect-error it exists
+                saveBusiness.mutate({ businessId: business?.id ?? "", userId: session.data?.user?.id })
+              }
+            }}>
+              <Heart className={cn("h-5 w-5", userSavedBusiness?.includes(business?.id ?? "") && "fill-green-500 text-green-500")} />
+            </Button>
           </MyToolTip>
           <MyToolTip content={"Share this Business"}>
             <LucideShare2 />
@@ -150,43 +170,7 @@ export default function BusinessDetail({ business }: { business?: Business }) {
       </div>
 
       {/* Image Gallery Section */}
-      <div className="relative mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 rounded-lg overflow-hidden">
-          <div className="col-span-2 relative aspect-[4/3]">
-            {business &&
-            <Image
-              src={business?.mainImage}
-              alt={business?.name}
-              fill
-              className="object-cover"
-            />
-            }
-          </div>
-          <div className="hidden md:grid grid-rows-2 gap-2">
-            <div className="relative">
-              {
-                business && 
-              <Image
-                src={business?.images[0]}
-                alt={business?.name}
-                fill
-                className="object-cover"
-              />
-              }
-            </div>
-            <div className="relative">
-              {
-                business &&
-                <Image src={business?.images[1] ?? business?.mainImage}
-                alt={business?.name}
-                fill
-                className="object-cover"
-              />
-              }
-            </div>
-          </div>
-        </div>
-      </div>
+      {business && <BusinessImages business={business} />}
 
       <div className="mb-8">
         {/* overview card */}

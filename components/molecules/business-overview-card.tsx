@@ -5,7 +5,7 @@ export default function BusinessOverviewCard({ business }: { business: Business 
   return (
     <Card className=" p-4">
       <h2 className="text-2xl font-semibold mb-4">{business?.name} Overview</h2>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid sm:grid-cols-2 gap-2">
         <div>
           <p>Website</p>
           <p className="font-bold">{business?.website}</p>

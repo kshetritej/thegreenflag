@@ -1,8 +1,6 @@
 "use client"
 
 import RatingComponent from "@/components/organisms/rating-component"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import {
   Star, 
@@ -30,12 +28,10 @@ import {
   TreePine,
   Wallet,
   LucideArrowUpRight,
-  Router,
   LucideBanknote,
-  LucideSparkle,
-  LucideSparkles,
   LucideShare2,
   LucideCalendarSearch,
+  LucideStar,
 } from "lucide-react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
@@ -49,41 +45,10 @@ import { AiGeneratedBadge } from "@/components/utils/aiGeneratedBadge"
 import ListReviews from "@/components/review/list-reviews"
 import { formatAmenityText } from "@/components/utils/formatAminity"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/router"
 import Link from "next/link"
-import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
-import { TooltipContent } from "@radix-ui/react-tooltip"
-import MyToolTip from "../atoms/MyTooltip"
+import MyToolTip from "@/components/atoms/MyTooltip"
 import BusinessOverviewCard from "@/components/molecules/business-overview-card"
-interface SentimentAnalysis {
-  percentage: string
-  reviews: string
-}
-
-interface GroqResponse {
-  ai_summary: string
-  rating_analysis: {
-    overall_rating: number
-    pros: string[]
-    cons: string[]
-    service: number
-    quality: number
-    ambience: number
-    location: number
-    value: number
-    recommendation: string
-  }
-  sentiment_analysis: {
-    positive: SentimentAnalysis
-    negative: SentimentAnalysis
-    neutral: SentimentAnalysis
-  }
-  most_mentioned_words: {
-    positive: string[]
-    negative: string[]
-    neutral: string[]
-  }
-}
+import { GroqResponse } from "@/interfaces/groqResponse"
 
 const amenityIconMap = {
   wifi: { icon: Wifi, label: "Free Wi-Fi" },
@@ -178,8 +143,10 @@ export default function BusinessDetail({ business }: { business?: Business }) {
 
         </div>
       </div>
-      <div className="flex flex-col items-start gap-2  mb-6">
-        <p>{business?.street}, {business?.city}, {business?.state}, {business?.country}</p>
+      <div className="flex gap-1 mb-6 text-sm items-center">
+        <LucideStar className="size-4 text-yellow-400 fill-yellow-400" />
+        {/* @ts-expect-error it exists */}
+        <span className="text-sm font-medium">{(business?.reviews.reduce((acc, review) => acc + review.rating, 0) / business?.reviews.length || 0).toFixed(1)}</span>( {business?.reviews?.length} reviews )
       </div>
 
       {/* Image Gallery Section */}

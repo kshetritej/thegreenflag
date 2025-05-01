@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { Business } from "@prisma/client"
-import BusinessDisplayCard from "../molecules/business-display-card"
+import BusinessDisplayCard from "@/components/molecules/business-display-card"
 
 export default function BusinessGrid() {
   const { data: businesses } = useQuery({

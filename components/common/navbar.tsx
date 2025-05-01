@@ -3,18 +3,22 @@
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { LandPlot, LucideLogOut, LucideUser } from "lucide-react"
+import { Globe, LandPlot, LucideLogOut, LucideUser, Calendar, Briefcase, Users } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
-import { Button } from "../ui/button"
-import { ModeToggle } from "../atoms/mode-toggle"
+import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/atoms/mode-toggle"
 
-export const navLinks = [{ name: "Explore", href: "/business/explore" }, { name: "Find Jobs", href: "/job" }]
+export const navLinks = [
+  { name: "Explore", href: "/business/explore", icon: Globe }, 
+  { name: "Find Jobs", href: "/job", icon: Briefcase },
+  { name: "Community", href: "/community", icon: Users }
+]
 
 export default function Navbar() {
   const session = useSession()
 
   return (
-    <nav className="flex mx-auto container justify-between py-4 items-center">
+    <nav className="flex mx-auto container justify-between py-4 items-center border-b">
       <NavigationMenu className="flex justify-between w-full">
         <NavigationMenuItem className="list-none font-bold text-xl mr-8">
           <Link href={"/"} className="flex gap-1 items-center">
@@ -26,10 +30,13 @@ export default function Navbar() {
         </NavigationMenuItem>
         <NavigationMenuList>
           <NavigationMenuItem className="hidden md:flex gap-4">
-            {navLinks.map((item) => {
+            {navLinks.map(({name, href, icon:Icon}) => {
               return (
-                <NavigationMenuLink href={item.href} key={item.href} className="font-medium">
-                    {item.name}
+                <NavigationMenuLink href={href} key={href} className="font-medium flex flex-row gap-2 items-center">
+                  <Icon className="size-4" />
+                  <span>
+                    {name}
+                  </span>
                 </NavigationMenuLink>
               )
             })}

@@ -8,7 +8,7 @@ export default function BusinessOverviewCard({ business }: { business: Business 
       <div className="grid sm:grid-cols-2 gap-2">
         <div>
           <p>Website</p>
-          <p className="font-bold">{business?.website}</p>
+          <a className="font-bold" href={business?.website} target="_blank" rel="noopener noreferrer">{business?.website}</a>
         </div>
         <div>
           <p>Industry</p>

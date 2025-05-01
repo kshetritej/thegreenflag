@@ -1,18 +1,13 @@
 "use client"
 
 import "./globals.css"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist_Mono } from "next/font/google"
 import { EdgeStoreProvider } from "@/lib/edgestore"
 import { Toaster } from "@/components/ui/sonner"
 import { SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/components/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -32,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans tracking-loose`}>
+    <html lang="en" className="dark">
+      <body className={` ${geistMono.variable} font-sans tracking-loose`}>
         <SessionProvider>
         <ThemeProvider
           attribute="class"

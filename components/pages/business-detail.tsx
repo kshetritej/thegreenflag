@@ -129,19 +129,20 @@ export default function BusinessDetail({ business }: { business?: Business }) {
   return (
     <div className="p-4 max-w-4xl mx-auto py-8 px-4">
       <div className="flex gap-4 items-center justify-between">
-        <h1 className="flex items-center text-3xl font-bold mb-2">
+        <h1 className="flex flex-row items-center text-3xl font-bold mb-2">
+          <p className="mr-2">
           {business?.name}
-          {!business?.verified && <LucideVerified fill="limegreen" className="text-white ml-2" />}
-          {/* @ts-expect-error it exists */}
-          {business?.jobs?.length > 0 &&
-            <MyToolTip content={"View Job Openings"} isNotButton>
-              <Link href={`/business/${business?.id}/jobs`}> <Badge className="w-fit  h-fit rounded-full ml-4  bg-orange-600">We are Hiring <LucideArrowUpRight /> </Badge> </Link>
-            </MyToolTip>
-          }
+          </p>
+          {!business?.verified && <LucideVerified fill="limegreen" className="text-white" />}
         </h1>
         <div className="flex justify-center gap-2">
           <MyToolTip content={"Leave a tip"}>
-            <LucideBanknote />
+            <Button size={'icon'} variant={'outline'} onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/business/${business?.id}`)
+              toast.success("Link copied to clipboard")
+            }}>
+              <LucideBanknote />
+            </Button>
           </MyToolTip>
           <MyToolTip content={session.status === "unauthenticated" ? "Login to save this Business" : "Save this Business"}>
             <Button size={'icon'} disabled={session.status === "unauthenticated"} variant={'outline'} onClick={() => {
@@ -179,6 +180,12 @@ export default function BusinessDetail({ business }: { business?: Business }) {
         <LucideStar className="size-4 text-yellow-400 fill-yellow-400" />
         {/* @ts-expect-error it exists */}
         <span className="text-sm font-medium">{(business?.reviews.reduce((acc, review) => acc + review.rating, 0) / business?.reviews.length || 0).toFixed(1)}</span>( {business?.reviews?.length} reviews )
+        {/* @ts-expect-error it exists */}
+          {business?.jobs?.length > 0 &&
+            <MyToolTip content={"View Job Openings"} >
+              <Link href={`/business/${business?.id}/jobs`}> <Badge className="w-fit  h-fit rounded-full ml-4  bg-orange-600">We are Hiring <LucideArrowUpRight /> </Badge> </Link>
+            </MyToolTip>
+          }
       </div>
 
       {/* Image Gallery Section */}

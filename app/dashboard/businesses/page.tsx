@@ -24,6 +24,7 @@ export default async function BusinessesPage() {
     }
   })
 
+
   return (
     <div>
       <div className="flex justify-between items-center">

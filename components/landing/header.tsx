@@ -60,11 +60,11 @@ export default function Header() {
 
         <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
           <span className="text-sm  mr-2 mt-1">Trending searches:</span>
-          {["restaurants", "hotels", "coffee shops", "electronics", "home services"].map((tag) => (
+          {["restaurants", "parks", "cafe", "home services", "hotels", "coffee shops"].map((tag) => (
             <Badge
               key={tag}
               variant="outline"
-              className="rounded-full text-sm px-4 py-1 h-auto"
+              className="rounded-full text-sm px-4 py-1 h-auto hover:cursor-pointer"
               onClick={() => router.push(`/business/explore?search=${tag}`)}
             >
               {tag}

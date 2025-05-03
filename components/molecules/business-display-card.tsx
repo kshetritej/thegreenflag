@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { Business } from "@prisma/client"
 
-export default function BusinessDisplayCard({ business, myBusiness }: { business: Business, myBusiness?: boolean }) {
+export default function BusinessDisplayCard({ business }: { business: Business }) {
   const router = useRouter()
 
   const deleteBusiness = useMutation({
@@ -29,6 +29,7 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
     }
   })
 
+  console.log("Businesses", business)
   return (
     <>
       {business &&
@@ -38,7 +39,7 @@ export default function BusinessDisplayCard({ business, myBusiness }: { business
           }}
         >
           <div className="relative aspect-square">
-            <Image src={business?.images[0]} alt={business?.name} fill className="object-cover rounded-t-lg border" />
+            <Image src={business?.mainImage || business?.images[0]} alt={business?.name} fill className="object-cover rounded-t-lg border" />
             <Badge className="rounded-full absolute top-3 right-3">{business.category.toString().charAt(0) + business.category.toString().slice(1).toLowerCase()}</Badge>
             {/* @ts-expect-error it exist */}
             {business?.reviews?.length > 1 && (

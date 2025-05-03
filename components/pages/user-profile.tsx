@@ -5,11 +5,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { LucideBuilding2, LucideStar, LucideTrello, LucideUser, Store, Heart } from "lucide-react"
-import ReviewCard from "../molecules/business-display-card"
-
+import ReviewCard from "@/components/molecules/business-display-card"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import BusinessDisplayCard from "../molecules/business-display-card"
+import BusinessDisplayCard from "@/components/molecules/business-display-card"
 export default async function UserProfile() {
   const session = await getServerSession()
   if (!session?.user?.email) {
@@ -29,6 +28,7 @@ export default async function UserProfile() {
     select:{
       id: true,
       mainImage: true,
+      images: true,
       name: true,
       category: true,
       street: true,
@@ -51,6 +51,7 @@ export default async function UserProfile() {
         select: {
           id: true,
           mainImage: true,
+          images: true,
           name: true,
           category: true,
           street: true,
@@ -68,7 +69,7 @@ export default async function UserProfile() {
   const formattedSavedBusinesses = savedBusinesses.map((business) => business.business)
 
   return (
-    <Card className="border-none container mx-auto h-screen p-8 my-8">
+    <Card className="border-none container mx-auto min-h-screen p-8 my-8">
       <CardHeader className="flex justify-between items-center">
         <CardTitle className="text-3xl font-bold">Profile</CardTitle>
         <Link href={"/dashboard/"}>
@@ -130,6 +131,7 @@ export default async function UserProfile() {
           </TabsList>
           <TabsContent value="my-businesses">
             <CardContent className="grid grid-cols-4 gap-4 px-0 py-1">
+
           {businesses.map((business:any) => (
             <BusinessDisplayCard key={business.id} business={business} />
           ))}

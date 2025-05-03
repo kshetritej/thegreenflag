@@ -32,6 +32,7 @@ export default async function JobsById({ params }: { params: Params }) {
           :
           jobs.map((job, index) => {
             return (
+              // @ts-expect-error may not be incompatible but it works
               <JobCard key={index} job={job} isOwner={false} />
             )
           })

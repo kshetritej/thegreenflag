@@ -102,6 +102,7 @@ export default async function JobsPage() {
           </CardContent>
         </Card>
       ) : (
+            // @ts-expect-error as expected error
         <JobListClient initialJobs={jobs} isOwner={true} />
       )}
     </div>

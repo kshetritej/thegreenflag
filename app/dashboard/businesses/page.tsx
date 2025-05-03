@@ -36,7 +36,7 @@ export default async function BusinessesPage() {
         {businesses.map(business => (
           <Card key={business.id} className="">
             <CardHeader className="flex items-center gap-4">
-              <Image src={business?.logo || business?.mainImage} alt={business.name} width={100} height={100} className="rounded-full size-24" />
+              <Image src={business?.logo || business?.images[0]} alt={business.name} width={100} height={100} className="rounded-full size-24" />
               <div className="flex flex-col gap-2">
                 <CardTitle className="flex items-center gap-2">{business.name} <Badge>{business.category}</Badge> </CardTitle>
                 <CardDescription className="flex items-center gap-4 mt-2 text-primary">

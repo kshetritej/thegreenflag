@@ -12,6 +12,7 @@ import { useState } from "react"
 import { FileState, MultiImageDropzone } from "@/components/edgestore/MultiImageDropzone"
 import { useEdgeStore } from "@/lib/edgestore"
 import { useRouter } from "next/navigation"
+import { ReCaptchaProvider } from "next-recaptcha-v3"
 
 export default function AddNewReview({ businessId }: { businessId: string }) {
   const user = useSession();
@@ -99,6 +100,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
 
   return (
     <div className="p-6 border rounded-md">
+      <ReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
       <p className="font-medium text-2xl pb-4 mt-4">Add Images</p>
       <MultiImageDropzone value={fileStates}
         dropzoneOptions={{
@@ -126,6 +128,7 @@ export default function AddNewReview({ businessId }: { businessId: string }) {
 
         <Button className="w-full" disabled={submitReview.isPending} type="submit">{submitReview.isPending ? "Submitting...": "Submit"}</Button>
       </form>
+      </ReCaptchaProvider>
     </div>
   )
 }

@@ -14,6 +14,7 @@ export const AddBusinessFormSchema = z.object({
   // Description
   description: z.string().min(50, { message: "Description must be at least 50 characters" }),
   establishedYear: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 
   // Amenities
   amenities: z.array(z.string()).optional(),
@@ -30,5 +31,6 @@ export const AddBusinessFormSchema = z.object({
 
   // Images - in a real app, you'd handle file uploads differently
   mainImage: z.string().optional(),
+  logo: z.string({ message: "Logo is required." }),
   additionalImages: z.array(z.string()).optional(),
 })

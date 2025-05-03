@@ -39,12 +39,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  console.log("Busness data", body)
   const { establishedYear, mainImage, additionalImages, ...data } = body;
 
   const response = await prisma.business.create({
     data: {
       ...data,
-      mainImage: mainImage,
       images: additionalImages,
       establishedYear: establishedYear ? parseInt(establishedYear) : 2002,
     }

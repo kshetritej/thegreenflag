@@ -117,6 +117,7 @@ model Business{
   logo String?
   name String
   description String
+  tags String[]
   category Category @default(OTHERS) 
   subcategory  String?
   amenities Amenity[]
@@ -130,7 +131,7 @@ model Business{
   email String
   website String
   hours String
-  mainImage String
+  mainImage String?
   images String[] 
   googleMapsUrl String?
   locationInfo String?

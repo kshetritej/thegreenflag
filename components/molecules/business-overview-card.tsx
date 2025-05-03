@@ -1,5 +1,6 @@
 import { Business } from "@prisma/client";
 import { Card } from "../ui/card";
+import { Badge } from "../ui/badge";
 
 export default function BusinessOverviewCard({ business }: { business: Business }) {
   return (
@@ -26,6 +27,10 @@ export default function BusinessOverviewCard({ business }: { business: Business 
       <p>
         {business?.description}
       </p>
+      <div>
+        <p>Tags</p>
+        <p className="flex gap-2 font-bold">{business?.tags.map(tag => <Badge key={tag}>{"#" + tag}</Badge>)}</p>
+      </div>
     </Card>
   );
 }

@@ -15,7 +15,7 @@ export default function BusinessImages({ business }: { business: Business }) {
           <div className="col-span-2 relative aspect-[4/3]">
             {business &&
             <Image
-              src={business?.mainImage}
+              src={business?.images[0]}
               alt={business?.name}
               fill
               className="object-cover"
@@ -25,34 +25,26 @@ export default function BusinessImages({ business }: { business: Business }) {
           <div className="hidden md:grid grid-rows-2 gap-2">
             <div className="relative">
               {
-                business && 
-              <Image
-                src={business?.images[0]}
-                alt={business?.name}
-                fill
-                className="object-cover"
-              />
-              }
-            </div>
-            <div className="relative">
-              {
                 business &&
-                <Image src={business?.images[1] ?? business?.mainImage}
-                alt={business?.name}
-                fill
-                className="object-cover"
-              />
+                business.images.length > 1 &&
+                business.images.slice(1).map((image, index) => (
+                  <Image
+                    key={index}
+                    src={image}
+                    alt={business?.name}
+                    fill
+                    className="object-cover"
+                  />
+                ))
               }
             </div>
-          {business.images?.length > 3 &&
-            <MyToolTip content={`${business.images?.length - 3} more images`}>
+            <MyToolTip content={`${business.images?.length} images`}>
               <Button size={'icon'} variant="outline" className="absolute bottom-1 right-1 bg-green-500 hover:bg-green-600" onClick={() => setOpen(true)}>
                 <LucideImages className="size-4" />
               </Button>
             </MyToolTip>
-          }
           {
-            business.images?.length > 3 && open &&
+            open &&
             <ImageModal business={business} open={open} onOpenChange={setOpen} />
           }
         </div>

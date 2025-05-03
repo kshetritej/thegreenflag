@@ -9,6 +9,7 @@ import ReviewCard from "../molecules/business-display-card"
 
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import BusinessDisplayCard from "../molecules/business-display-card"
 export default async function UserProfile() {
   const session = await getServerSession()
   if (!session?.user?.email) {
@@ -70,7 +71,7 @@ export default async function UserProfile() {
     <Card className="border-none container mx-auto h-screen p-8 my-8">
       <CardHeader className="flex justify-between items-center">
         <CardTitle className="text-3xl font-bold">Profile</CardTitle>
-        <Link href={"/dashboard/overview"}>
+        <Link href={"/dashboard/"}>
         <Button size={"default"}><LucideTrello/> Manage Businesses</Button>
         </Link>
       </CardHeader>
@@ -124,18 +125,18 @@ export default async function UserProfile() {
       <CardFooter className="flex flex-col items-start gap-4">
         <Tabs defaultValue="my-businesses" className="w-full">
           <TabsList className="flex gap-4">
-            <TabsTrigger value="my-businesses"><Store />  My Businesses</TabsTrigger>
-            <TabsTrigger value="saved-businesses"><Heart /> Saved Businesses</TabsTrigger>
+            <TabsTrigger value="my-businesses"><Store /> Businesses</TabsTrigger>
+            <TabsTrigger value="saved-businesses"><Heart /> Saved</TabsTrigger>
           </TabsList>
           <TabsContent value="my-businesses">
-        <CardContent className="grid grid-cols-4 gap-4">
+            <CardContent className="grid grid-cols-4 gap-4 px-0 py-1">
           {businesses.map((business:any) => (
-            <ReviewCard myBusiness={true} key={business.id} business={business} />
+            <BusinessDisplayCard key={business.id} business={business} />
           ))}
         </CardContent>
           </TabsContent>
           <TabsContent value="saved-businesses">
-            <CardContent className="grid grid-cols-4 gap-4">
+            <CardContent className="grid grid-cols-4 gap-4 px-0 py-1">
               {formattedSavedBusinesses.map((business:any) => (
                 <ReviewCard key={business.id} business={business} />
               ))}

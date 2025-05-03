@@ -108,7 +108,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
   return (
     <div className="container max-w-md flex items-center justify-center min-h-screen mx-auto">
       <ReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
-      <Card className="min-w-2xl w-full border-none">
+      <Card className="min-w-2xl w-full border-none bg-none">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Create a new account</CardTitle>
           <CardDescription className="text-center">
@@ -280,7 +280,7 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                  <span className="px-2">
                     Or continue with
                   </span>
                 </div>

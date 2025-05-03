@@ -1,50 +1,52 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { redirect } from "next/navigation"
+import { Card, CardContent , CardHeader, CardTitle } from "@/components/ui/card"
+import { Building, DollarSign, Eye, LucideIcon, Star } from "lucide-react"
 import { getServerSession } from "next-auth"
+import prisma from "@/prisma/prismaClient"
 
-export default async function Page() {
+export default async function OverviewPage() {
   const session = await getServerSession()
-  if(!session) {
-    redirect("/login")
-  }
+  const user = session?.user
+  const totalReviews = await prisma.review.count({
+    where: {
+      business: {
+        //@ts-expect-error email exists
+        owner: { email: user?.email }
+      }
+    }
+  })
+
+  const totalBusinesses = await prisma.business.count({
+    where: {
+        //@ts-expect-error email exists
+      owner: { email: user?.email }
+    }
+  })
+
   return (
-    <>
-      <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-        <div className="flex items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Building Your Application
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="aspect-video rounded-xl bg-muted/50" />
-          <div className="aspect-video rounded-xl bg-muted/50" />
-          <div className="aspect-video rounded-xl bg-muted/50" />
-        </div>
-        <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-      </div>
-    </>
+    <div className="grid grid-cols-4 gap-4">
+      <StatCard title="Total Businesses" icon={Building} statNumber={totalBusinesses.toString()} />
+      <StatCard title="Total Reviews" icon={Star} statNumber={totalReviews.toString()} />
+      <StatCard title="Revenue" icon={DollarSign} statNumber="$123,456" />
+      <StatCard title="Business Views" icon={Eye} statNumber="123,456" />
+    </div>
+  )
+}
+
+
+type StatsCardProps = {
+  title: string,
+  icon: LucideIcon,
+  statNumber: string
+}
+function StatCard({ title, icon: Icon, statNumber }: StatsCardProps) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex gap-2 justify-between items-center">{title}<Icon /></CardTitle>
+      </CardHeader>
+      <CardContent className="font-bold text-3xl">
+        {statNumber}
+      </CardContent>
+    </Card>
   )
 }

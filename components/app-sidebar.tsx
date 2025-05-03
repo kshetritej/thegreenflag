@@ -22,15 +22,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader className="p-4 ">
-        <Button variant={'ghost'}>
+      <SidebarHeader className="p-4 border-b">
           <Link href={"/"} className="flex gap-1 items-center font-semibold">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <LandPlot className="size-4" />
             </div>
             Green Flag
           </Link>
-        </Button>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={dashboardLinks.navMain} />

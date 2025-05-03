@@ -1,15 +1,17 @@
 "use client";
 
 import { AppSidebar } from "@/components/app-sidebar";
-import { Breadcrumb, BreadcrumbItem } from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { redirect, usePathname } from "next/navigation";
+import {  usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const location = usePathname()
   const session = useSession()
+  const router = useRouter()
   if(!session) {
-    redirect("/")
+    router.push("/")
   }
 
   return (
@@ -22,8 +24,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {location.split("/").map((p, index) => {
               return (
                 <div className="flex gap-4" key={index}>
-                  <Breadcrumb>
+                  <Breadcrumb className="flex list-none items-center">
                     <BreadcrumbItem className="list-none">{p.charAt(0).toUpperCase() + p.slice(1)} </BreadcrumbItem>
+                    <BreadcrumbSeparator/>
                   </Breadcrumb>
                 </div>
               )

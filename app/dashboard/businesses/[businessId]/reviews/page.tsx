@@ -20,7 +20,7 @@ export default async function BusinessReviewsPage({ params }: { params: Params }
         reviews.length < 1 &&
         <p> No reviews yet.</p>
       }
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid gap-2">
         <ListReviews reviews={reviews} dashboard />
       </div>
     </div>

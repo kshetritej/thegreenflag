@@ -11,7 +11,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
-import { Building, MapPin, Phone, Upload, ChevronRight, ChevronLeft, Check } from "lucide-react"
+import { Building, MapPin, Phone, Upload, ChevronRight, ChevronLeft, Check, LucideX } from "lucide-react"
 import axios from "axios"
 import AddBusinessSuccessCard from "@/components/molecules/add-business-success-card"
 import { AddBusinessFormSchema } from "@/src/validations/business/add-business.validation"
@@ -22,6 +22,11 @@ import { businessCategory } from "@/lib/constants/businessCategory"
 import { useEdgeStore } from "@/lib/edgestore"
 import { User } from "@prisma/client"
 import { FileState, MultiImageDropzone } from "../edgestore/MultiImageDropzone"
+import { SingleImageDropzone } from "../edgestore/SingleImageDropzone"
+import Info from "../atoms/info-modal"
+import { Label } from "../ui/label"
+import { Badge } from "../ui/badge"
+import MyToolTip from "../atoms/MyTooltip"
 
 
 type FormValues = z.infer<typeof AddBusinessFormSchema>
@@ -31,6 +36,8 @@ export default function AddBusinessForm({ user }: { user: User }) {
   const [fileStates, setFileStates] = useState<FileState[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [step, setStep] = useState(1)
+  const [file, setFile] = useState<File | null>(null)
+  const [tags, setTags] = useState([])
 
   const { edgestore } = useEdgeStore()
   function updateFileProgress(key: string, progress: FileState['progress']) {
@@ -65,15 +72,19 @@ export default function AddBusinessForm({ user }: { user: User }) {
       email: "",
       website: "",
       hours: "",
-      mainImage: "",
       googleMapsUrl: "",
       additionalImages: [],
       ownerId: user.id,
+      logo: "",
+      tags: []
     },
   })
 
   const addBusinessMutation = useMutation({
-    mutationFn: (data: FormValues) => axios.post("/api/business", data),
+    mutationFn: (data: FormValues) => {
+      console.log("data:", data)
+      return axios.post("/api/business", data)
+    },
     onSuccess: () => {
       toast.success("Business added successfully")
     },
@@ -88,11 +99,29 @@ export default function AddBusinessForm({ user }: { user: User }) {
       return
     }
 
-    addBusinessMutation.mutate({
-      ...data,
-      mainImage: imageUrls[0],
-      additionalImages: imageUrls.slice(1),
-    })
+    if (!file) {
+      return toast.error("Please upload a logo")
+    }
+
+    try {
+      // Upload the logo file
+      const logoRes = await edgestore.publicFiles.upload({
+        file,
+      });
+
+      console.log('Logo upload response:', logoRes)
+
+    // Update the form data with the logo URL and image URLs
+      addBusinessMutation.mutate({
+        ...data,
+        additionalImages: imageUrls,
+        logo: logoRes.url,
+        tags: tags.filter((tag:any) => tag.trim() !== ""),
+      })
+    } catch (error) {
+      console.error("Error uploading logo:", error)
+      toast.error("Failed to upload logo. Please try again.")
+    }
   }
 
   function uploadImages(addedFiles: FileState[]) {
@@ -123,7 +152,6 @@ export default function AddBusinessForm({ user }: { user: User }) {
       return;
     }
     await uploadImages(fileStates);
-    toast.success("Images uploaded successfully");
   }
 
   const nextStep = async () => {
@@ -132,7 +160,7 @@ export default function AddBusinessForm({ user }: { user: User }) {
     if (step === 1) {
       const basicInfoFields = ["name", "category", "street", "city", "country"]
       const result = await form.trigger(basicInfoFields as any)
-      canProceed = result
+      canProceed = file! && result
     } else if (step === 2) {
       const descriptionFields = ["description"]
       const result = await form.trigger(descriptionFields as any)
@@ -176,7 +204,7 @@ export default function AddBusinessForm({ user }: { user: User }) {
               className={`flex flex-col items-center ${stepNumber <= step ? "text-primary" : "text-gray-400"}`}
             >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 
+                className={`w-8 h-8 rounded-full flex items-center justify-center mb-2
                   ${stepNumber < step
                     ? "bg-primary text-white"
                     : stepNumber === step
@@ -196,6 +224,7 @@ export default function AddBusinessForm({ user }: { user: User }) {
             </div>
           ))}
         </div>
+        <Info message={"All the fields marked with (*) are mandatory."} />
         <div className="w-full bg-gray-200 h-1 mt-4 rounded-full">
           <div
             className="bg-primary h-1 rounded-full transition-all duration-300"
@@ -227,6 +256,21 @@ export default function AddBusinessForm({ user }: { user: User }) {
                   </FormItem>
                 )}
               />
+              <div>
+                <Label>Logo *</Label>
+                <SingleImageDropzone
+                  dropzoneOptions={{
+                    maxFiles: 1,
+                    maxSize: 1024 * 1024 * 5, // 5MB
+                  }}
+                  width={200}
+                  height={200}
+                  // @ts-expect-error it is assignable
+                  value={file}
+                  // @ts-expect-error it is assignable
+                  onChange={(file) => setFile(file)}
+                />
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -390,6 +434,19 @@ export default function AddBusinessForm({ user }: { user: User }) {
                   </FormItem>
                 )}
               />
+              <div>
+                <Label>Tags (comma separated)</Label>
+                <div className="flex gap-1 flex-wrap py-2">
+                  {tags.slice(0, -1).map((tag: any, index:number) => (<Badge key={index} variant={'outline'}>{tag}</Badge>
+                  ))}
+                  {tags.length > 1 &&
+                    <MyToolTip content={"Clear Tags"}>
+                      <Button size="icon" onClick={() => setTags([])}><LucideX className="size-4" /></Button>
+                    </MyToolTip>
+                  }
+                </div>
+                <Textarea placeholder="Tags" onChange={(e: any) => setTags(e.target.value.split(","))} />
+              </div>
             </div>
           )}
 
@@ -569,7 +626,7 @@ export default function AddBusinessForm({ user }: { user: User }) {
             )}
 
             {step < 5 ? (
-              <Button type="button" onClick={nextStep} className="gap-2 ml-auto">
+              <Button type="button" onClick={nextStep} className="gap-2 ml-auto" disabled={!file}>
                 Next
                 <ChevronRight className="h-4 w-4" />
               </Button>

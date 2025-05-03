@@ -12,7 +12,7 @@ export const dashboardLinks = {
   navMain: [
     {
       title: "Overview",
-      url: "/dashboard/overview",
+      url: "/dashboard/",
       icon: LayoutDashboard
     },
     {

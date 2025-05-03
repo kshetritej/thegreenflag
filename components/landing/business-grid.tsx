@@ -5,9 +5,9 @@ import BusinessDisplayCardList from "@/components/molecules/business-display-car
 import BusinessDisplayCardSkeleton from "@/components/common/business-display-card-skeleton"  
 export default function BusinessGrid() {
   const { data: businesses, isLoading } = useQuery({
-    queryKey: ["businesses"],
+    queryKey: ["popular_businesses"],
     queryFn: async () => {
-      const response = await axios.get("/api/business")
+      const response = await axios.get("/api/business/popular")
       return response.data
     },
   })

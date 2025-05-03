@@ -17,7 +17,7 @@ export default function BusinessDisplayCardList({ business }: { business: Busine
           <p className="flex gap-1 items-center">
             <LucideStar className="size-4 text-yellow-400 fill-yellow-400" />
             {/* @ts-expect-error it exists */}
-            <span className="text-sm font-medium">{(business?.reviews.reduce((acc, review) => acc + review.rating, 0) / business?.reviews.length || 0).toFixed(1)}</span>
+            <span className="text-sm font-medium">{(business?.reviews?.reduce((acc, review) => acc + review.rating, 0) / business?.reviews?.length || 0).toFixed(1)}</span>
           </p>
         </div>
       </div>

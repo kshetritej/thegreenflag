@@ -21,9 +21,6 @@ export async function GET(req: NextRequest) {
           }
         }
       ],
-      OR:[
-        {category: }
-      ]
     },
     orderBy: {
       createdAt: "desc"

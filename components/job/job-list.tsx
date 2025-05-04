@@ -120,74 +120,77 @@ export default function JobList({ businessId, showFilters = true, limit }: JobLi
 
 function JobCard({ job }: { job: Job }) {
   return (
-    <Card className={`overflow-hidden ${job.featured ? 'border-primary/50 bg-primary/5' : ''}`}>
-      {job.featured && (
-        <div className="p-2">
-          <Badge className="p-2 mr-4"><LucideSparkles />Featured</Badge>
-        </div>
-      )}
-
-      <CardHeader className="pb-4">
-        <div className="flex justify-between items-start">
-          <div className="space-y-1">
-            <CardTitle className="text-xl font-bold">{job.title}</CardTitle>
-            <CardDescription className="flex items-center gap-1">
-              <Building2 className="h-3.5 w-3.5" />
-              {job.business.name}
-            </CardDescription>
+    <Link href={`/job/${job.id}`}>
+      <Card className={`overflow-hidden ${job.featured ? 'border-primary/50 bg-primary/5' : ''}`}>
+        {job.featured && (
+          <div className="p-2">
+            <Badge className="p-2 mr-4"><LucideSparkles />Featured</Badge>
           </div>
+        )}
 
-          {job.business.mainImage && (
-            <div className="h-12 w-12 rounded-md overflow-hidden border">
-              <Image
-                src={job.business.mainImage}
-                alt={job.business.name}
-                width={48}
-                height={48}
-                className="object-cover h-full w-full"
-              />
+        <CardHeader className="pb-4">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <CardTitle className="text-xl font-bold">{job.title}</CardTitle>
+              <CardDescription className="flex items-center gap-1">
+                <Building2 className="h-3.5 w-3.5" />
+                {job.business.name}
+              </CardDescription>
             </div>
-          )}
-        </div>
-      </CardHeader>
 
-      <CardContent className="pb-4">
-        <div className="space-y-4">
-          <p className="text-sm line-clamp-2">{job.description}</p>
-
-          <div className="flex flex-wrap gap-3">
-            <Badge variant="outline" className="flex items-center gap-1">
-              <MapPin className="h-3 w-3" />
-              {job.location}
-            </Badge>
-
-            <Badge variant="outline" className="flex items-center gap-1">
-              <Briefcase className="h-3 w-3" />
-              {job.jobType}
-            </Badge>
-
-            <Badge variant="outline" className="flex items-center gap-1">
-              <DollarSign className="h-3 w-3" />
-              {job.salaryRange}
-            </Badge>
-
-            <Badge variant="outline" className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}
-            </Badge>
+            {job.business.mainImage && (
+              <div className="h-12 w-12 rounded-md overflow-hidden border">
+                <Image
+                  src={job.business.mainImage}
+                  alt={job.business.name}
+                  width={48}
+                  height={48}
+                  className="object-cover h-full w-full"
+                />
+              </div>
+            )}
           </div>
-        </div>
-      </CardContent>
+        </CardHeader>
 
-      <CardFooter className="flex justify-between items-center pt-0">
-        <div className="text-sm text-muted-foreground">
-          {job.business.city}, {job.business.state}
-        </div>
+        <CardContent className="pb-4">
+          <div className="space-y-4">
+            <p className="text-sm line-clamp-2">{job.description}</p>
 
-        <Link href={`/job/${job.id}`}>
-          <Button size="sm">View Details</Button>
-        </Link>
-      </CardFooter>
-    </Card>
+            <div className="flex flex-wrap gap-3">
+              <Badge variant="outline" className="flex items-center gap-1">
+                <MapPin className="h-3 w-3" />
+                {job.location}
+              </Badge>
+
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Briefcase className="h-3 w-3" />
+                {job.jobType}
+              </Badge>
+
+              <Badge variant="outline" className="flex items-center gap-1">
+                <DollarSign className="h-3 w-3" />
+                {job.salaryRange}
+              </Badge>
+
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true })}
+              </Badge>
+            </div>
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex justify-between items-center pt-0">
+          <div className="text-sm text-muted-foreground">
+            {job.business.city}, {job.business.state}
+          </div>
+
+          <Link href={`/job/${job.id}`}>
+            <Button size="sm">View Details</Button>
+          </Link>
+        </CardFooter>
+      </Card>
+
+    </Link>
   )
 }

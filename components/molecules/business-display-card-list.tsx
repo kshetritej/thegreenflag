@@ -8,7 +8,7 @@ export default function BusinessDisplayCardList({ business }: { business: Busine
   const router = useRouter();
   return (
     <div className="hover:cursor-pointer flex p-2 gap-2 bg-card rounded-md flex-col justify-between" onClick={() => router.push(`/business/${business.id}`)}>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
         <div className="w-24 h-24 border rounded-md overflow-hidden col-span-1">
           <Image src={business.logo || business.images[0]} alt={business.name} width={100} height={100} className="object-cover" />
         </div>

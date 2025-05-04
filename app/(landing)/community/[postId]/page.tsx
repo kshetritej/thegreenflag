@@ -1,33 +1,41 @@
+"use client";
+
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
-import { ArrowLeft, User } from "lucide-react"
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowLeft, Trash, User } from "lucide-react"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CommentForm } from "@/components/organisms/comment-form"
+import { useParams } from "next/navigation"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import axios from "axios"
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import MyToolTip from "@/components/atoms/MyTooltip";
 
-import prisma from "@/prisma/prismaClient"
+export default function PostPage() {
+  const { postId } = useParams()
+  const session = useSession()
+  const user = session.data?.user
+  const queryClient = useQueryClient()
 
-type Params = Promise<{ postId: string }>
-export default async function PostPage({ params }: { params: Params }) {
-  const postId = (await params).postId
-  const post = await prisma.post.findUnique({
-    where: {
-      id: postId,
-    },
-    include: {
-      author: true,
-      comments: {
-        include: {
-          author: true,
-        },
-      },
-    },
+  const { data: post } = useQuery({
+    queryFn: async () => await axios.get(`/api/post/${postId}`),
+    queryKey: ['getPost', postId]
   })
 
+  const { mutate: deleteComment } = useMutation({
+    mutationKey: ['deleteComment'],
+    mutationFn: async (commentId: string) => await axios.delete(`/api/post/comment/${commentId}`),
+    onSuccess: () => {
+      toast.success("Comment deleted successfully")
+      queryClient.invalidateQueries({ queryKey: ['getPost', postId] })
+    },
+    onError: () => toast.error("Failed to delete comment")
+  })
 
-  if (!post) {
+  if (!post?.data) {
     return (
       <div className="container py-8 px-4 mx-auto">
         <div className="text-center">
@@ -53,41 +61,40 @@ export default async function PostPage({ params }: { params: Params }) {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">{post.title}</CardTitle>
+              <CardTitle className="text-2xl">{post.data.title}</CardTitle>
               <div className="flex items-center gap-2 mt-2">
                 <Avatar className="h-6 w-6">
-                  {/* @ts-expect-error this is string will come else we wont' display this */}
-                  <AvatarImage src={post?.author?.profileImage} alt={post.author.email} />
+                  <AvatarImage src={post.data.author.profileImage} alt={post.data.author.name} />
                   <AvatarFallback>
                     <User className="h-4 w-4" />
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm text-muted-foreground">{post.author.name}</span>
+                <span className="text-sm text-muted-foreground">{post.data.author.name}</span>
                 <span className="text-sm text-muted-foreground">
-                  • {formatDistanceToNow(post.createdAt, { addSuffix: true })}
+                  • {formatDistanceToNow(post.data.createdAt, { addSuffix: true })}
                 </span>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="whitespace-pre-line">{post.content}</p>
+              <p className="whitespace-pre-line">{post.data.content}</p>
             </CardContent>
           </Card>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Comments ({post.comments.length})</h2>
+          <h2 className="text-xl font-semibold mb-4">Comments ({post.data.comments.length})</h2>
 
-          {post.comments.length === 0 ? (
+          {post.data.comments.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-muted-foreground mb-4">No comments yet. Be the first to comment!</p>
-              <CommentForm postId={post.id} />
+              <CommentForm postId={post.data.id} />
             </div>
           ) : (
             <div className="space-y-4">
-              <CommentForm postId={post.id} />
-              {post.comments.map((comment) => (
+                <CommentForm postId={post.data.id} />
+                {post.data.comments.map((comment: any) => (
                 <Card key={comment.id}>
-                  <CardContent className="pt-6">
+                    <CardHeader>
                     <div className="flex items-center gap-2 mb-2">
                       <Avatar className="h-6 w-6">
                         {comment?.author?.profileImage &&
@@ -103,7 +110,15 @@ export default async function PostPage({ params }: { params: Params }) {
                       </span>
                     </div>
                     <p className="text-sm">{comment.content}</p>
-                  </CardContent>
+                    </CardHeader>
+                    {/* @ts-expect-error it exists */}
+                    {comment.author.id === user?.id && (
+                      <CardFooter>
+                        <MyToolTip content="Clicking this button will immediately delete this comment.">
+                          <Button size={'default'} variant={'destructive'} onClick={() => deleteComment(comment.id)}><Trash /> Delete</Button>
+                        </MyToolTip>
+                      </CardFooter>
+                    )}
                 </Card>
               ))}
             </div>

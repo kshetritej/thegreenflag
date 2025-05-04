@@ -27,7 +27,7 @@ interface CommentFormProps {
   postId: string
 }
 
-export function CommentForm({ postId }: CommentFormProps) {
+export function CommentForm({ postId}: CommentFormProps) {
   const router = useRouter()
 
   const session = useSession()

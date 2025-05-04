@@ -27,6 +27,7 @@ type FormData = {
   address: string
   bio: string
   isEnglishSpeaking: boolean
+  termsAccepted: boolean
   password: string
   profileImage: string
 }
@@ -52,12 +53,14 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
       address: "",
       bio: "",
       isEnglishSpeaking: false,
+      termsAccepted: false,
       password: "",
       profileImage: "",
     },
   })
 
   const isEnglishSpeaking = watch("isEnglishSpeaking")
+  const termsAccepted = watch('termsAccepted')
 
   const sendEmailVerification = useMutation({
     mutationFn: async (data: { email: string, token: string }) => {
@@ -255,13 +258,32 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                   I speak English
                 </Label>
               </div>
+
+                <div className="flex items-start space-x-2 pt-2">
+                  <Checkbox
+                    id="terms-accepted"
+                    checked={termsAccepted}
+                    onCheckedChange={(checked) => {
+                      setValue("termsAccepted", checked as boolean)
+                    }}
+                  />
+                  <Label htmlFor="terms-accepted" className="flex flex-col items-start">
+                    I agree to all terms and conditions.
+                    <p className="text-xs">
+                      By signing up to this platform, You verify that you accept all the <a className="underline text-blue-500" href="/legal">
+                        legal </a>, <a className="underline text-blue-500" href="/terms-and-conditions">
+                        terms and conditions </a>, <a className="underline text-blue-500" href="/privacy-policy">
+                        privacy policy </a>   stated in this platform and you acknowledge all of them.
+                    </p>
+                  </Label>
+                </div>
             </div>
 
             <div className="space-y-4">
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isSubmitting || isLoading || registerUser.isPending}
+                  disabled={isSubmitting || isLoading || registerUser.isPending || !termsAccepted}
               >
                 {isSubmitting || isLoading || registerUser.isPending ? (
                   <>
@@ -281,14 +303,13 @@ export default function RegisterForm({ className, ...props }: React.ComponentPro
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="px-2">
-                    Or continue with
+                      Or 
                   </span>
                 </div>
               </div>
 
-              <Button variant="outline" className="w-full" type="button">
-                <Github className="mr-2 h-4 w-4" />
-                Login with GitHub
+                <Button variant="secondary" className="w-full" type="button">
+                  Login with Google 
               </Button>
             </div>
           </form>

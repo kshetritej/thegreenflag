@@ -20,6 +20,9 @@ export async function GET(req: NextRequest) {
             mode: "insensitive"
           }
         }
+      ],
+      OR:[
+        {category: }
       ]
     },
     orderBy: {
@@ -39,7 +42,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  console.log("Busness data", body)
   const { establishedYear, mainImage, additionalImages, ...data } = body;
 
   const response = await prisma.business.create({

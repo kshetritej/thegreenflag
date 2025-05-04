@@ -8,6 +8,7 @@ import axios from "axios"
 import { useSearchParams } from "next/navigation"
 import { Loader2 } from "lucide-react"
 import { Suspense } from "react"
+import { useSession } from "next-auth/react"
 
 export default function Expore() {
   return (
@@ -17,9 +18,12 @@ export default function Expore() {
   )
 }
 function ExploreComponent() {
+  const session = useSession();
   const searchParams = useSearchParams()
   const category = searchParams.get("category")
   const search = searchParams.get("search")
+
+  const user = session.data?.user;
 
   const { data: businesses, isLoading, isError } = useQuery({
     queryFn: async () => {

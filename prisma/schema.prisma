@@ -102,7 +102,11 @@ model User {
   verified Boolean @default(false)
   verifiedAt DateTime?  
 
+  termsAndConditionAccepted Boolean @default(true)
+  acceptedAt DateTime @default(now())
+
   languages String[]
+  preferences String[]
   businesses Business[]
   reviews Review[]
   replies Reply[]

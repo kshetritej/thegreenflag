@@ -113,6 +113,8 @@ model User {
   tips Tip[]
   favorites Favorite[]
   events Event[]
+  posts Post[]
+  comments Comment[]
 }
 
 model Business{
@@ -236,4 +238,32 @@ model Event {
 
   userId String
   user User @relation(fields: [userId], references: [id])
+}
+
+
+model Post{
+  id String @id @default(uuid())
+  title String
+  content String
+  upVotes Int @default(0)
+  downVotes Int @default(0)
+
+  authorId String
+  author User @relation(fields: [authorId], references: [id])
+
+  comments Comment[]
+}
+
+model Comment{
+  id String @id @default(uuid())
+  content String
+
+  upVotes Int @default(0)
+  downVotes Int @default(0)
+
+  authorId String
+  author User @relation(fields: [authorId], references:[id])
+
+  postId String
+  post Post @relation(fields: [postId], references: [id])
 }

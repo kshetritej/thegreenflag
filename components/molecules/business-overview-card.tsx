@@ -27,10 +27,13 @@ export default function BusinessOverviewCard({ business }: { business: Business 
       <p>
         {business?.description}
       </p>
+      {
+        business.tags.length > 0 &&
       <div>
         <p>Tags</p>
         <p className="flex gap-2 font-bold">{business?.tags.map(tag => <Badge key={tag}>{"#" + tag}</Badge>)}</p>
       </div>
+      }
     </Card>
   );
 }

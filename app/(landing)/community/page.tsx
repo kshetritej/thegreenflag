@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Post } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Community() {
-
+  const user = useSession().data?.user
   const { data: posts } = useQuery({
     queryKey: ['getPosts'],
     queryFn: async () => await axios.get("/api/post/")
@@ -23,7 +24,10 @@ export default function Community() {
           <h1 className="text-4xl font-bold">Community Discussions</h1>
           <p className="text-muted-foreground mt-2">Discussion about the local business among the visitors like you</p>
         </div>
+        {
+          user && 
         <Button size={'lg'} onClick={() => router.push("/community/create")}>Create Post</Button>
+        }
       </div>
       {posts?.data && posts?.data?.length > 0 &&
         posts?.data?.map((post: Post) =>

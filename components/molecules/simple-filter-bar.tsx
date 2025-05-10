@@ -77,7 +77,7 @@ export default function SimpleFilterBar({ isHomepage = false }: { isHomepage: bo
               id="search-box"
               type="text"
               placeholder="What are you looking for?"
-              className=" w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+              className=" w-full px-4 py-3 rounded-full border "
               onChange={(e) => setSearchQuery(e.target.value)}
               defaultValue={searchQuery}
               onKeyDown={(e) => {
@@ -133,7 +133,7 @@ export default function SimpleFilterBar({ isHomepage = false }: { isHomepage: bo
           {MAIN_CATEGORIES.length < Object.values(Category).length && (
             <Badge
               variant="outline"
-              className="bg-green-200 border-green-500  text-black cursor-pointer p-2"
+              className="bg-primary/80 text-secondary cursor-pointer p-2"
               onClick={() => setShowAllCategories(!showAllCategories)}
             >
               {showAllCategories ? "Show Less" : "More..."}

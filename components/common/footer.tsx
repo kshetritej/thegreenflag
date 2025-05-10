@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container mx-auto py-12">
         <div className="flex flex-col md:flex-row justify-between items-start mb-8">
           <div className="flex items-center gap-2 mb-6 md:mb-0">
-            <div className="size-10 rounded-2xl bg-lime-600 flex items-center justify-center">
+            <div className="size-10 rounded-2xl bg-primary flex items-center justify-center">
               <LandPlot className="text-white" />
             </div>
             <span className="text-xl font-bold">Green Flag</span>

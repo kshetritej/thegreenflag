@@ -43,7 +43,7 @@ export default function BusinessDisplayCard({ business }: { business: Business }
             <Badge className="rounded-full absolute top-3 right-3">{business.category.toString().charAt(0) + business.category.toString().slice(1).toLowerCase()}</Badge>
             {/* @ts-expect-error it exist */}
             {business?.reviews?.length > 1 && (
-              <Badge className="absolute top-3 px-4 py-2 left-3 font-medium rounded-full border-none bg-green-400 text-white">
+              <Badge className="absolute top-3 px-4 py-2 left-3 font-medium rounded-full border-none bg-primary text-white">
                 <LucideStar className="fill-white" /> Top Rated
               </Badge>
             )}

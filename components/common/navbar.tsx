@@ -33,7 +33,7 @@ export default function Navbar() {
             {navLinks.map(({name, href, icon:Icon}) => {
               return (
                 <NavigationMenuLink href={href} key={href} className="font-medium flex flex-row gap-2 items-center">
-                  <Icon className="size-4" />
+                  <Icon className="size-4 hover:text-primary" />
                   <span>
                     {name}
                   </span>

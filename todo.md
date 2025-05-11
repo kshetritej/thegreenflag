@@ -1,2 +1,0 @@
-- [x] send error if email already exist
-- [ ] captcha on login and sign and review

@@ -10,39 +10,37 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 export default function BusinessImages({ business }: { business: Business }) {
   const [open, setOpen] = useState(false)
   return (
-  <div className="relative mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 rounded-lg overflow-hidden">
-          <div className="col-span-2 relative aspect-[4/3]">
-            {business &&
+    <div className="relative mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 rounded-lg overflow-hidden">
+        <div className="col-span-2 relative aspect-[4/3]">
+          {business &&
             <Image
               src={business?.images[0]}
               alt={business?.name}
               fill
               className="object-cover"
             />
-            }
-          </div>
-          <div className="hidden md:grid grid-rows-2 gap-2">
-            <div className="relative">
-              {
-                business &&
-                business.images.length > 1 &&
-                business.images.slice(1).map((image, index) => (
-                  <Image
-                    key={index}
-                    src={image}
-                    alt={business?.name}
-                    fill
-                    className="object-cover"
-                  />
-                ))
-              }
-            </div>
-            <MyToolTip content={`${business.images?.length} images`}>
-              <Button size={'icon'} variant="outline" className="absolute bottom-1 right-1 bg-green-500 hover:bg-green-600" onClick={() => setOpen(true)}>
-                <LucideImages className="size-4" />
-              </Button>
-            </MyToolTip>
+          }
+        </div>
+        <div className="hidden md:grid grid-rows-2 gap-2">
+          {business &&
+            business.images.length > 1 &&
+            business.images.slice(1, 3).map((image, index) => (
+              <div className="relative aspect-[4/3]" key={index}>
+                <Image
+                  src={image}
+                  alt={business?.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))
+          }
+          <MyToolTip content={`${business.images?.length} images`}>
+            <Button size={'icon'} variant="outline" className="absolute bottom-1 right-1 bg-green-500 hover:bg-green-600" onClick={() => setOpen(true)}>
+              <LucideImages className="size-4" />
+            </Button>
+          </MyToolTip>
           {
             open &&
             <ImageModal business={business} open={open} onOpenChange={setOpen} />

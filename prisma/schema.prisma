@@ -13,6 +13,11 @@ enum MediaType {
   REVIEW_IMAGE
 }
 
+enum UserRole{
+ADMIN
+USER
+}
+
 enum Category {
   RESTAURANT
   PARK
@@ -102,9 +107,6 @@ model User {
   verified Boolean @default(false)
   verifiedAt DateTime?  
 
-  termsAndConditionAccepted Boolean @default(true)
-  acceptedAt DateTime @default(now())
-
   languages String[]
   preferences String[]
   businesses Business[]
@@ -137,10 +139,8 @@ model Business{
   email String
   website String
   hours String
-  mainImage String?
   images String[] 
   googleMapsUrl String?
-  locationInfo String?
   verifiedAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

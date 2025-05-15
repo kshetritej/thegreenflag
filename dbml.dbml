@@ -1,0 +1,141 @@
+Table User {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  email varchar [unique, not null]
+  username varchar [unique, not null]
+  phone varchar
+  address varchar
+  password varchar [not null]
+  name varchar [not null]
+  bio varchar
+  profileImage varchar
+  createdAt timestamp [default: 'now()', not null]
+  updatedAt timestamp [default: 'now()', not null]
+  verified boolean [default: false, not null]
+  verifiedAt timestamp
+  languages varchar[]
+  preferences varchar[]
+}
+
+Table Business {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  verified boolean [default: false, not null]
+  logo varchar
+  name varchar [not null]
+  description text [not null]
+  tags varchar[] [not null]
+  // category Category [default: OTHERS, not null]
+  subcategory varchar
+  amenities Amenity[]
+  establishedYear int [not null]
+  street varchar [not null]
+  city varchar [not null]
+  state varchar [not null]
+  country varchar [not null]
+  postalCode varchar [not null]
+  phone varchar [not null]
+  email varchar [not null]
+  website varchar
+  hours varchar
+  images varchar[]
+  googleMapsUrl varchar
+  verifiedAt timestamp
+  createdAt timestamp [default: 'now()', not null]
+  updatedAt timestamp [default: 'now()', not null]
+  ownerId varchar [not null, ref: > User.id]
+}
+
+Table Review {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  content text [not null]
+  rating int [not null]
+  createdAt timestamp [default: 'now()', not null]
+  updatedAt timestamp [default: 'now()', not null]
+  images varchar[]
+  authorId varchar [not null, ref: > User.id]
+  businessId varchar [not null, ref: > Business.id]
+  helpful int [default: 0, not null]
+  reports int [default: 0, not null]
+}
+
+Table Reply {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  content text [not null]
+  createdAt timestamp [default: 'now()', not null]
+  updatedAt timestamp [default: 'now()', not null]
+  authorId varchar [not null, ref: > User.id]
+  reviewId varchar [not null, ref: > Review.id]
+}
+
+Table Job {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  title varchar [not null]
+  description text [not null]
+  businessId varchar [not null, ref: > Business.id]
+  location varchar [not null]
+  jobType varchar [not null]
+  salaryRange varchar [not null]
+  email varchar [not null]
+  phone varchar [not null]
+  featured boolean [default: false, not null]
+  createdAt timestamp [default: 'now()', not null]
+  updatedAt timestamp [default: 'now()', not null]
+}
+
+Table Event {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  title varchar [not null]
+  description text
+  startDate timestamp [not null]
+  endDate timestamp [not null]
+  createdAt timestamp [default: 'now()', not null]
+  updatedAt timestamp [default: 'now()', not null]
+  businessId varchar [not null, ref: > Business.id]
+  userId varchar [not null, ref: > User.id]
+}
+
+Table Post {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  title varchar [not null]
+  content text [not null]
+  upVotes int [default: 0, not null]
+  downVotes int [default: 0, not null]
+  createdAt timestamp [default: 'now()', not null]
+  updatedAt timestamp [default: 'now()', not null]
+  authorId varchar [not null, ref: > User.id]
+}
+
+Table Comment {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  content text [not null]
+  upVotes int [default: 0, not null]
+  downVotes int [default: 0, not null]
+  createdAt timestamp [default: 'now()', not null]
+  updatedAt timestamp [default: 'now()', not null]
+  authorId varchar [not null, ref: > User.id]
+  postId varchar [not null, ref: > Post.id]
+}
+
+Table Favorite {
+  id varchar [pk, default: 'uuid_generate_v4()']
+  userId varchar [not null, ref: > User.id]
+  businessId varchar [not null, ref: > Business.id]
+  createdAt timestamp [default: 'now()', not null]
+  indexes {
+    (userId, businessId) [unique]
+  }
+}
+
+// Relationships (already included as foreign keys)
+// User (1) <---> (M) Business (ownerId)
+// User (1) <---> (M) Review (authorId)
+// Business (1) <---> (M) Review (businessId)
+// User (1) <---> (M) Reply (authorId)
+// Review (1) <---> (M) Reply (reviewId)
+// Business (1) <---> (M) Job (businessId)
+// Business (1) <---> (M) Event (businessId)
+// User (1) <---> (M) Event (userId)
+// User (1) <---> (M) Post (authorId)
+// Post (1) <---> (M) Comment (postId)
+// User (1) <---> (M) Comment (authorId)
+// User (1) <---> (M) Favorite (userId)
+// Business (1) <---> (M) Favorite (businessId)

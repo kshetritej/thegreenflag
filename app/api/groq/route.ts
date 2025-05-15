@@ -6,7 +6,8 @@ export async function POST(req: NextRequest) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
   const { prompt } = await req.json()
 
-  const instructions = `Summarize this business and do the analysis of the review, based on this JSON data :${prompt} and return the summary in a JSON format
+  const instructions = `Summarize this business and do the analysis of the review, based on this JSON data :${prompt} 
+  and return the summary in a JSON format
     1. sentiment analysis of the review (should be positive, negative or neutral)
     2. overall rating of the business (should be number between 0 and 5)
     3. pros and cons of the business
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
     "recommendation": "recommendation of the business (should be a sentence or two)"
     },
     "sentiment_analysis": {
-    "postitive":{
+    "positive":{
       "percentage": "in percentage",
       "reviews": "number of reviews showing positive response",
     },

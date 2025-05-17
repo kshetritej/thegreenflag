@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import prisma from "@/prisma/prismaClient";
 import EditBusinessForm from "@/components/pages/edit-business-form";
 
-export default async function EditBusinessPage({ params }: { params: { businessId: string } }) {
+type pageProps = Promise<{businessId: string}>
+export default async function EditBusinessPage({ params }: { params: pageProps }) {
   const session = await getServerSession();
   if (!session) {
     redirect("/");
@@ -11,7 +12,7 @@ export default async function EditBusinessPage({ params }: { params: { businessI
 
   const business = await prisma.business.findUnique({
     where: {
-      id: params.businessId,
+      id: (await params).businessId,
       // @ts-expect-error email exists
       owner: { email: session?.user?.email }
     }

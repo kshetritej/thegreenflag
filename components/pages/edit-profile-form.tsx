@@ -80,6 +80,7 @@ export default function EditProfileForm({ user, onCancel }: { user: User, onCanc
 
       updateProfile.mutate({
         ...data,
+        //@ts-expect-error always this
         profileImage: profileImageUrl,
       })
     } catch (error) {
@@ -177,7 +178,9 @@ export default function EditProfileForm({ user, onCancel }: { user: User, onCanc
             }}
             width={200}
             height={200}
+            //@ts-expect-error singleiamgedropzone file type mismatch
             value={file}
+            //@ts-expect-error singleiamgedropzone file type mismatch
             onChange={(file) => setFile(file)}
           />
           {user.profileImage && !file && (

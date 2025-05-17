@@ -33,7 +33,7 @@ export function NavUser({ user,
         <SidebarMenuButton
               size="lg"
           className="flex justify-between  items-center p-4   data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border border-secondary hover:bg-secondary"
-          onClick={() => signOut()}
+          onClick={() => { signOut(); window.location.href = "/" }}
         >
           Logout <LogOut className="size-4" />
         </SidebarMenuButton>

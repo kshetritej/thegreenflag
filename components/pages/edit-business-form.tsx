@@ -95,6 +95,7 @@ export default function EditBusinessForm({ business }: { business: Business }) {
       // Update the form data with the logo URL and tags
       editBusinessMutation.mutate({
         ...data,
+        // @ts-expect-error  its is assignable
         logo: logoUrl,
         tags: tags.filter((tag) => tag.trim() !== ""),
       })
@@ -159,7 +160,9 @@ export default function EditBusinessForm({ business }: { business: Business }) {
                   }}
                   width={200}
                   height={200}
+                  // @ts-expect-error it is what it is
                   value={file}
+                  // @ts-expect-error it is what it is
                   onChange={(file) => setFile(file)}
                 />
                 {business.logo && !file && (

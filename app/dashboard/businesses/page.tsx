@@ -1,12 +1,24 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LucideChartColumnIncreasing, LucideMessageSquareMore, LucidePencil, LucideTvMinimal } from "lucide-react";
+import { LucideChartColumnIncreasing, LucideMessageSquareMore, LucidePencil, LucideTvMinimal, LucideTrash2 } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import prisma from "@/prisma/prismaClient";
 import { redirect } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { DeleteBusinessButton } from "./delete-business-button";
 
 export default async function BusinessesPage() {
   const session = await getServerSession();
@@ -50,6 +62,7 @@ export default async function BusinessesPage() {
                   <Link href={`/business/${business.id}`}>
                     <Button variant={"ghost"} size={"icon"}><LucideTvMinimal /></Button>
                   </Link>
+                  <DeleteBusinessButton businessId={business.id} />
                 </CardDescription>
               </div>
             </CardHeader>

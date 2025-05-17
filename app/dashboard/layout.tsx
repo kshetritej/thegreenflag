@@ -10,7 +10,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const location = usePathname()
   const session = useSession()
   const router = useRouter()
+
   if(!session) {
+    router.push("/")
+  }
+
+  if (!session.data) {
     router.push("/")
   }
 

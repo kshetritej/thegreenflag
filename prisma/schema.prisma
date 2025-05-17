@@ -106,6 +106,7 @@ model User {
   updatedAt DateTime @updatedAt
   verified Boolean @default(false)
   verifiedAt DateTime?  
+  suspended Boolean? @default(false)
 
   languages String[]
   preferences String[]
@@ -144,6 +145,7 @@ model Business{
   verifiedAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  suspended Boolean? @default(false)
 
   owner User @relation(fields: [ownerId], references: [id])
   ownerId String

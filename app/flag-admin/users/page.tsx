@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,56 +11,85 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, MoreHorizontal } from "lucide-react";
+import { Search, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-// Mock data
-const mockUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-    role: "Business Owner",
-    joinedAt: "2024-03-01"
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "User",
-    joinedAt: "2024-03-05"
-  },
-  {
-    id: 3,
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    role: "Business Owner",
-    joinedAt: "2024-03-10"
-  },
-  {
-    id: 4,
-    name: "Sarah Wilson",
-    email: "sarah@example.com",
-    role: "User",
-    joinedAt: "2024-03-15"
+async function getUsers(search: string = "", page: number = 1) {
+  const response = await fetch(
+    `/api/admin/users?search=${search}&page=${page}`,
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch users");
   }
-];
+
+  return response.json();
+}
 
 export default function UsersPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const result = await getUsers(search, page);
+        setData(result);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [search, page]);
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const searchValue = formData.get("search") as string;
+    setSearch(searchValue);
+    setPage(1);
+    router.push(`/flag-admin/users?search=${searchValue}&page=1`);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    router.push(`/flag-admin/users?search=${search}&page=${newPage}`);
+  };
+
+  if (loading || !data) {
+    return <div>Loading...</div>;
+  }
+
+  const { users, pagination } = data;
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-foreground">Users</h1>
         <div className="flex gap-2">
-          <div className="relative">
+          <form onSubmit={handleSearch} className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search users..." className="pl-8" />
-          </div>
+            <Input
+              name="search"
+              placeholder="Search users..."
+              className="pl-8"
+              defaultValue={search}
+            />
+          </form>
         </div>
       </div>
 
@@ -72,24 +103,15 @@ export default function UsersPage() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockUsers.map((user) => (
+              {users.map((user: any) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs ${user.role === "Business Owner"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
-                      }`}>
-                      {user.role}
-                    </span>
-                  </TableCell>
                   <TableCell>{user.joinedAt}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -111,6 +133,33 @@ export default function UsersPage() {
               ))}
             </TableBody>
           </Table>
+
+          <div className="flex items-center justify-between mt-4">
+            <p className="text-sm text-muted-foreground">
+              Showing {users.length} of {pagination.total} users
+            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() => handlePageChange(page - 1)}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-sm">
+                Page {page} of {pagination.pages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page >= pagination.pages}
+                onClick={() => handlePageChange(page + 1)}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

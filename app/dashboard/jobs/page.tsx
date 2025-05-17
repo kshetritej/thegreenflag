@@ -44,7 +44,7 @@ export default async function JobsPage() {
       business: {
         select: {
           name: true,
-          mainImage: true,
+          logo: true,
           city: true,
           state: true
         }

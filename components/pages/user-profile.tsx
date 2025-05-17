@@ -14,7 +14,6 @@ import { User } from "@prisma/client"
 
 export default function UserProfile({ user, businesses, savedBusinesses }: { user: User, businesses: any[], savedBusinesses: any[] }) {
   const [isEditing, setIsEditing] = useState(false)
-
   return (
     <Card className="border-none container mx-auto min-h-screen p-8 my-8">
       <CardHeader className="flex justify-between items-center">

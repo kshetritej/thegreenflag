@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       business: {
         select: {
           name: true,
-          mainImage: true,
+          logo: true,
           city: true,
           state: true
         }

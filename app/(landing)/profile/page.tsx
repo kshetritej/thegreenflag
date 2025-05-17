@@ -25,7 +25,7 @@ export default async function UserProfilePage() {
     },
     select: {
       id: true,
-      mainImage: true,
+      logo: true,
       images: true,
       name: true,
       category: true,
@@ -48,7 +48,7 @@ export default async function UserProfilePage() {
       business: {
         select: {
           id: true,
-          mainImage: true,
+          logo: true,
           images: true,
           name: true,
           category: true,

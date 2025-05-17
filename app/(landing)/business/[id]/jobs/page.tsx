@@ -12,9 +12,9 @@ export default async function JobsById({ params }: { params: Params }) {
       business: {
         select: {
           name: true,
-          mainImage: true,
           city: true,
-          state: true
+          state: true,
+          images:true,
         }
       },
     }

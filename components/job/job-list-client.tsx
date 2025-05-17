@@ -38,7 +38,7 @@ interface Job {
   updatedAt: string | Date
   business: {
     name: string
-    mainImage: string
+    logo: string
     city: string
     state: string
   }
@@ -122,10 +122,10 @@ export function JobCard({ job, isOwner }: { job: Job, isOwner: boolean }) {
             </CardDescription>
           </div>
           
-          {job.business.mainImage && (
+          {job.business.logo && (
             <div className="h-12 w-12 rounded-md overflow-hidden border">
               <Image 
-                src={job.business.mainImage} 
+                src={job.business.logo} 
                 alt={job.business.name} 
                 width={48} 
                 height={48} 

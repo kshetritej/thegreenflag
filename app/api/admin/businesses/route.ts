@@ -43,6 +43,7 @@ export async function GET(request: NextRequest) {
       name: business.name,
       owner: business.owner.email,
       status: business.verified,
+      suspended: business.suspended,
       createdAt: business.createdAt.toISOString().split("T")[0],
     }));
 

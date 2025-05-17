@@ -90,10 +90,17 @@ export default function BusinessesPage() {
     router.push(`/flag-admin/businesses?search=${search}&page=${newPage}`);
   };
 
-  const handleStatusUpdate = async (businessId: string, currentStatus: boolean, action: "verify" | "unverify") => {
+  const handleStatusUpdate = async (
+    businessId: string,
+    currentStatus: boolean,
+    action: "verify" | "unverify" | "suspend" | "unsuspend"
+  ) => {
     try {
       await updateBusinessStatus(businessId, action);
-      toast.success(`Business ${action === "verify" ? "verified" : "unverified"} successfully`);
+      const actionText = action === "verify" ? "verified" :
+        action === "unverify" ? "unverified" :
+          action === "suspend" ? "suspended" : "reactivated";
+      toast.success(`Business ${actionText} successfully`);
       // Refresh the data
       const result = await getBusinesses(search, page);
       setData(result);
@@ -137,7 +144,8 @@ export default function BusinessesPage() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Owner</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Verification</TableHead>
+                <TableHead>Suspension</TableHead>
                 <TableHead>Created At</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -155,6 +163,14 @@ export default function BusinessesPage() {
                       {business.status ? "VERIFIED" : "UNVERIFIED"}
                     </span>
                   </TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded-full text-xs ${business.suspended
+                      ? "bg-destructive text-destructive-foreground"
+                      : "bg-primary text-primary-foreground"
+                      }`}>
+                      {business.suspended ? "SUSPENDED" : "ACTIVE"}
+                    </span>
+                  </TableCell>
                   <TableCell>{business.createdAt}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -165,7 +181,7 @@ export default function BusinessesPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem
+                        <DropdownMenuItem 
                           className="text-destructive"
                           onClick={() => handleStatusUpdate(
                             business.id,
@@ -174,6 +190,16 @@ export default function BusinessesPage() {
                           )}
                         >
                           {business.status ? "Unverify Business" : "Verify Business"}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => handleStatusUpdate(
+                            business.id,
+                            business.suspended,
+                            business.suspended ? "unsuspend" : "suspend"
+                          )}
+                        >
+                          {business.suspended ? "Reactivate Business" : "Suspend Business"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

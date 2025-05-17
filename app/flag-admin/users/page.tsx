@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 async function getUsers(search: string = "", page: number = 1) {
   const response = await fetch(
@@ -28,6 +29,23 @@ async function getUsers(search: string = "", page: number = 1) {
 
   if (!response.ok) {
     throw new Error("Failed to fetch users");
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+async function updateUserStatus(userId: string, action: string) {
+  const response = await fetch(`/api/admin/users/${userId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ action }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update user status");
   }
 
   return response.json();
@@ -40,6 +58,24 @@ export default function UsersPage() {
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  const handleStatusUpdate = async (
+    userId: string,
+    currentStatus: boolean,
+    action: "suspend" | "unsuspend"
+  ) => {
+    try {
+      await updateUserStatus(userId, action);
+      const actionText = action === "suspend" ? "suspended" : "reactivated";
+      toast.success(`User ${actionText} successfully`);
+      // Refresh the data
+      const result = await getUsers(search, page);
+      setData(result);
+    } catch (error) {
+      console.error("Failed to update user status:", error);
+      toast.error("Failed to update user status");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,7 +139,8 @@ export default function UsersPage() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Joined</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Created At</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -112,7 +149,15 @@ export default function UsersPage() {
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.joinedAt}</TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded-full text-xs ${user.suspended
+                      ? "bg-destructive text-destructive-foreground"
+                      : "bg-primary text-primary-foreground"
+                      }`}>
+                      {user.suspended ? "SUSPENDED" : "ACTIVE"}
+                    </span>
+                  </TableCell>
+                  <TableCell>{user.createdAt}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -121,10 +166,16 @@ export default function UsersPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>View Profile</DropdownMenuItem>
-                        <DropdownMenuItem>Edit User</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          Suspend User
+                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => handleStatusUpdate(
+                            user.id,
+                            user.suspended,
+                            user.suspended ? "unsuspend" : "suspend"
+                          )}
+                        >
+                          {user.suspended ? "Reactivate User" : "Suspend User"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

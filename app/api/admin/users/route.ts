@@ -22,12 +22,6 @@ export async function GET(request: NextRequest) {
     const [users, total] = await Promise.all([
       prisma.user.findMany({
         where,
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          createdAt: true,
-        },
         orderBy: {
           createdAt: "desc",
         },
@@ -41,7 +35,8 @@ export async function GET(request: NextRequest) {
       id: user.id,
       name: user.name,
       email: user.email,
-      joinedAt: user.createdAt.toISOString().split("T")[0],
+      suspended: user.suspended,
+      createdAt: user.createdAt.toISOString().split("T")[0],
     }));
 
     return NextResponse.json({

@@ -1,6 +1,6 @@
 "use client";
 
-import { Building, Users, Image, LogOut } from "lucide-react";
+import { Building, Users, Image, LogOut, PieChart } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ const adminNavItems = [
   {
     title: "Dashboard",
     href: "/flag-admin",
-    icon: null
+    icon: PieChart 
   },
   {
     title: "Businesses",

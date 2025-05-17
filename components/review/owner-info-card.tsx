@@ -26,13 +26,9 @@ export default function OwnerInfoCard({owner, establishedYear}: {owner: User, es
                 <Phone className="h-4 w-4  " />
                 <span className="">{owner?.phone}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4  " />
-                <span className="">Response time: Within 1 hour</span>
-              </div>
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4  " />
-                <span className="">{owner?.languages}</span>
+              <span className="">{owner?.languages} </span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4  " />

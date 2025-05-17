@@ -133,7 +133,7 @@ export default function BusinessDetail({ business }: { business?: Business }) {
           <p className="mr-2">
           {business?.name}
           </p>
-          {!business?.verified && <LucideVerified fill="limegreen" className="text-white" />}
+          {business?.verified && <LucideVerified fill="limegreen" className="text-white" />}
         </h1>
         <div className="flex justify-center gap-2">
           <MyToolTip content={"Leave a tip"}>

@@ -98,11 +98,11 @@ export default function EventsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Start Date</TableHead>
-              <TableHead>End Date</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="w-[20%]">Title</TableHead>
+              <TableHead className="w-[30%]">Description</TableHead>
+              <TableHead className="w-[20%]">Start Date</TableHead>
+              <TableHead className="w-[20%]">End Date</TableHead>
+              <TableHead className="w-[10%]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -122,15 +122,17 @@ export default function EventsPage() {
             ) : (
               events.map((event) => (
                 <TableRow key={event.id}>
-                  <TableCell>{event.title}</TableCell>
-                  <TableCell>{event.description}</TableCell>
-                  <TableCell>
+                  <TableCell className="max-w-[20%] break-words whitespace-normal">{event.title}</TableCell>
+                  <TableCell className="max-w-[30%] break-words whitespace-normal overflow-hidden">
+                    <div className="line-clamp-3">{event.description}</div>
+                  </TableCell>
+                  <TableCell className="max-w-[20%] break-words whitespace-normal">
                     {format(new Date(event.startDate), "PPP p")}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="max-w-[20%] break-words whitespace-normal">
                     {format(new Date(event.endDate), "PPP p")}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="max-w-[10%]">
                     <div className="flex gap-2">
                       <Button
                         variant="outline"

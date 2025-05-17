@@ -26,11 +26,6 @@ export const dashboardLinks = {
       icon: Briefcase,
     },
     {
-      title: "Tips and Earnings",
-      url: "/dashboard/tips-and-earnings",
-      icon: HandCoins
-    },
-    {
       title: "Event Manager",
       url: "/dashboard/events",
       icon: CalendarClock

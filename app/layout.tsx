@@ -40,7 +40,7 @@ export default function RootLayout({
           <QueryClientProvider client={queryClient}>
           <EdgeStoreProvider>
               {children}
-            <Toaster position="top-right" />
+            <Toaster position="bottom-center" />
             </EdgeStoreProvider>
           </QueryClientProvider>
             </TooltipProvider>

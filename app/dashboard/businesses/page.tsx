@@ -41,7 +41,9 @@ export default async function BusinessesPage() {
               <div className="flex flex-col gap-2">
                 <CardTitle className="flex items-center gap-2">{business.name} <Badge>{business.category}</Badge> </CardTitle>
                 <CardDescription className="flex items-center gap-4 mt-2 text-primary">
-                  <Button variant={"ghost"} size={"icon"}><LucidePencil /></Button>
+                  <Link href={`/dashboard/businesses/${business.id}/edit`}>
+                    <Button variant={"ghost"} size={"icon"}><LucidePencil /></Button>
+                  </Link>
                   <Button variant={"ghost"} size={"icon"}><LucideChartColumnIncreasing /></Button>
                   <Link href={`/dashboard/businesses/${business.id}/reviews`}>
                     <Button variant={"ghost"} size={"icon"}><LucideMessageSquareMore /></Button>

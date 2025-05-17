@@ -44,7 +44,6 @@ export default async function BusinessesPage() {
                   <Link href={`/dashboard/businesses/${business.id}/edit`}>
                     <Button variant={"ghost"} size={"icon"}><LucidePencil /></Button>
                   </Link>
-                  <Button variant={"ghost"} size={"icon"}><LucideChartColumnIncreasing /></Button>
                   <Link href={`/dashboard/businesses/${business.id}/reviews`}>
                     <Button variant={"ghost"} size={"icon"}><LucideMessageSquareMore /></Button>
                   </Link>

@@ -15,7 +15,9 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
-import { LucideCalendar } from "lucide-react";
+import { LucideCalendar, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import MyToolTip from "@/components/atoms/MyTooltip";
 
 interface Event {
   id: string;
@@ -36,7 +38,9 @@ export default function EventsPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const user = session?.user as SessionUser;
 
@@ -53,6 +57,7 @@ export default function EventsPage() {
         }
         const data = await response.json();
         setEvents(data);
+        setFilteredEvents(data);
       } catch (error) {
         console.error("Error fetching events:", error);
         toast.error("Failed to load events");
@@ -63,6 +68,14 @@ export default function EventsPage() {
 
     fetchEvents();
   }, [user?.id, router]);
+
+  // Filter events based on search query
+  useEffect(() => {
+    const filtered = events.filter((event) =>
+      event.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredEvents(filtered);
+  }, [searchQuery, events]);
 
   const handleDelete = async (eventId: string) => {
     try {
@@ -94,6 +107,18 @@ export default function EventsPage() {
         </Button>
       </div>
 
+      <div className="mb-4">
+        <div className="relative">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search events by name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-8 max-w-md"
+          />
+        </div>
+      </div>
+
       <div className="rounded-md border p-4">
         <Table>
           <TableHeader>
@@ -106,7 +131,7 @@ export default function EventsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {events.length === 0 ? (
+            {filteredEvents.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-4">
                   <Card className="p-4 h-40 flex items-center justify-center max-w-md mx-auto">
@@ -114,13 +139,17 @@ export default function EventsPage() {
                       <div className="flex items-center gap-2 bg-gray-100 p-2 rounded-md">
                         <LucideCalendar className="size-6" />
                       </div>
-                      No events to show. <br /> Click "Add New Event" to create your first event.
+                      {searchQuery ? (
+                        <>No events found matching "{searchQuery}"</>
+                      ) : (
+                        <>No events to show. <br /> Click "Add New Event" to create your first event.</>
+                      )}
                     </p>
                   </Card>
                 </TableCell>
               </TableRow>
             ) : (
-              events.map((event) => (
+                filteredEvents.map((event) => (
                 <TableRow key={event.id}>
                   <TableCell className="max-w-[20%] break-words whitespace-normal">{event.title}</TableCell>
                   <TableCell className="max-w-[30%] break-words whitespace-normal overflow-hidden">
@@ -142,12 +171,15 @@ export default function EventsPage() {
                       >
                         Edit
                       </Button>
+
+                        <MyToolTip content="Clicking this button will instantly delete this item." >
                       <Button
                         variant="destructive"
                         onClick={() => handleDelete(event.id)}
                       >
                         Delete
                       </Button>
+                        </MyToolTip>
                     </div>
                   </TableCell>
                 </TableRow>

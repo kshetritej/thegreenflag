@@ -32,7 +32,7 @@ export function NavUser({ user,
       <SidebarMenuItem>
         <SidebarMenuButton
               size="lg"
-          className="flex justify-between  items-center p-4   data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border border-red-500"
+          className="flex justify-between  items-center p-4   data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border border-secondary hover:bg-secondary"
           onClick={() => signOut()}
         >
           Logout <LogOut className="size-4" />

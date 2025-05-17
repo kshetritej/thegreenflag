@@ -76,11 +76,6 @@ export default function UserProfile({ user, businesses, savedBusinesses }: { use
             <h3 className="text-xl font-bold">Reviews</h3>
             <p>{businesses.reduce((acc, business) => acc + business.reviews.length, 0)}</p>
           </Card>
-          <Card className="p-4 flex flex-col gap-2 items-center justify-center">
-            <LucideStar className="size-6" />
-            <h3 className="text-xl font-bold">Self Reviews</h3>
-            <p>{businesses.reduce((acc, business) => acc + business.reviews.length, 0)}</p>
-          </Card>
         </div>
       </CardContent>
 

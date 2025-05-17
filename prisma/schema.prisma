@@ -273,3 +273,10 @@ model Comment{
   postId String
   post Post @relation(fields: [postId], references: [id])
 }
+
+model Admin{
+  id String @id @default(uuid())
+  name String
+  username String @unique
+  password String
+}

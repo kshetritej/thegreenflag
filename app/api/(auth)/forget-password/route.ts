@@ -18,16 +18,10 @@ export async function POST(_req: NextRequest) {
   console.log("token:", token)
 
   const link = process.env.NODE_ENV !== "development" ? `http://greenflag.kshetritej.com.np/api/forget-password/${token}` : `http://localhost:3000/api/forget-password/${token}`
-  const message = `
-  <div>
-  <h1>Click the link below to reset your password</h1>
-  <button>
-    <a href="${link}">Reset Password</a>
-  </button>
-  <p>This link will expire in 5 minutes.</p>
-  <p>If you did not request this email, please ignore it.</p>
-  </div>
-  `
+  const message = `Click the link below to reset your password. 
+  ${link} 
+  If you did not request this email, please ignore it.`
+
   const subject = "Reset Password"
   const to = email
   const from = "The GreenFlagPlatform <noreply@kshetritej.com.np>"

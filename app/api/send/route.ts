@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  console.log("body", body)
+
   try {
     const { data, error } = await resend.emails.send({
       from: 'The GreenFlagPlatform <noreply@kshetritej.com.np>',

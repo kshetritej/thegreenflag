@@ -60,7 +60,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
+                <Link href="/events" className="text-muted-foreground hover:text-foreground text-sm">
                   Events
                 </Link>
               </li>

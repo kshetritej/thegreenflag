@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { LucideArrowDownRightFromCircle, LucideIcon } from "lucide-react"
+import {  LucideIcon } from "lucide-react"
 
 type InfoProps = {
   className?: string,

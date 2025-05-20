@@ -14,7 +14,6 @@ export async function PUT(req: NextRequest) {
 
     const { currentPassword, newPassword } = await req.json();
 
-    // Find the user
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     });
@@ -23,16 +22,13 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // Verify current password
     const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
     if (!isPasswordValid) {
       return NextResponse.json({ message: "Current password is incorrect" }, { status: 400 });
     }
 
-    // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update password
     await prisma.user.update({
       where: { email: session.user.email },
       data: { password: hashedPassword },

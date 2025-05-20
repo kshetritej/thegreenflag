@@ -4,8 +4,8 @@ import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Badge } from "../ui/badge"
-import { navLinks } from "../common/navbar"
+import { Badge } from "@/components/ui/badge"
+import { navLinks } from "@/components/common/navbar"
 import Link from "next/link"
 
 export default function Header() {
@@ -71,8 +71,6 @@ export default function Header() {
             </Badge>
           ))}
         </div>
-
-      {/* <SimpleFilterBar isHomepage={true} /> */}
       </div>
     </div>
   )

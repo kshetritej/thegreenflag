@@ -1,5 +1,5 @@
 import { TooltipTrigger } from "@radix-ui/react-tooltip"
-import { Tooltip, TooltipContent } from "../ui/tooltip"
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip"
 
 type ToolTipProps = {
   content: React.ReactNode

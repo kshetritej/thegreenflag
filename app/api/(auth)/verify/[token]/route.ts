@@ -22,14 +22,7 @@ export async function GET(_req: NextRequest, { params }: { params: Params }) {
     return NextResponse.json({ message: "User not found" }, { status: 404 })
   }
 
-  await prisma.user.update({
-    where: {
-      email: tokenUser.email
-    },
-    data: {
-      verified: true
-    }
-  })
+  await prisma.user.update({where: { email: tokenUser.email }, data: { verified: true } })
 
   if (process.env.NODE_ENV !== "development") {
     return new NextResponse(`

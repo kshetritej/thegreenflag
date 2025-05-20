@@ -6,13 +6,19 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useMutation } from '@tanstack/react-query';
-import { Router } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useState, Suspense } from 'react';
 import { toast } from 'sonner';
 
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className='flex flex-col items-center justify-center min-h-screen'><Card className="w-full max-w-sm mx-auto mt-10 p-4"><p>Loading...</p></Card></div>}>
+      <ResetPasswordPageInner />
+    </Suspense>
+  );
+}
+
+function ResetPasswordPageInner() {
   const params = useSearchParams();
   const token = params.get('token');
   const email = params.get('email');
@@ -25,12 +31,8 @@ export default function ResetPasswordPage() {
   const [passwordMatch, setPasswordMatch] = useState(false);
   const router = useRouter();
 
-  console.log("password", password);
-  console.log("email:", email);
-
   const { mutate } = useMutation({
     mutationFn: async () => {
-      console.log("sending request with email and passwrd: ", email, password)
       const res = await fetch(`/api/settings/change-password/forget`, {
         method: "PATCH",
         headers: {
@@ -77,7 +79,6 @@ export default function ResetPasswordPage() {
           setError(data.error || "Token is invalid or expired.");
         }
       } catch (err) {
-        console.error("Error verifying token:", err);
         setError("An error occurred during token verification.");
       } finally {
         setLoading(false);
@@ -85,8 +86,7 @@ export default function ResetPasswordPage() {
     };
 
     verifyToken();
-
-  }, [token, email]); // Add token and email to the dependency array
+  }, [token, email]);
 
   if (loading) {
     return (
@@ -111,8 +111,6 @@ export default function ResetPasswordPage() {
   }
 
   if (!tokenIsValid) {
-    // This case should be covered by the error state, but keeping it
-    // explicitly for clarity or if you have different invalid states
     return (
       <div className='flex flex-col items-center justify-center min-h-screen'>
         <Card className="w-full max-w-sm mx-auto mt-10">
@@ -122,7 +120,6 @@ export default function ResetPasswordPage() {
       </div>
     )
   }
-
 
   return (
     <form className='flex flex-col items-center justify-center min-h-screen' onSubmit={(e) => { e.preventDefault(); mutate() }}>

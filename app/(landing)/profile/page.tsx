@@ -64,9 +64,15 @@ export default async function UserProfilePage() {
     }
   })
 
+  const posts = await prisma.post.findMany({
+    where: {
+      authorId: user?.id,
+    }
+  })
+
   const formattedSavedBusinesses = savedBusinesses.map((business) => business.business)
 
   return (
-    <UserProfile user={user} businesses={businesses} savedBusinesses={formattedSavedBusinesses} />
+    <UserProfile user={user} businesses={businesses} savedBusinesses={formattedSavedBusinesses} posts={posts} />
   )
 }

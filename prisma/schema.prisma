@@ -107,6 +107,7 @@ model User {
   verified Boolean @default(false)
   verifiedAt DateTime?  
   suspended Boolean @default(false)
+  termsAccepted Boolean @default(false)
 
   languages String[]
   preferences String[]

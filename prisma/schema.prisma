@@ -13,11 +13,6 @@ enum MediaType {
   REVIEW_IMAGE
 }
 
-enum UserRole{
-ADMIN
-USER
-}
-
 enum Category {
   RESTAURANT
   PARK

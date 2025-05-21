@@ -19,59 +19,28 @@ export default function Footer() {
 
         <Separator className="mb-8" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 space-between  gap-8">
           <div className="space-y-3">
-            <h3 className="font-medium text-sm">Explore</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
-                  Places near me
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
+                <Link href="/explore" className="text-muted-foreground hover:text-foreground text-sm">
                   Explore
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
-                  Explore Spaces
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
-                  Get lucky
+                <Link href="/job" className="text-muted-foreground hover:text-foreground text-sm">
+                  Jobs
                 </Link>
               </li>
             </ul>
           </div>
 
-          <div className="space-y-3">
-            <h3 className="font-medium text-sm">Discover</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
-                  Within 50 miles
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground text-sm">
-                  Within 60 miles
-                </Link>
-              </li>
-              <li>
-                <Link href="/events" className="text-muted-foreground hover:text-foreground text-sm">
-                  Events
-                </Link>
-              </li>
-            </ul>
-          </div>
 
           <div className="space-y-3">
             <h3 className="font-medium text-sm">Opportunities</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/jobs" className="text-muted-foreground hover:text-foreground text-sm">
+                <Link href="/job" className="text-muted-foreground hover:text-foreground text-sm">
                   Find jobs
                 </Link>
               </li>

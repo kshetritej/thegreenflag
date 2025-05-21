@@ -12,7 +12,7 @@ type PostCardProps = {
 
 export default function PostCard({ title, content, author, comments, createdAt }: PostCardProps) {
   return (
-    <Card className="w-full max-w-3xl">
+    <Card className="hover:cusor-pointer">
       <CardHeader>
         <div className="flex gap-2 items-center">
           u/@{author}

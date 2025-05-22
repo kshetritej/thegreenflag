@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import AdminSidebar from "./admin-sidebar";
+import { useSession } from "next-auth/react";
 
 export default async function AdminLayout({
   children,
@@ -11,19 +12,18 @@ export default async function AdminLayout({
   const cookieStore = await cookies();
   const token = cookieStore.get("admin-token");
 
+  if (!token) {
+    redirect("/admin-login");
+  }
 
-  // if (!token) {
-  //   redirect("/admin-login");
-  // }
+  try {
+  const decoded = verify(token.value, process.env.JWT_SECRET as string) as { role?: string };
 
-  // try {
-  // const decoded = verify(token.value, process.env.JWT_SECRET as string) as { role?: string };
-
-  // if (!decoded || decoded.role !== "ADMIN") {
-  //   redirect("/admin-login");
-  // }
-  // } catch (error) { redirect("/admin-login");
-  // }
+  if (!decoded || decoded.role !== "ADMIN") {
+    redirect("/admin-login");
+  }
+  } catch (error) { redirect("/admin-login");
+  }
 
   return (
     <div className="min-h-screen bg-background">

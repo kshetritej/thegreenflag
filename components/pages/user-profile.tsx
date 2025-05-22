@@ -12,7 +12,7 @@ import { useState } from "react"
 import EditProfileForm from "./edit-profile-form"
 import { User } from "@prisma/client"
 
-export default function UserProfile({ user, businesses, savedBusinesses }: { user: User, businesses: any[], savedBusinesses: any[] }) {
+export default function UserProfile({ user, businesses, savedBusinesses, posts = [] }: { user: User, businesses: any[], savedBusinesses: any[], posts?: any[] }) {
   const [isEditing, setIsEditing] = useState(false)
   return (
     <Card className="border-none container mx-auto min-h-screen p-8 my-8">
@@ -84,6 +84,7 @@ export default function UserProfile({ user, businesses, savedBusinesses }: { use
           <TabsList className="flex gap-4">
             <TabsTrigger value="my-businesses"><Store /> Businesses</TabsTrigger>
             <TabsTrigger value="saved-businesses"><Heart /> Saved</TabsTrigger>
+            <TabsTrigger value="my-posts"><LucideTrello /> Posts</TabsTrigger>
           </TabsList>
           <TabsContent value="my-businesses">
             <CardContent className="grid grid-cols-4 gap-4 px-0 py-1">
@@ -96,6 +97,22 @@ export default function UserProfile({ user, businesses, savedBusinesses }: { use
             <CardContent className="grid grid-cols-4 gap-4 px-0 py-1">
               {savedBusinesses.map((business: any) => (
                 <ReviewCard key={business.id} business={business} />
+              ))}
+            </CardContent>
+          </TabsContent>
+          <TabsContent value="my-posts">
+            <CardContent className="grid grid-cols-1 gap-4 px-0 py-1">
+              {posts.length === 0 && <p className="text-muted-foreground">No posts yet.</p>}
+              {posts.map((post: any) => (
+                <Card key={post.id} className="cursor-pointer hover:bg-accent transition" onClick={() => window.location.href = `/community/${post.id}`}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{post.title}</CardTitle>
+                    <p className="text-xs text-muted-foreground">{new Date(post.createdAt).toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" })}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="line-clamp-2 text-sm">{post.content}</p>
+                  </CardContent>
+                </Card>
               ))}
             </CardContent>
           </TabsContent>

@@ -4,11 +4,11 @@ import "./globals.css"
 import { Geist_Mono } from "next/font/google"
 import { EdgeStoreProvider } from "@/lib/edgestore"
 import { Toaster } from "@/components/ui/sonner"
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider, useSession } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/components/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { Analytics } from "@vercel/analytics/next"
+import { useRouter } from "next/navigation"
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -42,7 +42,6 @@ export default function RootLayout({
                 <EdgeStoreProvider>
                   {children}
                   <Toaster position="bottom-center" />
-                  <Analytics />
                 </EdgeStoreProvider>
               </QueryClientProvider>
             </TooltipProvider>

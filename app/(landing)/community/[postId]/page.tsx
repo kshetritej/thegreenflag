@@ -7,18 +7,24 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CommentForm } from "@/components/organisms/comment-form"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import MyToolTip from "@/components/atoms/MyTooltip";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useState } from "react";
+import { useForm } from "react-hook-form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea";
 
 export default function PostPage() {
   const { postId } = useParams()
   const session = useSession()
   const user = session.data?.user
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   const { data: post } = useQuery({
     queryFn: async () => await axios.get(`/api/post/${postId}`),
@@ -34,6 +40,49 @@ export default function PostPage() {
     },
     onError: () => toast.error("Failed to delete comment")
   })
+
+  const { mutate: deletePost } = useMutation({
+    mutationFn: async () => {
+      await axios.delete(`/api/post/${postId}`)
+    },
+    onSuccess: () => {
+      toast.success("Post deleted successfully")
+      // Redirect to community page after deletion
+      router.push("/community")
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message || "Failed to delete post")
+    }
+  })
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [editTitle, setEditTitle] = useState("")
+  const [editContent, setEditContent] = useState("")
+
+  const { mutate: updatePost, isPending: isUpdating } = useMutation({
+    mutationFn: async (data: { title: string, content: string }) => {
+      await axios.patch(`/api/post/${postId}`, data)
+    },
+    onSuccess: () => {
+      toast.success("Post updated successfully")
+      setShowEditDialog(false)
+      queryClient.invalidateQueries({ queryKey: ['getPost', postId] })
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message || "Failed to update post")
+    }
+  })
+
+  function handleEditPost() {
+    setEditTitle(post?.data.title)
+    setEditContent(post?.data.content)
+    setShowEditDialog(true)
+  }
+
+  function handleSaveEdit() {
+    updatePost({ title: editTitle, content: editContent })
+  }
 
   if (!post?.data) {
     return (
@@ -73,6 +122,36 @@ export default function PostPage() {
                 <span className="text-sm text-muted-foreground">
                   • {formatDistanceToNow(post.data.createdAt, { addSuffix: true })}
                 </span>
+                {/* Post owner controls */}
+                {/* @ts-expect-error: user.id is injected by next-auth session callback */}
+                {user && user.id === post.data.author.id && (
+                  <div className="ml-auto flex gap-2">
+                    <Button size="sm" variant="outline" onClick={handleEditPost}>
+                      Edit
+                    </Button>
+                    <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                      <AlertDialogTrigger asChild>
+                        <Button size="sm" variant="destructive" onClick={() => setShowDeleteDialog(true)}>
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Post</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete this post? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => { setShowDeleteDialog(false); deletePost(); }}>
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                )}
               </div>
             </CardHeader>
             <CardContent>
@@ -125,6 +204,28 @@ export default function PostPage() {
           )}
         </div>
       </div>
+
+      {/* Edit Dialog */}
+      <AlertDialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Edit Post</AlertDialogTitle>
+            <AlertDialogDescription>
+              Update your post details below.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-2">
+            <Input value={editTitle} onChange={e => setEditTitle(e.target.value)} placeholder="Title" />
+            <Textarea value={editContent} onChange={e => setEditContent(e.target.value)} placeholder="Content" className="min-h-[100px]" />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction disabled={isUpdating} onClick={handleSaveEdit}>
+              {isUpdating ? "Saving..." : "Save Changes"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

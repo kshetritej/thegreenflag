@@ -1,5 +1,5 @@
 import prisma from "@/prisma/prismaClient";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { Resend } from "resend";
 
@@ -12,12 +12,12 @@ export async function POST(_req: NextRequest) {
     where: { email: email }
   })
 
-  if (!emailExists) throw new Error("Email not found");
+  if (!emailExists) return NextResponse.json({message: "Email not found"}, { status: 404 });
 
   const token = jwt.sign({ email }, process.env.JWT_SECRET as string, { expiresIn: "5m" })
   console.log("token:", token)
 
-  const link = process.env.NODE_ENV !== "development" ? `http://greenflag.kshetritej.com.np/api/forget-password/${token}` : `http://localhost:3000/api/forget-password/${token}`
+  const link = `http://localhost:3000/api/forget-password/${token}`
   const message = `Click the link below to reset your password. 
   ${link} 
   If you did not request this email, please ignore it.`

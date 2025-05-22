@@ -224,8 +224,7 @@ export default function AddBusinessForm({ user }: { user: User }) {
             </div>
           ))}
         </div>
-        <Info message={"All the fields marked with (*) are mandatory."} />
-        <div className="w-full bg-gray-200 h-1 mt-4 rounded-full">
+        <div className="w-full h-1 mt-4 rounded-full">
           <div
             className="bg-primary h-1 rounded-full transition-all duration-300"
             style={{ width: `${(step / 5) * 100}%` }}

@@ -14,7 +14,7 @@ export default function BusinessGrid() {
 
   return (
     <div className="container px-24 mx-auto">
-      <h2 className="text-2xl  px-6">Popular Businesses</h2>
+      <h2 className="text-2xl  px-6 flex items-center mr-4 ">Popular Businesses <span className="text-xs">(*Default to registered due to low numbers of businesses.)</span></h2>
       {isLoading && 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
           {Array.from({ length: 8}).map((_, index) => (

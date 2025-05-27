@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const businesses = await prisma.business.findMany({
     where: {
+	    /*
       reviews: {
         some: {
           rating: {
@@ -11,6 +12,7 @@ export async function GET() {
           }
         }
       },
+      */
     },
     include: {
       reviews: true

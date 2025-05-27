@@ -38,7 +38,7 @@ export default function BusinessDisplayCard({ business }: { business: Business }
           }}
         >
           <div className="relative aspect-square">
-            <Image src={ business?.images[0]} alt={business?.name} fill className="object-cover rounded-t-lg border" />
+            <Image src={business?.images[0]} alt={business?.name} fill className="object-cover rounded-t-lg border" />
             <Badge className="rounded-full absolute top-3 right-3">{business.category.toString().charAt(0) + business.category.toString().slice(1).toLowerCase()}</Badge>
             {/* @ts-expect-error it exist */}
             {business?.reviews?.length > 1 && (
@@ -49,12 +49,17 @@ export default function BusinessDisplayCard({ business }: { business: Business }
           </div>
 
           <CardFooter className="p-4 flex flex-col gap-2 justify-start items-start">
-            <div>
-              <h3 className="font-medium text-base">{business.name.length > 40 ? business.name.toString().substring(0, 35) + "..." : business.name}</h3>
-              <div className="flex items-center gap-1">
-                <span className="text-sm"><LucideStar className="text-yellow-400 fill-yellow-400 size-4" /></span>
-                {/* @ts-expect-error it exist */}
-                <span className="text-sm font-medium">{(business.reviews.reduce((acc, review) => acc + review.rating, 0) / business.reviews.length || 0).toFixed(1)}</span>
+            <div className="flex items-start gap-2">
+              <div>
+                <Image src={business.logo || ""} alt={business.name + "logo"} height={50} width={50} />
+              </div>
+              <div className="flex flex-col gap-2 justify-start items-start">
+                <h3 className="font-medium text-base">{business.name.length > 40 ? business.name.toString().substring(0, 35) + "..." : business.name}</h3>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm"><LucideStar className="text-yellow-400 fill-yellow-400 size-4" /></span>
+                  {/* @ts-expect-error it exist */}
+                  <span className="text-sm font-medium">{(business.reviews.reduce((acc, review) => acc + review.rating, 0) / business.reviews.length || 0).toFixed(1)}</span>
+                </div>
               </div>
             </div>
 

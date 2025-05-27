@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "pnpx prisma generate && pnpm prisma migrate deploy && node prisma/seed.js &&  pnpm build"
+    "deploy": "pnpx prisma generate && pnpm prisma migrate resolve --applied 20250521112550_init && pnpm prisma migrate deploy && node prisma/seed.js &&  pnpm build"
   },
   "dependencies": {
     "@edgestore/react": "^0.3.3",

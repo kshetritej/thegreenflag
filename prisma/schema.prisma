@@ -1,280 +1,281 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+	url      = env("DATABASE_URL")
 }
 
 enum MediaType {
-  PROFILE_IMAGE
-  BUSINESS_IMAGE
-  REVIEW_IMAGE
+    PROFILE_IMAGE
+	BUSINESS_IMAGE
+	REVIEW_IMAGE
 }
 
 enum Category {
-  RESTAURANT
-  PARK
-  CAFETERIA
-  SHOPPING
-  ATTRACTION
-  MUSEUM
-  THEATER
-  GYM
-  HOTEL
-  RETAIL
-  SERVICE
-  ENTERTAINMENT
-  HEALTH
-  BEAUTY
-  OTHERS
-  COFFEE_SHOP
-  BAR
-  LIBRARY
-  CLUB
-  ART_GALLERY
-  ZOO
-  SPA
-  HOSPITAL
-  EDUCATION
-  TRANSPORTATION
-  OFFICE
-  WORKSHOP
-  BANK
-  SUPERMARKET
-  FITNESS
-  FARM
-  PHARMACY
-  ONLINE_STORE
-  RESORT
-  CASINO
-  NIGHTCLUB
-  SPORTS
-  LEISURE
-  EVENT_VENUE
+    TECHNOLOGY
+	RESTAURANT
+	PARK
+	CAFETERIA
+	SHOPPING
+	ATTRACTION
+	MUSEUM
+	THEATER
+	GYM
+	HOTEL
+	RETAIL
+	SERVICE
+	ENTERTAINMENT
+	HEALTH
+	BEAUTY
+	OTHERS
+	COFFEE_SHOP
+	BAR
+	LIBRARY
+	CLUB
+	ART_GALLERY
+	ZOO
+	SPA
+	HOSPITAL
+	EDUCATION
+	TRANSPORTATION
+	OFFICE
+	WORKSHOP
+	BANK
+	SUPERMARKET
+	FITNESS
+	FARM
+	PHARMACY
+	ONLINE_STORE
+	RESORT
+	CASINO
+	NIGHTCLUB
+	SPORTS
+	LEISURE
+	EVENT_VENUE
 }
 
 enum Amenity {
-  wifi
-  parking
-  airConditioning
-  frontDesk24Hours
-  petFriendly
-  elevator
-  disabledAccess
-  backyard
-  smokingArea
-  laundry
-  roomService
-  safe
-  security
-  atm
-  garden
-  luggageStorage
-  vendingMachine
-  restrooms
+    wifi
+	parking
+	airConditioning
+	frontDesk24Hours
+	petFriendly
+	elevator
+	disabledAccess
+	backyard
+	smokingArea
+	laundry
+	roomService
+	safe
+	security
+	atm
+	garden
+	luggageStorage
+	vendingMachine
+	restrooms
 }
 
 model Favorite {
-  id        String   @id @default(uuid())
-  userId    String
-  businessId String
-  user      User     @relation(fields: [userId], references: [id])
-  business  Business @relation(fields: [businessId], references: [id])
-  createdAt DateTime @default(now())
-  @@index([userId, businessId])
-  @@unique([userId, businessId])
+    id        String   @id @default(uuid())
+	userId    String
+	businessId String
+	user      User     @relation(fields: [userId], references: [id])
+	business  Business @relation(fields: [businessId], references: [id])
+	createdAt DateTime @default(now())
+	@@index([userId, businessId])
+	@@unique([userId, businessId])
 }
 
 model User {
-  id String @id @default(uuid())
-  email String @unique
-  username String @unique
-  phone String?
-  address String?
-  password String
-  name String
-  bio String?
-  profileImage  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  verified Boolean @default(false)
-  verifiedAt DateTime?  
-  suspended Boolean @default(false)
-  termsAccepted Boolean @default(false)
+    id String @id @default(uuid())
+	email String @unique
+	username String @unique
+	phone String?
+	address String?
+	password String
+	name String
+	bio String?
+	profileImage  String?
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	verified Boolean @default(false)
+	verifiedAt DateTime?  
+	suspended Boolean @default(false)
+	termsAccepted Boolean @default(false)
 
-  languages String[]
-  preferences String[]
-  businesses Business[]
-  reviews Review[]
-  replies Reply[]
-  tips Tip[]
-  favorites Favorite[]
-  events Event[]
-  posts Post[]
-  comments Comment[]
+	languages String[]
+	preferences String[]
+	businesses Business[]
+	reviews Review[]
+	replies Reply[]
+	tips Tip[]
+	favorites Favorite[]
+	events Event[]
+	posts Post[]
+	comments Comment[]
 }
 
 model Business{
-  id String @id @default(uuid())
-  verified Boolean @default(false)
-  logo String?
-  name String
-  description String
-  tags String[]
-  category Category @default(OTHERS) 
-  subcategory  String?
-  amenities Amenity[]
-  establishedYear Int
-  street String
-  city String
-  state String
-  country String
-  postalCode String
-  phone String
-  email String
-  website String
-  hours String
-  images String[] 
-  googleMapsUrl String?
-  verifiedAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  suspended Boolean @default(false)
+    id String @id @default(uuid())
+	verified Boolean @default(false)
+	logo String?
+	name String
+	description String
+	tags String[]
+	category Category @default(OTHERS) 
+	subcategory  String?
+	amenities Amenity[]
+	establishedYear Int
+	street String
+	city String
+	state String
+	country String
+	postalCode String
+	phone String
+	email String
+	website String
+	hours String
+	images String[] 
+	googleMapsUrl String?
+	verifiedAt DateTime?
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	suspended Boolean @default(false)
 
-  owner User @relation(fields: [ownerId], references: [id])
-  ownerId String
+	owner User @relation(fields: [ownerId], references: [id])
+	ownerId String
 
-  jobs Job[]
-  reviews Review[]
-  tips Tip[]
-  favorites Favorite[]
-  events Event[]
+	jobs Job[]
+	reviews Review[]
+	tips Tip[]
+	favorites Favorite[]
+	events Event[]
 }
 
 model Review{
-  id String @id @default(uuid())
-  content String
-  rating Int 
+    id String @id @default(uuid())
+	content String
+	rating Int 
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  images String[]
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	images String[]
 
-  author User @relation(fields: [authorId], references: [id])
-  authorId String
+	author User @relation(fields: [authorId], references: [id])
+	authorId String
 
-  business Business @relation(fields: [businessId], references: [id])
-  businessId String
+	business Business @relation(fields: [businessId], references: [id])
+	businessId String
 
-  helpful Int @default(0)
-  reports Int @default(0)
+	helpful Int @default(0)
+	reports Int @default(0)
 
-  replies Reply[]
+	replies Reply[]
 }
 
 model Reply{
-  id String @id @default(uuid())
-  content String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    id String @id @default(uuid())
+	content String
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
 
-  author User @relation(fields: [authorId], references: [id])
-  authorId String
+	author User @relation(fields: [authorId], references: [id])
+	authorId String
 
-  review Review @relation(fields: [reviewId], references: [id])
-  reviewId String
+	review Review @relation(fields: [reviewId], references: [id])
+	reviewId String
 }
 
 model Job{
-  id String @id @default(uuid())
-  title String
-  description String
+    id String @id @default(uuid())
+	title String
+	description String
 
-  business Business @relation(fields: [businessId], references: [id])
-  businessId String
+	business Business @relation(fields: [businessId], references: [id])
+	businessId String
 
-  location String
-  jobType String
-  salaryRange String
+	location String
+	jobType String
+	salaryRange String
 
-  email String
-  phone String
+	email String
+	phone String
 
-  featured Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+	featured Boolean @default(false)
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
 }
 
 model Tip{
-  id String @id @default(uuid())
-  amount  Decimal
-  remarks String?
+    id String @id @default(uuid())
+	amount  Decimal
+	remarks String?
 
-  business Business @relation(fields: [businessId], references: [id])
-  businessId String
+	business Business @relation(fields: [businessId], references: [id])
+	businessId String
 
-  user User @relation(fields: [userId], references: [id])
-  userId String
+	user User @relation(fields: [userId], references: [id])
+	userId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
 }
 
 model Event {
-  id String @id @default(uuid())
-  title String
-  description String?
-  startDate DateTime
-  endDate DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+    id String @id @default(uuid())
+	title String
+	description String?
+	startDate DateTime
+	endDate DateTime
+	createdAt DateTime @default(now())
+	updatedAt DateTime @default(now())
 
-  businessId String
-  business Business @relation(fields: [businessId], references: [id])
+	businessId String
+	business Business @relation(fields: [businessId], references: [id])
 
-  userId String
-  user User @relation(fields: [userId], references: [id])
+	userId String
+	user User @relation(fields: [userId], references: [id])
 }
 
 
 model Post{
-  id String @id @default(uuid())
-  title String
-  content String
-  upVotes Int @default(0)
-  downVotes Int @default(0)
+    id String @id @default(uuid())
+	title String
+	content String
+	upVotes Int @default(0)
+	downVotes Int @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+	createdAt DateTime @default(now())
+	updatedAt DateTime @default(now())
 
-  authorId String
-  author User @relation(fields: [authorId], references: [id])
+	authorId String
+	author User @relation(fields: [authorId], references: [id])
 
-  comments Comment[]
+	comments Comment[]
 }
 
 model Comment{
-  id String @id @default(uuid())
-  content String
+    id String @id @default(uuid())
+	content String
 
-  upVotes Int @default(0)
-  downVotes Int @default(0)
+	upVotes Int @default(0)
+	downVotes Int @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+	createdAt DateTime @default(now())
+	updatedAt DateTime @default(now())
 
-  authorId String
-  author User @relation(fields: [authorId], references:[id])
+	authorId String
+	author User @relation(fields: [authorId], references:[id])
 
-  postId String
-  post Post @relation(fields: [postId], references: [id])
+	postId String
+	post Post @relation(fields: [postId], references: [id])
 }
 
 model Admin{
-  id String @id @default(uuid())
-  name String
-  username String @unique
-  password String
+    id String @id @default(uuid())
+	name String
+	username String @unique
+	password String
 }
